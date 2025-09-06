@@ -36,8 +36,9 @@ function ImageComponent({
 }) {
   const source = src?.includes("https")
     ? src
-    : process.env.NEXT_PUBLIC_ASSET_REVERSE +
-      (src.startsWith("/") ? src : `/${src}`);
+    : src.startsWith("/")
+      ? src
+      : `/${src}`;
 
   return (
     <Image

@@ -230,7 +230,7 @@ const DatePicker = ({
               : "cursor-pointer"
           )}
         >
-          <ImageComponent src="/icons/calendar16.svg" width={16} height={16} />
+          <ImageComponent src="/icons/calendar-input.svg" width={16} height={16} />
           <span
             className={`flex-1 text-xs font-medium leading-[14.4px] ${
               selectedDate ? "text-neutral-900" : "text-neutral-600"

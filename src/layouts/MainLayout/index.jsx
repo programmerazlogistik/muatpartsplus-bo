@@ -56,7 +56,7 @@ const MainLayout = ({ children }) => {
             }`}
           >
             <Navbar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
-            <main className="flex-1 overflow-y-auto bg-background p-4">
+            <main className="flex-1 overflow-y-auto bg-white p-[30px]">
               {children}
             </main>
           </div>

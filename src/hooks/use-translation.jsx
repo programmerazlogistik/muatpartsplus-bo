@@ -9,7 +9,10 @@ export const useTranslation = () => {
 };
 
 export const TranslationProvider = ({ children }) => {
-  const value = useMemo(() => ({}), []);
+  // Provide a simple t function that just returns the fallback or key
+  const value = useMemo(() => ({
+    t: (key, _options = {}, fallback = key) => fallback || key,
+  }), []);
 
   return (
     <TranslationContext.Provider value={value}>

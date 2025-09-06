@@ -416,7 +416,7 @@ input::-webkit-inner-spin-button {
 body {
   color: var(--neutral-900);
   background: var(--neutral-100);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Avenir Next LT Pro", sans-serif;
   margin: 0px;
 }
 .main {
@@ -438,17 +438,33 @@ body {
   box-shadow: 0 4px 11px 0 #41414140;
 }
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 8px;
 }
+
+::-webkit-scrollbar:horizontal {
+  height: 8px;
+}
+
 ::-webkit-scrollbar-track {
-  background: var(--neutral-200);
+  background: var(--neutral-300);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--neutral-500);
   border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--neutral-700);
+  background: var(--neutral-600);
+}
+
+::-webkit-scrollbar-track:horizontal {
+  background: var(--neutral-200);
+}
+::-webkit-scrollbar-thumb:horizontal {
+  background: var(--neutral-300);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:horizontal {
+  background: var(--neutral-400);
 }
 
 .scrollbar-custombadanusaha {

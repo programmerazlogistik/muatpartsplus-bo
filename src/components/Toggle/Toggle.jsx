@@ -28,12 +28,12 @@ const Toggle = ({
   };
 
   const buttonClasses = [
-    "relative w-[40px] h-[24px] rounded-full transition-colors",
+    "relative w-[40px] h-[24px] rounded-full transition-colors shadow-[0px_4px_8px_0px_#2C273814]",
     getValue
       ? type === "primary"
         ? "bg-primary-700"
         : "bg-secondary-500"
-      : "bg-neutral-800",
+      : "bg-[#868686]",
     disabled &&
       (getValue ? "disabled:bg-primary-200" : "disabled:bg-neutral-400"),
     "disabled:cursor-not-allowed",
