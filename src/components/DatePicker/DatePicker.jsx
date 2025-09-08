@@ -37,6 +37,7 @@ const DatePicker = ({
   disabled = false,
   errorMessage = null,
   showErrorMessage = true, // New prop to control error message display
+  iconPosition = "left", // NEW: icon position prop
 }) => {
   const initialDate = ensureDate(value);
   const [selectedDate, setSelectedDate] = useState(initialDate);
@@ -223,14 +224,19 @@ const DatePicker = ({
           onClick={() => !disabled && setIsPickerOpen(!isPickerOpen)}
           className={cn(
             "flex h-8 w-full items-center gap-x-2 rounded-md border border-neutral-600 px-3 transition-colors",
-            // MODIFIED: Border color is now based on `errorMessage` prop
             hasError() ? "border-error-400" : "hover:border-primary-700",
             disabled
               ? "cursor-not-allowed bg-neutral-200 hover:border-neutral-600"
               : "cursor-pointer"
           )}
         >
-          <ImageComponent src="/icons/calendar-input.svg" width={16} height={16} />
+          {iconPosition === "left" && (
+            <ImageComponent
+              src="/icons/calendar-input.svg"
+              width={16}
+              height={16}
+            />
+          )}
           <span
             className={`flex-1 text-xs font-medium leading-[14.4px] ${
               selectedDate ? "text-neutral-900" : "text-neutral-600"
@@ -238,6 +244,13 @@ const DatePicker = ({
           >
             {selectedDate ? format(selectedDate, "dd MMM yyyy") : placeholder}
           </span>
+          {iconPosition === "right" && (
+            <ImageComponent
+              src="/icons/calendar-input.svg"
+              width={16}
+              height={16}
+            />
+          )}
         </div>
       </div>
       {/* MODIFIED: Added this block to display the error message */}

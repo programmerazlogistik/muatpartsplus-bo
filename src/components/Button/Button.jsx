@@ -82,7 +82,7 @@ const iconColorVariants = {
  * @returns {JSX.Element} Rendered Button component
  */
 const Button = ({
-  variant = "muattrans-primary",
+  variant = "muatparts-primary",
   children = "Button",
   className,
   iconLeft = null,

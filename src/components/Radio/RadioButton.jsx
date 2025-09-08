@@ -27,10 +27,8 @@ const RadioButton = ({
     if (disabled) {
       return;
     }
-    onClick({
-      checked: !checked,
-      value,
-    });
+    radioRef.current?.focus();
+    // Optionally, you can trigger click on input for accessibility
   };
 
   return (
@@ -47,7 +45,7 @@ const RadioButton = ({
         ref={radioRef}
         checked={checked}
         name={name}
-        onChange={checkedClick}
+        onChange={onChange}
         value={value}
         disabled={disabled}
         {...props}

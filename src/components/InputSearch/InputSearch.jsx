@@ -77,7 +77,7 @@ const FilterableMenu = ({
 };
 
 export const InputSearch = ({
-  options,
+  options = [],
   getOptionLabel,
   onSelectValue,
   searchValue,

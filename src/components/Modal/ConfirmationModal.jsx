@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils";
  * @param {Function} props.setIsOpen - Function to control the open state of the modal.
  * @param {{ text: string, className: string }} [props.title={ text: "", className: "" }] - Title configuration object. `text` is the title content, `className` is additional CSS classes for the title.
  * @param {{ text: string, className: string }} [props.description={ text: "", className: "" }] - Description configuration object. `text` is the description content, `className` is additional CSS classes for the description.
+ * @param {boolean} [props.withCancel=true] - Whether to show the cancel button.
+ * @param {boolean} [props.withButtons=true] - Whether to show action buttons at all.
  * @param {{ classname: string, text: string, onClick: Function }} [props.cancel={ classname: "", text: "", onClick: () => {} }] - Cancel button configuration. `classname` for additional CSS, `text` for button label, `onClick` for click handler.
  * @param {{ classname: string, text: string, onClick: Function }} [props.confirm={ classname: "", text: "", onClick: () => {} }] - Confirm button configuration. `classname` for additional CSS, `text` for button label, `onClick` for click handler.
  * @returns {JSX.Element} The rendered confirmation modal component.
@@ -24,6 +26,7 @@ const ConfirmationModal = ({
   setIsOpen,
   title = { text: "", className: "" },
   withCancel = true,
+  withButtons = true,
   description = { text: "", className: "" },
   cancel = { classname: "", text: "", onClick: () => setIsOpen(false) },
   confirm = { classname: "", text: "", onClick: () => setIsOpen(false) },
@@ -70,8 +73,10 @@ const ConfirmationModal = ({
       open={isOpen}
       onOpenChange={setIsOpen}
     >
-      <ModalContent className={cn(modalClassname, className)} type="muattrans">
-        <ModalHeader size={size} />
+      <ModalContent
+        className={cn(modalClassname, className)}
+        appearance={{ closeButtonClassname: "size-3 m-1 !text-neutral-900" }}
+      >
         <div className="flex flex-col items-center gap-y-6 px-6 py-9">
           {titleText ? (
             <h1
@@ -92,33 +97,36 @@ const ConfirmationModal = ({
               dangerouslySetInnerHTML={{ __html: getDescriptionContent() }}
             />
           ) : null}
-          <div className="flex items-center gap-x-2">
-            {withCancel && (
+          {withButtons && (
+            <div className="flex items-center gap-x-2">
+              {withCancel && (
+                <Button
+                  variant={
+                    secondaryButtonVariant[variant] ||
+                    secondaryButtonVariant.muattrans
+                  }
+                  // 25. 18 - Web - LB - 0275
+                  className={cn("h-8 w-[112px]", cancelClassname)}
+                  onClick={onCancel}
+                  type="button"
+                >
+                  {cancelText}
+                </Button>
+              )}
               <Button
                 variant={
-                  secondaryButtonVariant[variant] ||
-                  secondaryButtonVariant.muattrans
+                  primaryButtonVariant[variant] ||
+                  primaryButtonVariant.muatparts
                 }
                 // 25. 18 - Web - LB - 0275
-                className={cn("h-8", cancelClassname)}
-                onClick={onCancel}
+                className={cn("h-8 w-[112px]", confirmClassname)}
+                onClick={onConfirm}
                 type="button"
               >
-                {cancelText}
+                {confirmText}
               </Button>
-            )}
-            <Button
-              variant={
-                primaryButtonVariant[variant] || primaryButtonVariant.muattrans
-              }
-              // 25. 18 - Web - LB - 0275
-              className={cn("h-8", confirmClassname)}
-              onClick={onConfirm}
-              type="button"
-            >
-              {confirmText}
-            </Button>
-          </div>
+            </div>
+          )}
         </div>
       </ModalContent>
     </Modal>

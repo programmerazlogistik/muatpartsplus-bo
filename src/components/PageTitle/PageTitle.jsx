@@ -15,6 +15,7 @@ const PageTitle = ({
   appearance = {
     iconClassName: "",
   },
+  onBackClick = null,
 }) => {
   const router = useRouter();
 
@@ -31,16 +32,19 @@ const PageTitle = ({
   return (
     <div
       className={cn(
-        "mb-4 flex items-center gap-3 text-xl font-bold",
+        "mb-4 flex items-center gap-3 text-xl font-semibold",
         className
       )}
     >
       {withBack && (
-        <button className={appearance.iconClassName} onClick={handleBackClick}>
+        <button
+          className={appearance.iconClassName}
+          onClick={onBackClick || handleBackClick}
+        >
           <IconComponent
-            src="/icons/arrow-left24.svg"
-            size="medium"
-            className={cn("text-primary-700", appearance.iconClassName)}
+            src="/icons/arrow-left.svg"
+            size={20}
+            className={cn(appearance.iconClassName)}
           />
         </button>
       )}

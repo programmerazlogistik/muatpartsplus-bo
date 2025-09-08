@@ -438,7 +438,8 @@ body {
   box-shadow: 0 4px 11px 0 #41414140;
 }
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar:horizontal {
@@ -447,6 +448,7 @@ body {
 
 ::-webkit-scrollbar-track {
   background: var(--neutral-300);
+  border-radius: 5px;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--neutral-500);

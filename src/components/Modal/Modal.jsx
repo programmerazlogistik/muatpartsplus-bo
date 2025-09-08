@@ -79,7 +79,7 @@ export const ModalContent = ({
   const {
     open,
     withCloseButton = true,
-    closeOnOutsideClick = false,
+    closeOnOutsideClick = true,
   } = useModal();
   const dialogRef = useRef(null);
 
@@ -137,7 +137,6 @@ export const ModalContent = ({
           "fixed left-1/2 top-1/2 z-[51] -translate-x-1/2 -translate-y-1/2",
           "rounded-xl bg-neutral-50 shadow-lg",
           "data-[state=open]:animate-content-show",
-          // --- THIS LINE IS THE ONLY CHANGE ---
           "data-[state=closed]:animate-content-hide",
           type === "lightbox" && "bg-transparent shadow-none",
           className
@@ -156,7 +155,7 @@ export const ModalContent = ({
               <IconComponent
                 className={cn(
                   "size-6 md:size-5",
-                  iconClassnames[type] || iconClassnames.muattrans
+                  iconClassnames[type] || iconClassnames.muattrans,
                 )}
                 src="/icons/close20.svg"
               />

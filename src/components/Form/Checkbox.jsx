@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 const Checkbox = ({
   onChange = () => {},
-  label = "label",
+  label = "",
   value,
   disabled,
   children,
