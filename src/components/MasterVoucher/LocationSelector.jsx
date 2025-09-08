@@ -17,6 +17,7 @@ export const LocationSelector = ({
   onSelectionChange,
   errorMessage,
   className,
+  modalTitle = "Pilih Lokasi",
 }) => {
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [isSelectedItemsModalOpen, setIsSelectedItemsModalOpen] =
@@ -67,7 +68,7 @@ export const LocationSelector = ({
               {badges.slice(0, 3).map((badge) => (
                 <div
                   key={badge.value}
-                  className="flex items-center gap-1 rounded-full border border-primary-700 bg-white px-2.5 py-1.5"
+                  className="flex items-center gap-1 rounded-full border border-primary-700 bg-white px-2.5 py-1"
                 >
                   <span className="text-xxs font-semibold text-primary-700">
                     {badge.label}
@@ -114,6 +115,7 @@ export const LocationSelector = ({
         open={isLocationModalOpen}
         onOpenChange={setIsLocationModalOpen}
         title={title}
+        modalTitle={modalTitle}
         selectedLocations={selectedLocations}
         onApply={handleApply}
       />
@@ -121,7 +123,7 @@ export const LocationSelector = ({
         isOpen={isSelectedItemsModalOpen && badges.length > 3}
         onClose={() => setIsSelectedItemsModalOpen(false)}
         items={badges}
-        title="Lokasi Terpilih"
+        title={modalTitle}
       />
     </div>
   );

@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import Button from "@/components/Button/Button";
@@ -154,10 +155,9 @@ const MasterVoucherContainer = () => {
     setActiveTab(tab);
     setCurrentPage(1); // Reset to first page on tab change
   };
-
+  const router = useRouter();
   const handleAddVoucher = () => {
-    // Implement add voucher functionality
-    console.log("Add voucher button clicked");
+    router.push("/master-voucher/add");
   };
 
   const handleToggleFilter = () => {
@@ -222,7 +222,7 @@ const MasterVoucherContainer = () => {
         isOpen={isFilterOpen}
         onToggle={handleToggleFilter}
         onApply={handleFilter}
-        onReset={handleFilter} // Resetting is like applying empty filters
+        onReset={handleFilter}
         initialFilters={filters}
         isExpired={activeTab === "expired"}
       />

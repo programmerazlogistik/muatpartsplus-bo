@@ -5,15 +5,15 @@ import Checkbox from "@/components/Form/Checkbox";
 import Input from "@/components/Form/Input";
 import IconComponent from "@/components/IconComponent/IconComponent";
 import { citiesByProvince, provinces } from "@/components/MasterVoucher/dummy";
+import {
+  isAllProvincesSelected as checkAllProvincesSelected,
+  generateBadges,
+  getAllLocations,
+  getProvinceSelectionState,
+  removeBadgeFromLocations,
+} from "@/components/MasterVoucher/locationHelpers";
 import { Modal, ModalContent, ModalTitle } from "@/components/Modal/Modal";
 import SelectedItemsModal from "@/components/SelectedItemsModal/SelectedItemsModal";
-import { 
-  generateBadges, 
-  removeBadgeFromLocations, 
-  getProvinceSelectionState,
-  getAllLocations,
-  isAllProvincesSelected as checkAllProvincesSelected
-} from "@/components/MasterVoucher/locationHelpers";
 
 import { cn } from "@/lib/utils";
 
@@ -21,6 +21,7 @@ export const LocationSelectorModal = ({
   open,
   onOpenChange,
   title = "Provinsi & Kota/Kabupaten Lokasi Muat*",
+  modalTitle = "Pilih Lokasi",
   onApply,
   selectedLocations: initialSelectedLocations = [],
 }) => {
@@ -108,7 +109,10 @@ export const LocationSelectorModal = ({
 
   const handleRemoveBadge = (e, badge) => {
     e.stopPropagation();
-    const newSelections = removeBadgeFromLocations(badge, tempSelectedLocations);
+    const newSelections = removeBadgeFromLocations(
+      badge,
+      tempSelectedLocations
+    );
     setTempSelectedLocations(newSelections);
   };
 
@@ -302,7 +306,7 @@ export const LocationSelectorModal = ({
           isOpen={showAllModal}
           onClose={() => setShowAllModal(false)}
           items={badges}
-          title="Lokasi Terpilih"
+          title={modalTitle}
         />
       )}
     </>

@@ -475,6 +475,7 @@ const TambahVoucherPage = () => {
                 title="Provinsi & Kota/Kabupaten Lokasi Muat*"
                 placeholder="Pilih Kota/Kabupaten"
                 selectedLocations={formValues.lokasiMuat}
+                modalTitle="Lokasi Muat "
                 onSelectionChange={(locations) =>
                   setField("lokasiMuat", locations)
                 }
@@ -488,6 +489,7 @@ const TambahVoucherPage = () => {
                 title="Provinsi & Kota/Kabupaten Lokasi Bongkar*"
                 placeholder="Pilih Kota/Kabupaten"
                 selectedLocations={formValues.lokasiBongkar}
+                modalTitle="Lokasi Bongkar"
                 onSelectionChange={(locations) =>
                   setField("lokasiBongkar", locations)
                 }
