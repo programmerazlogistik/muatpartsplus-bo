@@ -89,7 +89,6 @@ const TambahVoucherPage = () => {
   };
 
   const handleBack = () => {
-    // Check if form has data
     const hasFormData = Object.values(formValues).some((value) => {
       if (Array.isArray(value)) return value.length > 0;
       return value && value !== "";
@@ -149,15 +148,12 @@ const TambahVoucherPage = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <PageTitle showBackButton={true} onBackClick={handleBack}>
         Tambah Voucher
       </PageTitle>
 
       <div>
-        {/* START: Main Form Grid Layout */}
         <div className="grid grid-cols-1 gap-x-8 md:grid-cols-2">
-          {/* Left Column */}
           <div className="space-y-6">
             <FormContainer>
               <FormLabel>Tanggal Pembuatan</FormLabel>
@@ -324,8 +320,6 @@ const TambahVoucherPage = () => {
               )}
             </FormContainer>
           </div>
-
-          {/* Right Column */}
           <div className="space-y-6">
             <FormContainer>
               <FormLabel required>Periode Awal</FormLabel>
@@ -346,7 +340,6 @@ const TambahVoucherPage = () => {
                 iconPosition="right"
               />
             </FormContainer>
-
             <FormContainer>
               <FormLabel required>Periode Akhir</FormLabel>
               <DatePicker
@@ -371,7 +364,6 @@ const TambahVoucherPage = () => {
                 iconPosition="right"
               />
             </FormContainer>
-
             <FormContainer>
               <FormLabel required>User (No. WhatsApp)</FormLabel>
               <MultiSelectDropdown
@@ -387,7 +379,6 @@ const TambahVoucherPage = () => {
                 showAllOption={true}
               />
             </FormContainer>
-
             <FormContainer>
               <FormLabel required>Kuota Voucher</FormLabel>
               <Input
@@ -406,7 +397,6 @@ const TambahVoucherPage = () => {
                 errorMessage={formErrors.kuotaVoucher}
               />
             </FormContainer>
-
             <FormContainer>
               <FormLabel required>Kuota per User</FormLabel>
               <Input
@@ -425,7 +415,6 @@ const TambahVoucherPage = () => {
                 errorMessage={formErrors.kuotaPerUser}
               />
             </FormContainer>
-
             <FormContainer>
               <FormLabel required>
                 Metode & Instansi Tujuan Pembayaran
@@ -443,7 +432,6 @@ const TambahVoucherPage = () => {
                 showAllOption={true}
               />
             </FormContainer>
-
             <FormContainer className="items-center">
               <FormLabel required>Status</FormLabel>
               <div className="flex gap-4">
@@ -467,7 +455,6 @@ const TambahVoucherPage = () => {
         </div>
         <div className="pt-6">
           <h3 className="mb-4 font-bold text-gray-900">Rute Promo</h3>
-
           <div className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2">
             <FormContainer>
               <FormLabel required>Lokasi Muat</FormLabel>
@@ -482,7 +469,6 @@ const TambahVoucherPage = () => {
                 errorMessage={formErrors.lokasiMuat}
               />
             </FormContainer>
-
             <FormContainer>
               <FormLabel required>Lokasi Bongkar</FormLabel>
               <LocationSelector
@@ -497,7 +483,6 @@ const TambahVoucherPage = () => {
               />
             </FormContainer>
           </div>
-
           <div className="mt-6">
             <FormContainer className="items-center !gap-y-0">
               <FormLabel>Berlaku Rute Sebaliknya</FormLabel>
@@ -510,7 +495,6 @@ const TambahVoucherPage = () => {
             </FormContainer>
           </div>
         </div>
-
         <div className="mt-6 flex justify-center pt-2">
           <Button onClick={handleSubmit} className="px-8">
             Buat Voucher
