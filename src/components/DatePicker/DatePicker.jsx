@@ -8,9 +8,8 @@ import { createPortal } from "react-dom";
 
 import { cn } from "@/lib/utils";
 
-import ImageComponent from "../ImageComponent/ImageComponent";
+import { IconComponent } from "../IconComponent";
 
-// Helper function to ensure we're working with a proper Date object
 const ensureDate = (dateValue) => {
   if (!dateValue) return null;
   if (dateValue instanceof Date && !isNaN(dateValue)) {
@@ -22,7 +21,7 @@ const ensureDate = (dateValue) => {
       return newDate;
     }
   } catch {
-    // Error parsing date, return null
+    console.error("Invalid date:", dateValue);
   }
   return null;
 };
@@ -36,8 +35,8 @@ const DatePicker = ({
   className = "",
   disabled = false,
   errorMessage = null,
-  showErrorMessage = true, // New prop to control error message display
-  iconPosition = "left", // NEW: icon position prop
+  showErrorMessage = true,
+  iconPosition = "left",
 }) => {
   const initialDate = ensureDate(value);
   const [selectedDate, setSelectedDate] = useState(initialDate);
@@ -54,9 +53,7 @@ const DatePicker = ({
     setSelectedDate(dateObj);
   }, [value]);
 
-  // Helper function to determine if there's an error
   const hasError = () => {
-    // Check if errorMessage is truthy (string, true, etc.) but not null/undefined/false
     return Boolean(errorMessage);
   };
 
@@ -64,11 +61,8 @@ const DatePicker = ({
     const dateObj = ensureDate(value);
     setSelectedDate(dateObj);
   }, [value]);
-
-  // Click outside detection
   useEffect(() => {
     const handleClickOutside = (event) => {
-      // Check if click is outside both the input container and the portal content
       const clickedInsideInput =
         pickerRef.current && pickerRef.current.contains(event.target);
       const clickedInsidePortal =
@@ -81,7 +75,6 @@ const DatePicker = ({
 
     const handleScroll = () => {
       if (isPickerOpen && inputRef.current) {
-        // Recalculate position on scroll
         const inputRect = inputRef.current.getBoundingClientRect();
         const dropdownHeight = 320;
         const dropdownWidth = 280;
@@ -124,12 +117,11 @@ const DatePicker = ({
     };
   }, [isPickerOpen]);
 
-  // Update positioning when picker opens
   useEffect(() => {
     if (isPickerOpen && inputRef.current) {
       const inputRect = inputRef.current.getBoundingClientRect();
-      const dropdownHeight = 320; // Approximate height of the calendar
-      const dropdownWidth = 280; // Approximate width of the calendar
+      const dropdownHeight = 320;
+      const dropdownWidth = 280;
 
       const position = {
         position: "fixed",
@@ -137,23 +129,15 @@ const DatePicker = ({
         left: inputRect.left,
         top: inputRect.bottom + 8,
       };
-
-      // Check if dropdown would go off the right edge
       if (inputRect.left + dropdownWidth > window.innerWidth) {
         position.left = inputRect.right - dropdownWidth;
       }
-
-      // Check if dropdown would go off the bottom edge
       if (inputRect.bottom + dropdownHeight + 8 > window.innerHeight) {
         position.top = inputRect.top - dropdownHeight - 8;
       }
-
-      // Ensure dropdown doesn't go off the left edge
       if (position.left < 16) {
         position.left = 16;
       }
-
-      // Ensure dropdown doesn't go off the top edge
       if (position.top < 16) {
         position.top = 16;
       }
@@ -161,8 +145,6 @@ const DatePicker = ({
       setDropdownPosition(position);
     }
   }, [isPickerOpen]);
-
-  // Custom calendar header component
   const CustomHeader = ({
     date,
     decreaseMonth,
@@ -212,7 +194,6 @@ const DatePicker = ({
   };
 
   return (
-    // MODIFIED: Root element now handles vertical layout for error message
     <div className={cn("flex w-full flex-col gap-y-1", className)}>
       <div className="relative" ref={pickerRef}>
         <div
@@ -227,7 +208,7 @@ const DatePicker = ({
           )}
         >
           {iconPosition === "left" && (
-            <ImageComponent
+            <IconComponent
               src="/icons/calendar-input.svg"
               width={16}
               height={16}
@@ -245,7 +226,7 @@ const DatePicker = ({
             {selectedDate ? format(selectedDate, "dd MMM yyyy") : placeholder}
           </span>
           {iconPosition === "right" && (
-            <ImageComponent
+            <IconComponent
               src="/icons/calendar-input.svg"
               width={16}
               height={16}
@@ -253,13 +234,11 @@ const DatePicker = ({
           )}
         </div>
       </div>
-      {/* MODIFIED: Added this block to display the error message */}
       {hasError() && showErrorMessage && typeof errorMessage === "string" && (
         <span className="text-xs font-medium text-error-400">
           {errorMessage}
         </span>
       )}
-      {/* MODIFIED: Use portal to render dropdown */}
       {isPickerOpen &&
         createPortal(
           <div
