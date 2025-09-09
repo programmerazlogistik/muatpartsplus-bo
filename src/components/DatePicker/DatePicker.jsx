@@ -211,10 +211,6 @@ const DatePicker = ({
     setIsPickerOpen(false);
   };
 
-  useEffect(() => {
-    console.log("hasError:", hasError());
-  }, [hasError()]);
-
   return (
     // MODIFIED: Root element now handles vertical layout for error message
     <div className={cn("flex w-full flex-col gap-y-1", className)}>
