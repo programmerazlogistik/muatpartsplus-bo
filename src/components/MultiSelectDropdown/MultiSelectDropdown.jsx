@@ -29,7 +29,9 @@ const MultiSelectDropdown = ({
   const dropdownRef = useRef(null);
 
   const isAllSelected =
-    options.length > 0 && selectedItems.length === options.length;
+    showAllOption &&
+    options.length > 0 &&
+    selectedItems.length === options.length;
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -69,6 +71,7 @@ const MultiSelectDropdown = ({
   };
 
   const handleToggle = () => {
+    // CHANGE: Logic now explicitly checks for disabled state
     if (!disabled) {
       setIsOpen(!isOpen);
       if (!isOpen) setSearch("");
@@ -78,15 +81,32 @@ const MultiSelectDropdown = ({
   const renderSelectedItems = () => {
     if (isAllSelected) {
       return (
-        <div className="flex items-center gap-2 rounded-full border border-primary-700 bg-white px-2 py-1 text-xxs font-semibold">
-          <span className="text-xxs text-primary-700">All</span>
+        // CHANGE: Conditional styling for the "All" badge
+        <div
+          className={cn(
+            "flex items-center gap-2 rounded-full border bg-white px-2 py-1 text-xxs font-semibold",
+            disabled ? "border-[#868686]" : "border-primary-700"
+          )}
+        >
+          <span
+            className={cn(
+              "text-xxs",
+              disabled ? "text-[#868686]" : "text-primary-700"
+            )}
+          >
+            All
+          </span>
+
           <button
-            onClick={handleRemoveAll}
-            className="text-primary-700 hover:text-primary-700"
+            onClick={!disabled ? handleRemoveAll : undefined}
+            className={cn(
+              "text-primary-700 hover:text-primary-700",
+              disabled && "pointer-events-none"
+            )}
           >
             <IconComponent
               src="/icons/close12.svg"
-              color="primary"
+              color={disabled ? "gray" : "primary"}
               width={12}
               height={12}
             />
@@ -102,17 +122,32 @@ const MultiSelectDropdown = ({
     return (
       <>
         {selectedItems.slice(0, 3).map((item) => (
+          // CHANGE: Conditional styling for individual badges
           <div
             key={item.value}
-            className="flex items-center gap-2 rounded-full border border-primary-700 bg-white px-2 py-1 text-xxs font-semibold"
+            className={cn(
+              "flex items-center gap-2 rounded-full border bg-white px-2 py-1 text-xxs font-semibold",
+              disabled ? "border-[#868686]" : "border-primary-700"
+            )}
           >
-            <span className="text-xxs text-primary-700">{item.label}</span>
+            <span
+              className={cn(
+                "text-xxs",
+                disabled ? "text-[#868686]" : "text-primary-700"
+              )}
+            >
+              {item.label}
+            </span>
+
             <button
-              onClick={(e) => handleRemoveItem(e, item)}
-              className="text-primary-700 hover:text-primary-700"
+              onClick={!disabled ? handleRemoveAll : undefined}
+              className={cn(
+                "text-primary-700 hover:text-primary-700",
+                disabled && "pointer-events-none"
+              )}
             >
               <IconComponent
-                color="primary"
+                color={disabled ? "gray" : "primary"}
                 src="/icons/close12.svg"
                 width={12}
                 height={12}
@@ -124,9 +159,11 @@ const MultiSelectDropdown = ({
           <button
             type="button"
             onClick={(e) => {
+              // This button is always clickable
               e.stopPropagation();
               setIsModalOpen(true);
             }}
+            // CHANGE: Keep the original style regardless of disabled state
             className="rounded-full bg-primary-700 px-3 py-[6px] text-xxs font-semibold text-white"
           >
             +{selectedItems.length - 3}
@@ -141,13 +178,15 @@ const MultiSelectDropdown = ({
       <button
         type="button"
         onClick={handleToggle}
-        disabled={disabled}
+        // CHANGE: REMOVED the disabled attribute here.
+        // The component's disabled behavior is now handled by the onClick logic and CSS classes.
+        // This allows the child "+N" button to remain clickable.
         className={cn(
           "flex min-h-[33px] w-full items-center rounded-md border p-2 text-xs font-medium transition-colors duration-200 focus:outline-none",
           "flex flex-shrink-0 justify-between gap-2",
-          errorMessage
-            ? "border-error-400"
-            : "border-neutral-600 hover:border-primary-700",
+          errorMessage ? "border-error-400" : "border-neutral-600",
+          // CHANGE: Added hover effect only when not disabled
+          !disabled && "hover:border-primary-700",
           disabled
             ? "cursor-not-allowed bg-neutral-100 text-neutral-500"
             : "cursor-pointer bg-white text-neutral-900"
@@ -156,13 +195,15 @@ const MultiSelectDropdown = ({
         <div className="flex flex-1 flex-wrap items-center gap-2">
           {renderSelectedItems()}
         </div>
-        <IconComponent
-          src="/icons/chevron-down.svg"
-          className={cn(
-            "h-4 w-4 flex-shrink-0 transition-transform duration-200",
-            isOpen ? "rotate-180" : ""
-          )}
-        />
+        {!disabled && (
+          <IconComponent
+            src="/icons/chevron-down.svg"
+            className={cn(
+              "h-4 w-4 flex-shrink-0 transition-transform duration-200",
+              isOpen ? "rotate-180" : ""
+            )}
+          />
+        )}
       </button>
 
       {errorMessage && !isOpen && (
@@ -171,6 +212,7 @@ const MultiSelectDropdown = ({
         </p>
       )}
 
+      {/* The rest of the component remains the same */}
       {isOpen && (
         <div className="absolute left-0 right-0 top-full z-50 max-h-80 overflow-hidden rounded-md border border-primary-700 bg-white shadow-lg">
           <div className="border-neutral-200 p-3">

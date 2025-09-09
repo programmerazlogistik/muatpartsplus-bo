@@ -1,3 +1,4 @@
+// store/MasterVoucher/addVoucherStore.js
 import { create } from "zustand";
 
 import { zustandDevtools } from "@/lib/utils";
@@ -9,8 +10,8 @@ const defaultValues = {
   caraPemakaian: "",
   jenisPotongan: "Rp x", // "Rp x" or "x %"
   nominal: "",
-  maksimalPotonganRp: "",
-  minimalTransaksiRp: "",
+  maksimalPotonganRp: "", // "" means "Tidak Ada"
+  minimalTransaksiRp: "", // "" means "Tidak Ada"
   periodeAwal: "",
   periodeAkhir: "",
   userWhatsApp: [], // array of user numbers
@@ -36,11 +37,19 @@ export const useAddVoucherStore = create(
             formErrors: { ...state.formErrors, [field]: undefined },
           })),
 
+        // NEW ACTION: to populate form for edit/detail page
+        setFormValues: (data) =>
+          set({
+            formValues: { ...defaultValues, ...data },
+            formErrors: {}, // Clear errors when setting new values
+          }),
+
         setError: (field, error) =>
           set((state) => ({
             formErrors: { ...state.formErrors, [field]: error },
           })),
 
+        // ... (actions lainnya seperti addLokasiMuat, removeLokasiMuat, etc. tetap sama) ...
         addLokasiMuat: (lokasi) =>
           set((state) => ({
             formValues: {
@@ -129,15 +138,12 @@ export const useAddVoucherStore = create(
           if (!formValues.kodeVoucher) {
             errors.kodeVoucher = "Kode voucher wajib diisi";
           }
-
           if (!formValues.syaratDanKetentuan) {
             errors.syaratDanKetentuan = "Syarat dan ketentuan wajib diisi";
           }
-
           if (!formValues.caraPemakaian) {
             errors.caraPemakaian = "Cara pemakaian wajib diisi";
           }
-
           if (!formValues.nominal) {
             errors.nominal = "Nominal wajib diisi";
           } else if (
@@ -147,16 +153,19 @@ export const useAddVoucherStore = create(
             errors.nominal = "Nominal tidak boleh melebihi 100";
           }
 
+          // FIX: Correct validation logic
           if (
-            formValues.jenisPotongan === "Atur Maks. Potongan" &&
-            !formValues.maksimalPotonganRp
+            formValues.jenisPotongan === "x %" &&
+            formValues.maksimalPotonganRp !== "" &&
+            !parseInt(formValues.maksimalPotonganRp) > 0
           ) {
             errors.maksimalPotonganRp = "Maksimal potongan wajib diisi";
           }
 
+          // FIX: Correct validation logic
           if (
-            formValues.jenisPotongan === "Atur Min. Transaksi" &&
-            !formValues.minimalTransaksiRp
+            formValues.minimalTransaksiRp !== "" &&
+            !parseInt(formValues.minimalTransaksiRp) > 0
           ) {
             errors.minimalTransaksiRp = "Minimal transaksi wajib diisi";
           }
@@ -164,12 +173,9 @@ export const useAddVoucherStore = create(
           if (!formValues.periodeAwal) {
             errors.periodeAwal = "Periode awal wajib diisi";
           }
-
           if (!formValues.periodeAkhir) {
             errors.periodeAkhir = "Periode akhir wajib diisi";
           }
-
-          // Validate periode akhir is after periode awal
           if (formValues.periodeAwal && formValues.periodeAkhir) {
             const startDate = new Date(formValues.periodeAwal);
             const endDate = new Date(formValues.periodeAkhir);
@@ -178,15 +184,12 @@ export const useAddVoucherStore = create(
                 "Periode akhir tidak boleh lebih kecil dari periode awal";
             }
           }
-
           if (formValues.userWhatsApp.length === 0) {
             errors.userWhatsApp = "User WhatsApp wajib diisi";
           }
-
           if (!formValues.kuotaVoucher) {
             errors.kuotaVoucher = "Kuota voucher wajib diisi";
           }
-
           if (!formValues.kuotaPerUser) {
             errors.kuotaPerUser = "Kuota per user wajib diisi";
           } else if (
@@ -196,13 +199,10 @@ export const useAddVoucherStore = create(
             errors.kuotaPerUser =
               "Kuota per user tidak boleh lebih besar dari kuota voucher";
           }
-
           if (formValues.metodeInstansiTujuanPembayaran.length === 0) {
             errors.metodeInstansiTujuanPembayaran =
               "Metode & instansi tujuan pembayaran wajib diisi";
           }
-
-          // Validasi lokasiMuat dan lokasiBongkar
           if (!formValues.lokasiMuat || formValues.lokasiMuat.length === 0) {
             errors.lokasiMuat = "Lokasi muat wajib diisi";
           }
@@ -214,8 +214,6 @@ export const useAddVoucherStore = create(
           }
 
           set({ formErrors: errors });
-
-          // Return true if no errors
           return Object.keys(errors).length === 0;
         },
 
@@ -223,7 +221,15 @@ export const useAddVoucherStore = create(
           set({
             formValues: {
               ...defaultValues,
-              tanggalPembuatan: new Date().toISOString().split("T")[0],
+              tanggalPembuatan: new Date()
+                .toLocaleString("id-ID", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })
+                .replace(",", ""),
             },
             formErrors: {},
           }),
@@ -235,7 +241,7 @@ export const useAddVoucherStore = create(
   )
 );
 
-// Helper hooks
+// Helper hooks (tetap sama)
 export const useAddVoucherActions = () => {
   const actions = useAddVoucherStore((state) => state.actions);
   return actions;

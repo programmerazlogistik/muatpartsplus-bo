@@ -230,7 +230,7 @@ const DataTableBO = ({
     <>
       {/* Search and filters outside of the table */}
       <div className="flex items-center justify-between">
-        {showSearch && (
+        {showSearch ? (
           <Input
             type="text"
             placeholder={searchPlaceholder}
@@ -259,6 +259,8 @@ const DataTableBO = ({
             }}
             className="w-fit"
           />
+        ) : (
+          <div></div>
         )}
 
         <div className="flex items-center gap-4">
@@ -303,7 +305,7 @@ const DataTableBO = ({
       {/* Table component */}
       <div
         className={cn(
-          "flex h-full w-full flex-col overflow-hidden overflow-x-auto rounded-[10px] border border-[#A8A8A8]",
+          "flex w-full flex-col overflow-hidden overflow-x-auto rounded-[10px] border border-[#A8A8A8]",
           className
         )}
       >

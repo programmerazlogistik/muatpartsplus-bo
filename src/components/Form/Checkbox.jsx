@@ -61,9 +61,7 @@ const Checkbox = ({
           // Checked state
           checked && "border-primary-700 bg-primary-700",
           // Disabled states
-          disabled &&
-            checked &&
-            "cursor-not-allowed border-neutral-500 bg-neutral-400",
+          disabled && checked && "cursor-not-allowed opacity-50 after:!border-white",
           disabled && !checked && "cursor-not-allowed border-neutral-500",
           // Checkmark styles
           "after:hidden",

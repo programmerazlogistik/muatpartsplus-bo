@@ -1,3 +1,4 @@
+// components/Radio/RadioButton.jsx
 import { useRef } from "react";
 
 import PropTypes from "prop-types";
@@ -21,24 +22,23 @@ const RadioButton = ({
   ...props
 }) => {
   const radioRef = useRef(null);
-  const isLabelMissing = !label && !children;
 
-  const checkedClick = () => {
+  const handleClick = () => {
     if (disabled) {
       return;
     }
+    onChange?.({ target: { value, name } });
     radioRef.current?.focus();
-    // Optionally, you can trigger click on input for accessibility
   };
 
   return (
-    <div
+    <label
       className={cn(
         style.container_radio,
-        "flex cursor-pointer items-center gap-[8px]",
+        "flex items-center gap-[8px]",
         className
       )}
-      onClick={checkedClick}
+      data-disabled={disabled}
     >
       <input
         type="radio"
@@ -48,27 +48,25 @@ const RadioButton = ({
         onChange={onChange}
         value={value}
         disabled={disabled}
+        className={style.hidden_input}
         {...props}
       />
-      {/* LB - 0242 - 25.03 */}
-      <span
-        className={`${style.radio_primary} ${classNameRound} ${
-          isLabelMissing ? "after:top-[4px]" : "after:top-[5px]"
-        } select-none bg-neutral-50`}
-      ></span>
+      <span className={cn(style.radio_visual, classNameRound)}></span>
+
       {children ? (
         children
       ) : (
         <span
           className={cn(
-            "capsize select-none text-sm font-semibold leading-[15.4px] text-neutral-900 md:text-xs md:font-medium md:leading-[14.4px]",
+            style.label,
+            "select-none text-sm font-semibold leading-[15.4px] text-neutral-900 md:text-xs md:font-medium md:leading-[14.4px]",
             classNameLabel
           )}
         >
           {label}
         </span>
       )}
-    </div>
+    </label>
   );
 };
 

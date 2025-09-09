@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 
 import { Modal, ModalContent, ModalTitle } from "../Modal/Modal";
 
-const SelectedItemsModal = ({ isOpen, onClose, items, title }) => {
+const SelectedItemsModal = ({ isOpen, onClose, items, title = "Lainnya" }) => {
   return (
     <Modal
       open={isOpen}
@@ -16,7 +16,7 @@ const SelectedItemsModal = ({ isOpen, onClose, items, title }) => {
             {title}
           </ModalTitle>
         </div>
-        <div className="mt-4 max-h-[134px] space-y-4 overflow-y-auto">
+        <div className="mt-4 max-h-[136px] space-y-4 overflow-y-auto">
           {items.map((item) => (
             <div
               key={item.value}

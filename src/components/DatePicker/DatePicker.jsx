@@ -226,7 +226,7 @@ const DatePicker = ({
             "flex h-8 w-full items-center gap-x-2 rounded-md border border-neutral-600 px-3 transition-colors",
             hasError() ? "border-error-400" : "hover:border-primary-700",
             disabled
-              ? "cursor-not-allowed bg-neutral-200 hover:border-neutral-600"
+              ? "cursor-not-allowed bg-neutral-200 !text-neutral-500 hover:border-neutral-600"
               : "cursor-pointer"
           )}
         >
@@ -239,7 +239,11 @@ const DatePicker = ({
           )}
           <span
             className={`flex-1 text-xs font-medium leading-[14.4px] ${
-              selectedDate ? "text-neutral-900" : "text-neutral-600"
+              selectedDate
+                ? !disabled
+                  ? "text-neutral-900"
+                  : "text-neutral-500"
+                : "text-neutral-600"
             }`}
           >
             {selectedDate ? format(selectedDate, "dd MMM yyyy") : placeholder}

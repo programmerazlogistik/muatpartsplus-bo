@@ -26,7 +26,6 @@ const MasterVoucherContainer = () => {
   const [totalItems, setTotalItems] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Mock data for demonstration
   const mockVouchers = [
     {
       id: 1,

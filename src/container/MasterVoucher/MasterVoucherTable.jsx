@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import Button from "@/components/Button/Button";
@@ -27,6 +28,8 @@ const MasterVoucherTable = ({
   const { t = (key, _, fallback) => fallback || key } = useTranslation() || {};
   const [columns, setColumns] = useState([]);
 
+  const router = useRouter();
+
   useEffect(() => {
     // Define columns for the voucher table
     const tableColumns = [
@@ -41,6 +44,7 @@ const MasterVoucherTable = ({
             {!isExpired && (
               <Button
                 variant="muatparts-primary-secondary"
+                onClick={() => router.push(`/master-voucher/${row.id}/edit`)}
                 className="!h-[20px] !w-[76px] font-semibold"
               >
                 Ubah
@@ -48,12 +52,16 @@ const MasterVoucherTable = ({
             )}
             <Button
               variant="muatparts-primary"
+              onClick={() => router.push(`/master-voucher/${row.id}/detail`)}
               className="!h-[20px] !w-[76px] font-semibold"
             >
               Detail
             </Button>
             <Button
               variant="muatparts-primary"
+              onClick={() =>
+                router.push(`/master-voucher/${row.id}/detail?view=usage-history`)
+              }
               className="!h-[20px] !w-[76px] font-semibold"
             >
               History

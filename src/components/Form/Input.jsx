@@ -136,7 +136,7 @@ const InputComponent = (
           disabled={disabled}
           className={cn(
             "w-full min-w-0 cursor-pointer border-none border-transparent bg-transparent text-sm font-semibold text-neutral-900 outline-none placeholder:text-neutral-600 md:text-xs md:font-medium",
-            disabled && "cursor-not-allowed",
+            disabled && "cursor-not-allowed text-neutral-500",
             appearance.inputClassName
           )}
         />

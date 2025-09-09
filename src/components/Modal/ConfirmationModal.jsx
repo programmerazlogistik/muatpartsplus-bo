@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
  */
 const ConfirmationModal = ({
   size = "small",
-  variant = "muattrans",
+  variant = "muatparts",
   isOpen,
   setIsOpen,
   title = { text: "", className: "" },
@@ -31,7 +31,7 @@ const ConfirmationModal = ({
   cancel = { classname: "", text: "", onClick: () => setIsOpen(false) },
   confirm = { classname: "", text: "", onClick: () => setIsOpen(false) },
   className = "",
-  closeOnOutsideClick = false,
+  closeOnOutsideClick = true,
 }) => {
   const { text: titleText = "", className: titleClassName = "" } = title;
   const { text: descriptionText = "", className: descriptionClassName = "" } =
