@@ -59,7 +59,7 @@ const SelectTotalDataBO = ({
               onClick={() => onPerPageChange(option)}
               className={cn(
                 option === perPage
-                  ? "bg-primary text-white hover:bg-primary-700"
+                  ? "bg-neutral-200 font-semibold"
                   : "hover:bg-neutral-100",
                   "w-[53px]"
               )}

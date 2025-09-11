@@ -78,6 +78,23 @@ const MasterVoucherContainer = () => {
       uniqueUsers: 20,
       totalClaimValue: 13500000,
     },
+    {
+      id: 5,
+      isActive: true,
+      createdDate: "03/07/2023",
+      createdTime: "15:27 WIB",
+      startDate: "04/07/2023",
+      endDate: "04/07/2024",
+      voucherCode: "DiskonSuperHemat",
+      discountType: "percentage",
+      discountValue: 10,
+      maxDiscount: 1000000,
+      remainingQuota: 750,
+      totalQuota: 1000,
+      totalClaims: 250,
+      uniqueUsers: 20,
+      totalClaimValue: 13500000,
+    },
   ];
 
   useEffect(() => {
