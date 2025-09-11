@@ -168,63 +168,66 @@ const MasterVoucherContainer = () => {
       <h1 className="text-xl font-semibold">
         {t("MasterVoucher.title", {}, "Master Voucher")}
       </h1>
-      <div className="flex w-full items-center justify-between py-[14px]">
-        <div className="flex gap-0">
-          <Button
-            variant={
-              activeTab === "active"
-                ? "muatparts-primary"
-                : "muatparts-primary-secondary"
-            }
-            className={cn(
-              "min-w-[200px] rounded-[4px] rounded-r-none px-6 py-2 text-sm font-semibold",
-              activeTab === "active"
-                ? "z-10"
-                : "border-[#868686] text-[#868686] hover:bg-neutral-100"
-            )}
-            onClick={() => handleTabChange("active")}
-          >
-            {t("MasterVoucher.activeTab", {}, "Belum Kedaluwarsa")}
-          </Button>
-          <Button
-            variant={
-              activeTab === "expired"
-                ? "muatparts-primary"
-                : "muatparts-primary-secondary"
-            }
-            className={cn(
-              "-ml-px min-w-[200px] rounded-[4px] rounded-l-none px-6 py-2 text-sm font-semibold",
-              activeTab === "expired"
-                ? "z-10 border-[#0066FF] text-white"
-                : "border-[#868686] text-[#868686] hover:bg-neutral-100"
-            )}
-            onClick={() => handleTabChange("expired")}
-          >
-            {t("MasterVoucher.expiredTab", {}, "Sudah Kedaluwarsa")}
-          </Button>
-        </div>
+      <div>
+        <div className="flex w-full items-center justify-between py-[14px]">
+          <div className="flex gap-0">
+            <Button
+              variant={
+                activeTab === "active"
+                  ? "muatparts-primary"
+                  : "muatparts-primary-secondary"
+              }
+              className={cn(
+                "min-w-[200px] rounded-[4px] rounded-r-none px-6 py-2 text-sm font-semibold",
+                activeTab === "active"
+                  ? "z-10"
+                  : "border-[#868686] text-[#868686] hover:bg-neutral-100"
+              )}
+              onClick={() => handleTabChange("active")}
+            >
+              {t("MasterVoucher.activeTab", {}, "Belum Kedaluwarsa")}
+            </Button>
+            <Button
+              variant={
+                activeTab === "expired"
+                  ? "muatparts-primary"
+                  : "muatparts-primary-secondary"
+              }
+              className={cn(
+                "-ml-px min-w-[200px] rounded-[4px] rounded-l-none px-6 py-2 text-sm font-semibold",
+                activeTab === "expired"
+                  ? "z-10 border-[#0066FF] text-white"
+                  : "border-[#868686] text-[#868686] hover:bg-neutral-100"
+              )}
+              onClick={() => handleTabChange("expired")}
+            >
+              {t("MasterVoucher.expiredTab", {}, "Sudah Kedaluwarsa")}
+            </Button>
+          </div>
 
-        <div className="flex items-center justify-end gap-[10px]">
-          <Button variant="muatparts-primary" onClick={handleAddVoucher}>
-            + {t("MasterVoucher.addButton", {}, "Tambah")}
-          </Button>
+          <div className="flex items-center justify-end gap-[10px]">
+            <Button variant="muatparts-primary" onClick={handleAddVoucher}>
+              + {t("MasterVoucher.addButton", {}, "Tambah")}
+            </Button>
 
-          <Button
-            variant="muatparts-primary-secondary"
-            onClick={handleToggleFilter}
-          >
-            {t("MasterVoucher.filterButton", {}, "Filter")}
-          </Button>
+            <Button
+              variant="muatparts-primary-secondary"
+              onClick={handleToggleFilter}
+            >
+              {t("MasterVoucher.filterButton", {}, "Filter")}
+            </Button>
+          </div>
         </div>
+        <MasterVoucherFilter
+          isOpen={isFilterOpen}
+          onToggle={handleToggleFilter}
+          onApply={handleFilter}
+          onReset={handleFilter}
+          initialFilters={filters}
+          isExpired={activeTab === "expired"}
+        />
       </div>
-      <MasterVoucherFilter
-        isOpen={isFilterOpen}
-        onToggle={handleToggleFilter}
-        onApply={handleFilter}
-        onReset={handleFilter}
-        initialFilters={filters}
-        isExpired={activeTab === "expired"}
-      />
+
       <MasterVoucherTable
         isExpired={activeTab === "expired"}
         data={vouchers}

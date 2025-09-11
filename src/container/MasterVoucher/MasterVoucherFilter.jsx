@@ -76,7 +76,7 @@ const MasterVoucherFilter = ({
     <div
       className={cn(
         "overflow-hidden transition-all duration-300 ease-in-out",
-        isOpen ? "max-h-[1200px] opacity-100" : "max-h-0 opacity-0"
+        isOpen ? "max-h-[1200px] pt-7 opacity-100" : "max-h-0 opacity-0"
       )}
     >
       <div className="mb-4 rounded-md bg-white">
@@ -195,31 +195,56 @@ const MasterVoucherFilter = ({
                 />
               </div>
             </div>
+
+            {isExpired && (
+              <div className="grid grid-cols-3 items-center">
+                <label className="font-regular col-span-1 text-xs">
+                  Kuota Voucher
+                </label>
+                <div className="col-span-2 flex items-center gap-2">
+                  <Input
+                    name="quotaMin"
+                    placeholder="Minimal"
+                    value={filters.quotaMin || ""}
+                    onChange={handleInputChange}
+                  />
+                  <span className="text-xs">s/d</span>
+                  <Input
+                    name="quotaMax"
+                    placeholder="Maksimal"
+                    value={filters.quotaMax || ""}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right Column */}
           <div className="flex max-w-[532px] flex-col gap-y-4">
             {/* Kuota Voucher */}
-            <div className="grid grid-cols-3 items-center">
-              <label className="font-regular col-span-1 text-xs">
-                Kuota Voucher
-              </label>
-              <div className="col-span-2 flex items-center gap-2">
-                <Input
-                  name="quotaMin"
-                  placeholder="Minimal"
-                  value={filters.quotaMin || ""}
-                  onChange={handleInputChange}
-                />
-                <span className="text-xs">s/d</span>
-                <Input
-                  name="quotaMax"
-                  placeholder="Maksimal"
-                  value={filters.quotaMax || ""}
-                  onChange={handleInputChange}
-                />
+            {!isExpired && (
+              <div className="grid grid-cols-3 items-center">
+                <label className="font-regular col-span-1 text-xs">
+                  Kuota Voucher
+                </label>
+                <div className="col-span-2 flex items-center gap-2">
+                  <Input
+                    name="quotaMin"
+                    placeholder="Minimal"
+                    value={filters.quotaMin || ""}
+                    onChange={handleInputChange}
+                  />
+                  <span className="text-xs">s/d</span>
+                  <Input
+                    name="quotaMax"
+                    placeholder="Maksimal"
+                    value={filters.quotaMax || ""}
+                    onChange={handleInputChange}
+                  />
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Sisa Kuota */}
             <div className="grid grid-cols-3 items-center">

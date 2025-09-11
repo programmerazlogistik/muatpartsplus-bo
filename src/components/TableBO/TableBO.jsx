@@ -33,7 +33,6 @@ const TableBO = ({
     onSort(columnKey);
   };
 
-  // Infinite scroll functionality
   const scrollContainerRef = useRef(null);
 
   const handleScroll = useCallback(() => {
@@ -86,116 +85,131 @@ const TableBO = ({
   return (
     <div
       ref={scrollContainerRef}
-      className="w-full overflow-auto"
+      className="relative w-full overflow-auto"
       style={{ maxHeight: enableInfiniteScroll ? "600px" : "unset" }}
     >
-      <table className="w-full table-fixed">
-        <thead className="bg-primary h-[84px] text-left text-white">
-          <tr>
-            {columns.map((column, index) => {
-              const isSortable = column.sortable !== false && Boolean(onSort);
-              const isActive = sortConfig.sort === column.key;
-              const order = isActive ? sortConfig.order : null;
+      <div className="relative inline-block min-w-full">
+        <div className="absolute inset-x-0 top-0 z-0 h-[84px] bg-primary-700" />
+        <div className="relative z-10 px-[10px] pb-1">
+          <table className="relative z-10 w-full table-fixed">
+            <thead className="bg-primary h-[84px] text-left text-white">
+              <tr>
+                {columns.map((column, index) => {
+                  const isSortable =
+                    column.sortable !== false && Boolean(onSort);
+                  const isActive = sortConfig.sort === column.key;
+                  const order = isActive ? sortConfig.order : null;
 
-              return (
-                <th
-                  key={column.key || index}
-                  className={cn(
-                    "text-sm",
-                    isSortable ? "hover:bg-primary-dark cursor-pointer" : "",
-                    column.headerClassName,
-                    index === 0 ? "pl-5" : "",
-                    index !== columns.length - 1 ? "pr-[10px]" : "",
-                    index === columns.length - 1 ? "pr-5" : ""
-                  )}
-                  style={{ width: column.width }}
-                  onClick={
-                    isSortable ? () => handleSort(column.key) : undefined
-                  }
-                >
-                  <div
-                    className={cn(
-                      "flex items-center gap-[6px]",
-                      column.headerClassName
-                    )}
-                  >
-                    <span>
-                      {typeof column.header === "function"
-                        ? column.header()
-                        : column.header}
-                    </span>
-                    {isSortable && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleSort(column.key);
-                        }}
-                        className="cursor-pointer"
+                  return (
+                    <th
+                      key={column.key || index}
+                      className={cn(
+                        "text-sm",
+                        isSortable
+                          ? "hover:bg-primary-dark cursor-pointer"
+                          : "",
+                        column.headerClassName,
+                        index !== columns.length - 1 ? "pr-[10px]" : "",
+                        index === columns.length - 1 ? "pr-5" : ""
+                      )}
+                      style={{ width: column.width }}
+                      onClick={
+                        isSortable ? () => handleSort(column.key) : undefined
+                      }
+                    >
+                      <div
+                        className={cn(
+                          "flex items-center gap-[6px]",
+                          column.headerClassName
+                        )}
                       >
-                        <IconComponent
-                          src={
-                            !isActive
-                              ? "/icons/default-sort.svg"
-                              : order === "asc"
-                                ? "/icons/asc-sort.svg"
-                                : "/icons/desc-sort.svg"
-                          }
-                          height={16}
-                        />
-                      </button>
-                    )}
-                  </div>
-                </th>
-              );
-            })}
-          </tr>
-        </thead>
-        <tbody className="bg-white p-3">
-          {loading ? (
-            <tr>
-              <td colSpan={columns.length} className="px-4 py-6 text-center">
-                {renderLoading()}
-              </td>
-            </tr>
-          ) : data.length === 0 ? (
-            <tr>
-              <td colSpan={columns.length} className="px-4 py-6 text-center">
-                {renderEmpty()}
-              </td>
-            </tr>
-          ) : (
-            data.map((row, rowIndex) => (
-              <tr
-                key={row.id || rowIndex}
-                className={cn(
-                  rowIndex % 2 === 1 ? "bg-[#EAEAEA]" : "bg-white",
-                  onRowClick ? "cursor-pointer hover:bg-gray-100" : "",
-                  typeof rowClassName === "function"
-                    ? rowClassName(row, rowIndex)
-                    : rowClassName
-                )}
-                onClick={
-                  onRowClick ? () => onRowClick(row, rowIndex) : undefined
-                }
-              >
-                {columns.map((column, columnIndex) => (
-                  <td
-                    key={`${rowIndex}-${column.key || columnIndex}`}
-                    className={cn(
-                      "p-[10px] text-xs font-semibold",
-                      column.className
-                    )}
-                  >
-                    {column.render
-                      ? column.render(row, rowIndex)
-                      : row[column.key]}
-                  </td>
-                ))}
+                        <span>
+                          {typeof column.header === "function"
+                            ? column.header()
+                            : column.header}
+                        </span>
+                        {isSortable && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSort(column.key);
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <IconComponent
+                              src={
+                                !isActive
+                                  ? "/icons/default-sort.svg"
+                                  : order === "asc"
+                                    ? "/icons/asc-sort.svg"
+                                    : "/icons/desc-sort.svg"
+                              }
+                              height={16}
+                            />
+                          </button>
+                        )}
+                      </div>
+                    </th>
+                  );
+                })}
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            </thead>
+            <tbody className="bg-white p-3">
+              {loading ? (
+                <tr>
+                  <td
+                    colSpan={columns.length}
+                    className="px-4 py-6 text-center"
+                  >
+                    {renderLoading()}
+                  </td>
+                </tr>
+              ) : data.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={columns.length}
+                    className="px-4 py-6 text-center"
+                  >
+                    {renderEmpty()}
+                  </td>
+                </tr>
+              ) : (
+                data.map((row, rowIndex) => (
+                  <tr
+                    key={row.id || rowIndex}
+                    className={cn(
+                      onRowClick ? "cursor-pointer hover:bg-opacity-80" : "",
+                      typeof rowClassName === "function"
+                        ? rowClassName(row, rowIndex)
+                        : rowClassName
+                    )}
+                    onClick={
+                      onRowClick ? () => onRowClick(row, rowIndex) : undefined
+                    }
+                  >
+                    {columns.map((column, columnIndex) => (
+                      <td
+                        key={`${rowIndex}-${column.key || columnIndex}`}
+                        className={cn(
+                          "p-[10px] text-xs font-semibold",
+                          rowIndex % 2 === 1 ? "bg-[#EAEAEA]" : "bg-white",
+                          columnIndex === 0 && "rounded-l-md",
+                          columnIndex === columns.length - 1 && "rounded-r-md",
+                          column.className
+                        )}
+                      >
+                        {column.render
+                          ? column.render(row, rowIndex)
+                          : row[column.key]}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
       {enableInfiniteScroll && isLoadingMore && loadingMoreComponent}
 
       {enableInfiniteScroll &&
