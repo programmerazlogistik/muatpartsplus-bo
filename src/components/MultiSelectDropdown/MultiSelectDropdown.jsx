@@ -21,7 +21,7 @@ const MultiSelectDropdown = ({
   className = "",
   disabled = false,
   errorMessage = null,
-  showAllOption = true,
+  showAllOption = true, 
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -140,7 +140,7 @@ const MultiSelectDropdown = ({
             </span>
 
             <button
-              onClick={!disabled ? handleRemoveAll : undefined}
+              onClick={!disabled ? (e) => handleRemoveItem(e, item) : undefined}
               className={cn(
                 "text-primary-700 hover:text-primary-700",
                 disabled && "pointer-events-none"
