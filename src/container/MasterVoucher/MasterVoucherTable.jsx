@@ -15,11 +15,13 @@ const MasterVoucherTable = ({
   isExpired = false, // to determine if showing expired vouchers
   data = [],
   loading = false,
+  updatingVouchers = new Set(), // Set of voucher IDs currently being updated
   onSearch,
   onFilter,
   onSort,
   onPageChange,
   onPerPageChange,
+  onStatusChange, // New callback for status changes
   currentPage = 1,
   totalPages = 1,
   totalItems = 0,
@@ -82,10 +84,12 @@ const MasterVoucherTable = ({
                   <Toggle
                     value={row.isActive}
                     onClick={(newValue) => {
-                      // TODO: handle status change (API call etc.)
+                      if (onStatusChange) {
+                        onStatusChange(row.id, newValue);
+                      }
                     }}
                     type="primary"
-                    disabled={false}
+                    disabled={updatingVouchers.has(row.id)}
                   />
                 </div>
               ),
@@ -184,7 +188,7 @@ const MasterVoucherTable = ({
     ];
 
     setColumns(tableColumns);
-  }, [t, isExpired]);
+  }, [t, isExpired, router, onStatusChange, updatingVouchers]);
 
   return (
     <DataTableBO

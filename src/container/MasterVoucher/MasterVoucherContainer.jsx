@@ -1,13 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import Button from "@/components/Button/Button";
 
 import { useTranslation } from "@/hooks/use-translation";
 
 import { cn } from "@/lib/utils";
+
+import { useGetVouchers } from "@/services/mastervoucher/getVouchers";
+import { updateVoucherStatusById } from "@/services/mastervoucher/updateVoucherStatus";
 
 import MasterVoucherFilter from "./MasterVoucherFilter";
 import MasterVoucherTable from "./MasterVoucherTable";
@@ -21,128 +24,92 @@ const MasterVoucherContainer = () => {
   const [sorting, setSorting] = useState({ sort: null, order: null });
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-  const [loading, setLoading] = useState(false);
-  const [vouchers, setVouchers] = useState([]);
-  const [totalItems, setTotalItems] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
+  const [updatingVouchers, setUpdatingVouchers] = useState(new Set());
 
-  const mockVouchers = [
-    {
-      id: 1,
-      isActive: true,
-      createdDate: "03/07/2023",
-      createdTime: "15:27 WIB",
-      startDate: "04/07/2023",
-      endDate: "04/07/2024",
-      voucherCode: "DiskonMantap",
-      discountType: "fixed",
-      discountValue: 10000,
-      maxDiscount: null,
-      remainingQuota: 500,
-      totalQuota: 750,
-      totalClaims: 8,
-      uniqueUsers: 2,
-      totalClaimValue: 2500000,
-    },
-    {
-      id: 2,
-      isActive: false,
-      createdDate: "03/07/2023",
-      createdTime: "15:27 WIB",
-      startDate: "04/07/2023",
-      endDate: "04/07/2024",
-      voucherCode: "DiskonSuperHemat",
-      discountType: "percentage",
-      discountValue: 10,
-      maxDiscount: 1000000,
-      remainingQuota: 750,
-      totalQuota: 1000,
-      totalClaims: 250,
-      uniqueUsers: 20,
-      totalClaimValue: 13500000,
-    },
-    {
-      id: 3,
-      isActive: false,
-      createdDate: "03/07/2023",
-      createdTime: "15:27 WIB",
-      startDate: "04/07/2023",
-      endDate: "04/07/2024",
-      voucherCode: "DiskonSuperHemat",
-      discountType: "percentage",
-      discountValue: 10,
-      maxDiscount: 1000000,
-      remainingQuota: 750,
-      totalQuota: 1000,
-      totalClaims: 250,
-      uniqueUsers: 20,
-      totalClaimValue: 13500000,
-    },
-    {
-      id: 5,
-      isActive: true,
-      createdDate: "03/07/2023",
-      createdTime: "15:27 WIB",
-      startDate: "04/07/2023",
-      endDate: "04/07/2024",
-      voucherCode: "DiskonSuperHemat",
-      discountType: "percentage",
-      discountValue: 10,
-      maxDiscount: 1000000,
-      remainingQuota: 750,
-      totalQuota: 1000,
-      totalClaims: 250,
-      uniqueUsers: 20,
-      totalClaimValue: 13500000,
-    },
-  ];
-
-  useEffect(() => {
-    // Fetch vouchers from API or use mock data
-    fetchVouchers();
-  }, [activeTab, searchQuery, filters, sorting, currentPage, perPage]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const fetchVouchers = async () => {
-    setLoading(true);
-
-    try {
-      // In a real application, you would fetch data from an API
-      // const response = await apiClient.get('/vouchers', {
-      //   params: {
-      //     isExpired: activeTab === 'expired',
-      //     search: searchQuery,
-      //     ...filters,
-      //     sortBy: sorting.sort,
-      //     sortOrder: sorting.order,
-      //     page: currentPage,
-      //     limit: perPage
-      //   }
-      // });
-
-      // Simulate API call with mock data
-      setTimeout(() => {
-        // Filter by active/expired status
-        const filteredVouchers = mockVouchers.filter((voucher) =>
-          activeTab === "expired" ? !voucher.isActive : voucher.isActive
-        );
-
-        // Filter by search query if provided
-        const searchResults = searchQuery
-          ? filteredVouchers.filter((v) =>
-              v.voucherCode.toLowerCase().includes(searchQuery.toLowerCase())
-            )
-          : filteredVouchers;
-
-        setVouchers(searchResults);
-        setTotalItems(searchResults.length);
-        setTotalPages(Math.max(1, Math.ceil(searchResults.length / perPage)));
-        setLoading(false);
-      }, 500); // Simulate delay
-    } catch (error) {
-      console.error("Error fetching vouchers:", error);
-      setLoading(false);
-    }
+  // Mapping table column keys to API sortBy values
+  const sortKeyMapping = {
+    createdAt: "createdAt",
+    validPeriod: "validPeriodStart", // Use start date for period sorting
+    voucherCode: "voucherCode", 
+    discount: "discountValue",
+    maxDiscount: "discountValue", // Max discount also relates to discount value
+    quota: "totalQuota",
+    claims: "totalQuota", // Claims relate to quota usage
+    totalClaimValue: "totalQuota", // Total claim value relates to quota
+    status: "isActive",
+    validPeriodStart: "validPeriodStart",
+    validPeriodEnd: "validPeriodEnd",
+    discountValue: "discountValue",
+    totalQuota: "totalQuota",
+    isActive: "isActive"
   };
+
+  // API parameters
+  const apiParams = {
+    is_expired: activeTab === "expired",
+    page: currentPage,
+    limit: perPage,
+    sortBy: sorting.sort ? (sortKeyMapping[sorting.sort] || "createdAt") : "createdAt",
+    sortOrder: (sorting.order || "desc").toUpperCase(),
+    ...(searchQuery && { search: searchQuery }),
+    ...filters,
+  };
+
+  // Use SWR hook to fetch vouchers
+  const {
+    data: apiResponse,
+    error,
+    isLoading: loading,
+    mutate,
+  } = useGetVouchers(apiParams);
+
+  // Extract data from API response
+  const rawVouchers = apiResponse?.data?.Data?.data || [];
+  const pagination = apiResponse?.data?.Data?.pagination || {};
+  const totalItems = pagination.total || 0;
+  const totalPages = pagination.totalPages || 1;
+
+  // Transform API data to match table expectations
+  const vouchers = rawVouchers.map((voucher) => {
+    // Parse dates from API response
+    const createdDate = new Date(voucher.createdAt);
+    const startDate = new Date(voucher.validPeriodStart);
+    const endDate = new Date(voucher.validPeriodEnd);
+
+    return {
+      id: voucher.id,
+      isActive: voucher.isActive,
+      createdDate: createdDate.toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }),
+      createdTime: `${createdDate.toLocaleTimeString("id-ID", {
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "Asia/Jakarta",
+      })} WIB`,
+      startDate: startDate.toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }),
+      endDate: endDate.toLocaleDateString("id-ID", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      }),
+      voucherCode: voucher.voucherCode,
+      discountType: voucher.discountType,
+      discountValue: parseFloat(voucher.discountValue),
+      maxDiscount: voucher.maxDiscountAmount,
+      remainingQuota: voucher.remainingQuota,
+      totalQuota: voucher.totalQuota,
+      totalClaims: voucher.totalClaimed,
+      uniqueUsers: voucher.uniqueUsers,
+      totalClaimValue: voucher.totalClaimValue,
+    };
+  });
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -171,6 +138,7 @@ const MasterVoucherContainer = () => {
     setActiveTab(tab);
     setCurrentPage(1); // Reset to first page on tab change
   };
+
   const router = useRouter();
   const handleAddVoucher = () => {
     router.push("/master-voucher/add");
@@ -179,6 +147,59 @@ const MasterVoucherContainer = () => {
   const handleToggleFilter = () => {
     setIsFilterOpen(!isFilterOpen);
   };
+
+  const handleStatusChange = async (voucherId, newStatus) => {
+    // Add voucher to updating set
+    setUpdatingVouchers(prev => new Set(prev.add(voucherId)));
+    
+    try {
+      // Optimistic update: immediately update the UI
+      const optimisticVouchers = vouchers.map(voucher => 
+        voucher.id === voucherId 
+          ? { ...voucher, isActive: newStatus }
+          : voucher
+      );
+      
+      // Update local state immediately for better UX
+      mutate({
+        ...apiResponse,
+        data: {
+          ...apiResponse.data,
+          Data: {
+            ...apiResponse.data.Data,
+            data: optimisticVouchers
+          }
+        }
+      }, false); // Don't revalidate yet
+      
+      // Call the API to update voucher status
+      await updateVoucherStatusById(voucherId, newStatus);
+      
+      // Revalidate data from server to ensure consistency
+      await mutate();
+      
+      console.log(`Voucher status updated successfully: ${newStatus ? 'Active' : 'Inactive'}`);
+    } catch (error) {
+      console.error("Error updating voucher status:", error);
+      
+      // Revert optimistic update on error
+      await mutate();
+      
+      // Optional: Show error message to user
+      alert("Failed to update voucher status. Please try again.");
+    } finally {
+      // Remove voucher from updating set
+      setUpdatingVouchers(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(voucherId);
+        return newSet;
+      });
+    }
+  };
+
+  if (error) {
+    console.error("Error fetching vouchers:", error);
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -249,9 +270,11 @@ const MasterVoucherContainer = () => {
         isExpired={activeTab === "expired"}
         data={vouchers}
         loading={loading}
+        updatingVouchers={updatingVouchers}
         onSearch={handleSearch}
         onFilter={handleFilter}
         onSort={handleSort}
+        onStatusChange={handleStatusChange}
         currentPage={currentPage}
         totalPages={totalPages}
         totalItems={totalItems}
