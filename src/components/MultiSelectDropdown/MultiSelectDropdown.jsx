@@ -21,7 +21,8 @@ const MultiSelectDropdown = ({
   className = "",
   disabled = false,
   errorMessage = null,
-  showAllOption = true, 
+  maxVisible = 3,
+  showAllOption = true,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -276,7 +277,7 @@ const MultiSelectDropdown = ({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={titleModal}
-        items={selectedItems}
+        items={selectedItems.slice(maxVisible)}
       />
     </div>
   );
