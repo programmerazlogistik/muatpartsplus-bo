@@ -169,14 +169,26 @@ export const transformVoucherDetailToFormValues = (apiData) => {
   const validPeriodStart = new Date(apiData.validPeriodStart);
   const validPeriodEnd = new Date(apiData.validPeriodEnd);
 
-  // Transform pickup locations
+  // Transform pickup locations - store as objects with ID information
   const lokasiMuat = apiData.pickupLocations?.flatMap(province =>
-    province.cities.map(city => `${province.provinceName} - ${city.name}`)
+    province.cities.map(city => ({
+      provinceId: province.id || province.provinceId,
+      provinceName: province.provinceName || province.name,
+      cityId: city.id || city.cityId,
+      cityName: city.name || city.cityName,
+      label: `${province.provinceName || province.name} - ${city.name || city.cityName}` // For display
+    }))
   ) || [];
 
-  // Transform delivery locations
+  // Transform delivery locations - store as objects with ID information  
   const lokasiBongkar = apiData.deliveryLocations?.flatMap(province =>
-    province.cities.map(city => `${province.provinceName} - ${city.name}`)
+    province.cities.map(city => ({
+      provinceId: province.id || province.provinceId,
+      provinceName: province.provinceName || province.name,
+      cityId: city.id || city.cityId,
+      cityName: city.name || city.cityName,
+      label: `${province.provinceName || province.name} - ${city.name || city.cityName}` // For display
+    }))
   ) || [];
 
   // Transform users to WhatsApp format
