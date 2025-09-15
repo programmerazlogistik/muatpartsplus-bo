@@ -9,7 +9,6 @@ import Sidebar from "@/components/Sidebar";
 import Toaster from "@/components/Toaster/Toaster";
 
 import useDevice from "@/hooks/use-device";
-import { TranslationProvider } from "@/hooks/use-translation";
 
 import { useResponsiveNavigation } from "@/lib/responsive-navigation";
 import { StackManagerInitializer } from "@/lib/stack-manager";
@@ -35,33 +34,31 @@ const MainLayout = ({ children }) => {
 
   return (
     <Suspense fallback={<LoadingStatic />}>
-      <TranslationProvider>
-        <div className="flex h-screen overflow-hidden">
-          <div
-            className={`absolute z-20 h-screen w-64 bg-white shadow-md transition-all duration-300 ${
-              sidebarOpen ? "left-0" : "-left-64"
-            }`}
-          >
-            <Sidebar />
-          </div>
-          {sidebarOpen && (
-            <div
-              className="fixed inset-0 z-10 bg-black bg-opacity-50 md:hidden"
-              onClick={toggleSidebar}
-            />
-          )}
-          <div
-            className={`flex flex-1 flex-col overflow-hidden transition-all duration-300 ${
-              sidebarOpen ? "ml-64" : "ml-0"
-            }`}
-          >
-            <Navbar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
-            <main className="flex-1 overflow-y-auto bg-white p-[30px]">
-              {children}
-            </main>
-          </div>
+      <div className="flex h-screen overflow-hidden">
+        <div
+          className={`absolute z-20 h-screen w-64 bg-white shadow-md transition-all duration-300 ${
+            sidebarOpen ? "left-0" : "-left-64"
+          }`}
+        >
+          <Sidebar />
         </div>
-      </TranslationProvider>
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 z-10 bg-black bg-opacity-50 md:hidden"
+            onClick={toggleSidebar}
+          />
+        )}
+        <div
+          className={`flex flex-1 flex-col overflow-hidden transition-all duration-300 ${
+            sidebarOpen ? "ml-64" : "ml-0"
+          }`}
+        >
+          <Navbar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
+          <main className="flex-1 overflow-y-auto bg-white p-[30px]">
+            {children}
+          </main>
+        </div>
+      </div>
       <Toaster />
       <Script />
       <StackManagerInitializer />

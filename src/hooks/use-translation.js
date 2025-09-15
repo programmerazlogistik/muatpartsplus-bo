@@ -167,10 +167,17 @@ export const TranslationProvider = ({ children }) => {
  */
 export const useTranslation = () => {
   const store = useContext(TranslationContext);
-  if (!store) {
-    throw new Error("useTranslation must be used within a TranslationProvider");
+  
+  // Always call useStore, but handle the case where store is null
+  const isTranslationsReady = useStore(store || { getState: () => ({ isTranslationsReady: false }) }, (s) => s.isTranslationsReady);
+  
+  // During SSR or before hydration, provide a fallback
+  if (typeof window === 'undefined' || !store) {
+    return {
+      t: (label, params, fallback) => fallback || label,
+      isTranslationsReady: false,
+    };
   }
-  const isTranslationsReady = useStore(store, (s) => s.isTranslationsReady);
 
   return {
     t: store.t,
@@ -180,15 +187,18 @@ export const useTranslation = () => {
 
 export const useListLanguages = () => {
   const store = useContext(TranslationContext);
-  if (!store) {
-    throw new Error(
-      "useListLanguages must be used within a TranslationProvider"
-    );
-  }
+  
+  // Always call useStore with a fallback
   const listLanguages = useStore(
-    store,
+    store || { getState: () => ({ listLanguages: [] }) },
     useShallow((s) => s.listLanguages)
   );
+  
+  // During SSR or before hydration, provide a fallback
+  if (typeof window === 'undefined' || !store) {
+    return { listLanguages: [] };
+  }
+  
   return { listLanguages };
 };
 

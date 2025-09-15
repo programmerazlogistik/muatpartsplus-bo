@@ -1,7 +1,7 @@
 import localFont from "next/font/local";
-import { Suspense } from "react";
 
 import "./globals.scss";
+import { Providers } from "./providers";
 
 export const metadata = {
   title: "Muatrans - BO",
@@ -12,7 +12,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`bg-white`}>
-        <Suspense>{children}</Suspense>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
