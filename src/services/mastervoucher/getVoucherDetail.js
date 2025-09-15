@@ -181,13 +181,13 @@ export const transformVoucherDetailToFormValues = (apiData) => {
 
   // Transform users to WhatsApp format
   const userWhatsApp = apiData.users?.map(user => ({
-    value: user.phoneNumber,
+    value: user.id,
     label: user.phoneNumber
   })) || [];
 
   // Transform payment methods
   const metodeInstansiTujuanPembayaran = apiData.paymentMethods?.map(method => ({
-    value: `${method.name.toLowerCase()}-${method.institution}`,
+    value: method.id,
     label: `${method.name} - ${method.institution.toUpperCase()}`
   })) || [];
 
