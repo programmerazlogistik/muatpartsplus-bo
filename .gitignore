@@ -50,3 +50,5 @@ notes-fix-bug.md
 
 *.csv
 .translation
+
+/*.zip
