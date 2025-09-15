@@ -1,58 +1,53 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
+
+import { useVoucherUsageHistory } from "@/services/mastervoucher/getVoucherUsageHistory";
 
 import PageTitle from "@/components/PageTitle/PageTitle";
 
 import MasterVoucherUsageHistoryTable from "./MasterVoucherUsageHistoryTable";
 
 const MasterVoucherUsageHistoryContainer = ({ voucherId }) => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalItems, setTotalItems] = useState(0);
   const [perPage, setPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortConfig, setSortConfig] = useState({ sort: null, order: null });
 
-  useEffect(() => {
-    const mockData = [
-      {
-        id: 1,
-        userId: "34875",
-        companyName: "Budi",
-        phoneNumber: "08123736434",
-        emailUser: "-",
-        paymentDate: "05/07/2023",
-        invoiceNumber: "INV/MT/001-20230704023274",
-        claimValue: "Rp95.000",
-      },
-      {
-        id: 2,
-        userId: "34875",
-        companyName: "PT Jaya Logistik",
-        phoneNumber: "08123736434",
-        emailUser: "adul.jayalogistik@gmail.com",
-        paymentDate: "04/07/2023",
-        invoiceNumber: "INV/MT/001-20230704023273",
-        claimValue: "Rp95.000",
-      },
-    ];
+  const params = useMemo(
+    () => ({
+      page: currentPage,
+      limit: perPage,
+    }),
+    [currentPage, perPage]
+  );
 
-    // Simulate API call
-    setLoading(true);
-    setTimeout(() => {
-      setData(mockData);
-      setTotalItems(mockData.length);
-      setTotalPages(Math.ceil(mockData.length / perPage));
-      setLoading(false);
-    }, 1000);
-  }, [voucherId, perPage]);
+  const {
+    data: apiData,
+    error,
+    isLoading,
+  } = useVoucherUsageHistory(voucherId, params);
+
+  const rawData = apiData?.data?.Data?.data || [];
+  const data = rawData.map((item) => ({
+    id: item.id,
+    userId: item.userId,
+    companyName: item.userName || "-",
+    phoneNumber: item.userPhone || "-",
+    emailUser: item.userEmail || "-",
+    paymentDate: item.usageDate
+      ? new Date(item.usageDate).toLocaleDateString("id-ID")
+      : "-",
+    invoiceNumber: item.invoiceNumber,
+    claimValue: `Rp${item.discountAmount?.toLocaleString("id-ID") || "0"}`,
+  }));
+  const pagination = apiData?.data?.Data?.pagination || {};
+  const totalPages = pagination.totalPages || 1;
+  const totalItems = pagination.total || 0;
+  const loading = isLoading;
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-    // TODO: Implement search functionality
   };
 
   const handleFilter = (filters) => {
@@ -61,23 +56,22 @@ const MasterVoucherUsageHistoryContainer = ({ voucherId }) => {
 
   const handleSort = (sort, order) => {
     setSortConfig({ sort, order });
-    // TODO: Implement sort functionality
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
-    // TODO: Implement page change functionality
   };
 
   const handlePerPageChange = (newPerPage) => {
     setPerPage(newPerPage);
     setCurrentPage(1);
-    // TODO: Implement per page change functionality
   };
 
   return (
     <div className="flex h-full flex-col">
-      <PageTitle withBack={false} className="mb-6">History Pemakaian Voucher</PageTitle>
+      <PageTitle withBack={false} className="mb-6">
+        History Pemakaian Voucher
+      </PageTitle>
 
       <div className="flex-1">
         <MasterVoucherUsageHistoryTable
