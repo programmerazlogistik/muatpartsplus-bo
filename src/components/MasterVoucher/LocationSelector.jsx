@@ -16,6 +16,7 @@ export const LocationSelector = ({
   selectedLocations = [],
   onSelectionChange,
   errorMessage,
+  maxVisible = 3,
   className,
   modalTitle = "Pilih Lokasi",
   disabled = false,
@@ -142,7 +143,7 @@ export const LocationSelector = ({
       <SelectedItemsModal
         isOpen={isSelectedItemsModalOpen && badges.length > 3}
         onClose={() => setIsSelectedItemsModalOpen(false)}
-        items={badges}
+        items={badges.slice(maxVisible)}
         title={modalTitle}
       />
     </div>
