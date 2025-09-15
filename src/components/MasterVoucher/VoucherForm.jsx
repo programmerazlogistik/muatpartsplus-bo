@@ -10,33 +10,12 @@ import UserDropdown from "@/components/MasterVoucher/UserDropdown";
 import MultiSelectDropdown from "@/components/MultiSelectDropdown/MultiSelectDropdown";
 import RadioButton from "@/components/Radio/RadioButton";
 
+import { useGetVoucherPaymentMethods } from "@/services/mastervoucher/getVoucherPaymentMethods";
 import {
   useAddVoucherActions,
   useAddVoucherFormErrors,
   useAddVoucherFormValues,
 } from "@/store/MasterVoucher/addVoucherStore";
-
-const paymentMethodOptions = [
-  { value: "credit-card-bca", label: "Credit Card - BCA" },
-  {
-    value: "transfer-virtual-account-bca",
-    label: "Transfer Virtual Account - BCA",
-  },
-  {
-    value: "transfer-virtual-account-mandiri",
-    label: "Transfer Virtual Account - Mandiri",
-  },
-  {
-    value: "transfer-virtual-account-bri",
-    label: "Transfer Virtual Account - BRI",
-  },
-  {
-    value: "transfer-virtual-account-danamon",
-    label: "Transfer Virtual Account - Danamon",
-  },
-  { value: "gopay", label: "GoPay" },
-  { value: "shopeepay", label: "ShopeePay" },
-];
 
 const VoucherForm = ({ mode = "add" }) => {
   const formValues = useAddVoucherFormValues();
@@ -45,6 +24,16 @@ const VoucherForm = ({ mode = "add" }) => {
 
   const isDetail = mode === "detail";
   const isEdit = mode === "edit";
+
+  // Fetch payment methods from API
+  const useFetcherMuatrans = false; // Set to false as requested
+  const { data: paymentMethodsData, error, isLoading } = useGetVoucherPaymentMethods(useFetcherMuatrans);
+
+  // Transform payment methods to options format
+  const paymentMethodOptions = (paymentMethodsData?.Data || []).map((method) => ({
+    value: method.id,
+    label: method.name,
+  }));
 
   return (
     <div>
