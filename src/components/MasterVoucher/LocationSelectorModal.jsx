@@ -41,25 +41,34 @@ export const LocationSelectorModal = ({
     isLoading,
   } = useGetVoucherLocations(useFetcherMuatrans);
 
-  // Transform API data to match existing format
-  const { provinces: apiProvinces, citiesByProvince: apiCitiesByProvince } =
+  // Transform API data to match existing format + add ID support
+  const { provinces: apiProvinces, citiesByProvince: apiCitiesByProvince, provinceIdMap, cityIdMap } =
     useMemo(() => {
       if (!locationsData?.Data) {
-        return { provinces: [], citiesByProvince: {} };
+        return { provinces: [], citiesByProvince: {}, provinceIdMap: {}, cityIdMap: {} };
       }
 
       const provincesArray = locationsData.Data.map(
         (province) => province.name
       );
       const citiesMap = {};
+      const provIdMap = {}; // Map province name to ID
+      const cityIdMapData = {}; // Map "provinceName-cityName" to cityId
 
       locationsData.Data.forEach((province) => {
+        provIdMap[province.name] = province.id;
         citiesMap[province.name] = province.cities.map((city) => city.name);
+        
+        province.cities.forEach((city) => {
+          cityIdMapData[`${province.name}-${city.name}`] = city.id;
+        });
       });
 
       return {
         provinces: provincesArray,
         citiesByProvince: citiesMap,
+        provinceIdMap: provIdMap,
+        cityIdMap: cityIdMapData,
       };
     }, [locationsData]);
 
@@ -69,6 +78,19 @@ export const LocationSelectorModal = ({
     Object.keys(apiCitiesByProvince).length > 0
       ? apiCitiesByProvince
       : citiesByProvince;
+  
+  // Use API ID mappings if available, otherwise create fallback mappings using names as IDs
+  const currentProvinceIdMap = Object.keys(provinceIdMap || {}).length > 0 
+    ? provinceIdMap 
+    : Object.fromEntries(currentProvinces.map(p => [p, p])); // Use name as ID fallback
+  
+  const currentCityIdMap = Object.keys(cityIdMap || {}).length > 0
+    ? cityIdMap
+    : Object.fromEntries(
+        Object.entries(currentCitiesByProvince).flatMap(([province, cities]) =>
+          cities.map(city => [`${province}-${city}`, city]) // Use name as ID fallback
+        )
+      );
 
   useEffect(() => {
     if (open) {
@@ -105,9 +127,17 @@ export const LocationSelectorModal = ({
 
   const handleSelectAllProvinces = ({ checked }) => {
     if (checked) {
-      const all = allLocations.map(
-        ({ province, city }) => `${province} - ${city}`
-      );
+      const all = allLocations.map(({ province, city }) => {
+        const provinceId = currentProvinceIdMap[province];
+        const cityId = currentCityIdMap[`${province}-${city}`];
+        return {
+          label: `${province} - ${city}`,
+          provinceId,
+          provinceName: province,
+          cityId,
+          cityName: city,
+        };
+      });
       setTempSelectedLocations(all);
     } else {
       setTempSelectedLocations([]);
@@ -119,29 +149,50 @@ export const LocationSelectorModal = ({
     let newSelections = [...tempSelectedLocations];
 
     if (checked) {
+      const provinceId = currentProvinceIdMap[province];
       citiesInProvince.forEach((city) => {
-        const locationKey = `${province} - ${city}`;
-        if (!newSelections.includes(locationKey)) {
-          newSelections.push(locationKey);
+        const cityId = currentCityIdMap[`${province}-${city}`];
+        const locationObj = {
+          label: `${province} - ${city}`,
+          provinceId,
+          provinceName: province,
+          cityId,
+          cityName: city,
+        };
+        
+        // Check if this location is already selected (by comparing label)
+        const existsIndex = newSelections.findIndex(loc => loc.label === locationObj.label);
+        if (existsIndex === -1) {
+          newSelections.push(locationObj);
         }
       });
     } else {
       newSelections = newSelections.filter(
-        (loc) => !loc.startsWith(`${province} - `)
+        (loc) => !loc.label.startsWith(`${province} - `)
       );
     }
     setTempSelectedLocations(newSelections);
   };
 
   const handleCitySelect = (province, city, { checked }) => {
-    const locationKey = `${province} - ${city}`;
+    const provinceId = currentProvinceIdMap[province];
+    const cityId = currentCityIdMap[`${province}-${city}`];
+    const locationObj = {
+      label: `${province} - ${city}`,
+      provinceId,
+      provinceName: province,
+      cityId,
+      cityName: city,
+    };
+    
     let newSelections = [...tempSelectedLocations];
     if (checked) {
-      if (!newSelections.includes(locationKey)) {
-        newSelections.push(locationKey);
+      const existsIndex = newSelections.findIndex(loc => loc.label === locationObj.label);
+      if (existsIndex === -1) {
+        newSelections.push(locationObj);
       }
     } else {
-      newSelections = newSelections.filter((loc) => loc !== locationKey);
+      newSelections = newSelections.filter((loc) => loc.label !== locationObj.label);
     }
     setTempSelectedLocations(newSelections);
   };
@@ -320,18 +371,26 @@ export const LocationSelectorModal = ({
                       {isOpen && (
                         <div className="grid grid-cols-3 gap-x-4 gap-y-3 pb-4 pr-4">
                           {(currentCitiesByProvince[province] || []).map(
-                            (city) => (
-                              <Checkbox
-                                key={city}
-                                checked={tempSelectedLocations.includes(
-                                  `${province} - ${city}`
-                                )}
-                                onChange={(payload) =>
-                                  handleCitySelect(province, city, payload)
+                            (city) => {
+                              // Check if city is selected (support both string and object formats)
+                              const isCitySelected = tempSelectedLocations.some(location => {
+                                if (typeof location === 'string') {
+                                  return location === `${province} - ${city}`;
                                 }
-                                label={city}
-                              />
-                            )
+                                return location.label === `${province} - ${city}`;
+                              });
+                              
+                              return (
+                                <Checkbox
+                                  key={city}
+                                  checked={isCitySelected}
+                                  onChange={(payload) =>
+                                    handleCitySelect(province, city, payload)
+                                  }
+                                  label={city}
+                                />
+                              );
+                            }
                           )}
                         </div>
                       )}

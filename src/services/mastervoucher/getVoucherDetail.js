@@ -180,10 +180,26 @@ export const transformVoucherDetailToFormValues = (apiData) => {
   ) || [];
 
   // Transform users to WhatsApp format
-  const userWhatsApp = apiData.users?.map(user => ({
-    value: user.id,
-    label: user.phoneNumber
-  })) || [];
+  // Handle "all" case from backend
+  const userWhatsApp = (() => {
+    // If backend returns "all" string, set a special indicator
+    if (apiData.users === "All" || apiData.userWhatsApp === "All") {
+      return [{ 
+        value: "all", 
+        label: "Semua User", 
+        isAllSelected: true 
+      }];
+    }
+    
+    // Otherwise, transform individual users
+    return apiData.users?.map(user => ({
+      value: user.id,
+      label: user.phoneNumber,
+      fullName: user.fullName,
+      email: user.email,
+      id: user.id,
+    })) || [];
+  })();
 
   // Transform payment methods
   const metodeInstansiTujuanPembayaran = apiData.paymentMethods?.map(method => ({

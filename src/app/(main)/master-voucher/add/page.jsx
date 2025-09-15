@@ -12,15 +12,24 @@ import {
   useAddVoucherActions,
   useAddVoucherFormValues,
 } from "@/store/MasterVoucher/addVoucherStore";
+import { 
+  useCreateVoucher, 
+  transformFormValuesToRequestBody 
+} from "@/services/mastervoucher/createVoucher";
 
 const TambahVoucherPage = () => {
   const router = useRouter();
   const formValues = useAddVoucherFormValues();
-  const { validateForm, reset } = useAddVoucherActions();
+  const { validateForm, reset, setError } = useAddVoucherActions();
 
   const [showWarningModal, setShowWarningModal] = useState(false);
   const [showConfirmSaveModal, setShowConfirmSaveModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // SWR mutation hook for creating vouchers
+  const { trigger: createVoucher, isMutating } = useCreateVoucher();
 
   // Reset form on mount for a clean state
   useEffect(() => {
@@ -33,15 +42,56 @@ const TambahVoucherPage = () => {
     }
   };
 
-  const handleConfirmSubmit = () => {
+  const handleConfirmSubmit = async () => {
     setShowConfirmSaveModal(false);
-    // TODO: Submit to API for CREATING a new voucher
-    console.log("Form submitted for creation:", formValues);
-    setShowSuccessModal(true);
+    
+    try {
+      // Transform form data to match API request body
+      const requestBody = transformFormValuesToRequestBody(formValues);
+      console.log("Transformed request body:", requestBody);
+      
+      // Call API to create voucher
+      const response = await createVoucher(requestBody);
+      console.log("Voucher created successfully:", response);
+      
+      setShowSuccessModal(true);
+    } catch (error) {
+      console.error("Error creating voucher:", error);
+      
+      // Handle API validation errors
+      if (error.response?.data?.Data?.errors) {
+        const apiErrors = error.response.data.Data.errors;
+        apiErrors.forEach(({ field, message }) => {
+          // Map API field names back to form field names
+          const fieldMappings = {
+            voucherCode: "kodeVoucher",
+            validPeriodStart: "periodeAwal",
+            validPeriodEnd: "periodeAkhir",
+            discountValue: "nominal",
+            totalQuota: "kuotaVoucher",
+            quotaPerUser: "kuotaPerUser",
+            termsAndConditions: "syaratDanKetentuan",
+            usageInstructions: "caraPemakaian",
+            maxDiscountAmount: "maksimalPotonganRp",
+            minTransactionAmount: "minimalTransaksiRp"
+          };
+          
+          const formFieldName = fieldMappings[field] || field;
+          setError(formFieldName, message);
+        });
+        
+        setErrorMessage("Terdapat kesalahan pada form. Silakan periksa kembali data yang diisi.");
+      } else {
+        // Generic error message
+        const errorMsg = error.response?.data?.Message?.Text || error.message || "Terjadi kesalahan saat menyimpan data";
+        setErrorMessage(errorMsg);
+      }
+      
+      setShowErrorModal(true);
+    }
   };
 
   const handleBack = () => {
-    // Check if form has any data, ignoring default values
     const hasFormData = Object.keys(formValues).some((key) => {
       if (
         key === "tanggalPembuatan" ||
@@ -75,8 +125,13 @@ const TambahVoucherPage = () => {
       <VoucherForm mode="add" />
 
       <div className="mt-6 flex justify-center pt-2">
-        <Button onClick={handleSubmit} className="px-8">
-          Simpan
+        <Button 
+          onClick={handleSubmit} 
+          className="px-8"
+          disabled={isMutating}
+          loading={isMutating}
+        >
+          {isMutating ? "Menyimpan..." : "Simpan"}
         </Button>
       </div>
 
@@ -108,6 +163,14 @@ const TambahVoucherPage = () => {
         withButtons={false}
         title={{ text: "Pemberitahuan" }}
         description={{ text: "Data berhasil disimpan." }}
+      />
+      <ConfirmationModal
+        isOpen={showErrorModal}
+        setIsOpen={setShowErrorModal}
+        withButtons={false}
+        title={{ text: "Error" }}
+        description={{ text: errorMessage }}
+        onAutoClose={() => setShowErrorModal(false)}
       />
     </div>
   );

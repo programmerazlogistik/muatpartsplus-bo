@@ -139,6 +139,7 @@ const UserDropdown = ({
     loadingMore: isLoadingMore,
     onScroll: handleScroll,
     error: error,
+    useAllSpecialValue: true, // Enable special "all" behavior for users
   };
 
   return <MultiSelectDropdown {...customProps} />;

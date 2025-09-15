@@ -31,6 +31,8 @@ const MultiSelectDropdown = ({
   onScroll = () => {},
   error = null,
   customOptionRenderer = null,
+  // New prop to control "all" behavior - when true, "all" sends special value, when false, selects all individual items
+  useAllSpecialValue = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,8 +41,12 @@ const MultiSelectDropdown = ({
 
   const isAllSelected =
     showAllOption &&
-    options.length > 0 &&
-    selectedItems.length === options.length;
+    (
+      // Traditional check: all options are selected
+      (options.length > 0 && selectedItems.length === options.length) ||
+      // Backend "all" indicator: only check if useAllSpecialValue is enabled
+      (useAllSpecialValue && selectedItems.some(item => item.isAllSelected === true || item.value === "all"))
+    );
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -66,7 +72,22 @@ const MultiSelectDropdown = ({
   };
 
   const handleSelectAll = () => {
-    onSelectionChange(isAllSelected ? [] : [...options]);
+    if (isAllSelected) {
+      // If currently all selected, clear selection
+      onSelectionChange([]);
+    } else {
+      // If useAllSpecialValue is true, send special "all" value
+      // Otherwise, select all individual items (traditional behavior)
+      if (useAllSpecialValue) {
+        onSelectionChange([{ 
+          value: "all", 
+          label: "Semua User", 
+          isAllSelected: true 
+        }]);
+      } else {
+        onSelectionChange([...options]);
+      }
+    }
   };
 
   const handleRemoveAll = (e) => {
@@ -75,6 +96,24 @@ const MultiSelectDropdown = ({
   };
 
   const handleSelect = (option) => {
+    // Special handling only when useAllSpecialValue is enabled
+    if (useAllSpecialValue) {
+      // If "all" is currently selected and user clicks an individual item,
+      // switch to individual selection mode by selecting all options except this one
+      if (isAllSelected && option.value !== "all") {
+        const newSelected = options.filter(opt => opt.value !== option.value);
+        onSelectionChange(newSelected);
+        return;
+      }
+      
+      // If user clicks on the "all" option directly, handle it as select all
+      if (option.value === "all") {
+        handleSelectAll();
+        return;
+      }
+    }
+
+    // Normal individual selection logic (used by both modes)
     const newSelected = selectedItems.some(
       (item) => item.value === option.value
     )
@@ -280,9 +319,10 @@ const MultiSelectDropdown = ({
                       className="flex cursor-pointer items-center gap-1 px-3 py-2 transition-colors duration-150 hover:bg-neutral-50"
                     >
                       <Checkbox
-                        checked={selectedItems.some(
-                          (item) => item.value === option.value
-                        )}
+                        checked={
+                          isAllSelected || 
+                          selectedItems.some((item) => item.value === option.value)
+                        }
                         onChange={() => handleSelect(option)}
                       />
                       {customOptionRenderer ? (
@@ -344,6 +384,7 @@ MultiSelectDropdown.propTypes = {
   onScroll: PropTypes.func,
   error: PropTypes.any,
   customOptionRenderer: PropTypes.func,
+  useAllSpecialValue: PropTypes.bool,
 };
 
 export default MultiSelectDropdown;
