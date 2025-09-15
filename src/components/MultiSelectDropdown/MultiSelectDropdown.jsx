@@ -23,6 +23,14 @@ const MultiSelectDropdown = ({
   errorMessage = null,
   maxVisible = 3,
   showAllOption = true,
+  // New props for search and infinite scroll
+  searchable = false,
+  onSearch = () => {},
+  loading = false,
+  loadingMore = false,
+  onScroll = () => {},
+  error = null,
+  customOptionRenderer = null,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,9 +52,18 @@ const MultiSelectDropdown = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const filteredOptions = options.filter((option) =>
-    option.label.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredOptions = searchable 
+    ? options // When searchable, options are managed externally
+    : options.filter((option) =>
+        option.label.toLowerCase().includes(search.toLowerCase())
+      );
+
+  const handleSearchChange = (value) => {
+    setSearch(value);
+    if (searchable && onSearch) {
+      onSearch(value);
+    }
+  };
 
   const handleSelectAll = () => {
     onSelectionChange(isAllSelected ? [] : [...options]);
@@ -220,14 +237,25 @@ const MultiSelectDropdown = ({
             <InputSearch
               placeholder={searchPlaceholder}
               searchValue={search}
-              setSearchValue={setSearch}
+              setSearchValue={handleSearchChange}
               hideDropdown
               appearance={{ inputClassName: "h-8 text-xs" }}
             />
           </div>
           <div className="pb-2 pr-3">
-            <div className="max-h-[194px] overflow-y-auto">
-              {filteredOptions && filteredOptions?.length > 0 ? (
+            <div 
+              className="max-h-[194px] overflow-y-auto"
+              onScroll={searchable ? onScroll : undefined}
+            >
+              {loading ? (
+                <div className="px-3 py-4 text-center text-sm text-neutral-500">
+                  Loading...
+                </div>
+              ) : error ? (
+                <div className="px-3 py-4 text-center text-sm text-error-400">
+                  Error loading data
+                </div>
+              ) : filteredOptions && filteredOptions?.length > 0 ? (
                 <>
                   {showAllOption && (
                     <div
@@ -257,11 +285,21 @@ const MultiSelectDropdown = ({
                         )}
                         onChange={() => handleSelect(option)}
                       />
-                      <span className="text-xs font-[400] text-neutral-900">
-                        {option.label}
-                      </span>
+                      {customOptionRenderer ? (
+                        customOptionRenderer(option)
+                      ) : (
+                        <span className="text-xs font-[400] text-neutral-900">
+                          {option.label}
+                        </span>
+                      )}
                     </div>
                   ))}
+                  
+                  {loadingMore && (
+                    <div className="px-3 py-2 text-center text-xs text-neutral-500">
+                      Loading more...
+                    </div>
+                  )}
                 </>
               ) : (
                 <div className="px-3 py-4 text-center text-sm text-neutral-500">
@@ -298,6 +336,14 @@ MultiSelectDropdown.propTypes = {
   disabled: PropTypes.bool,
   errorMessage: PropTypes.string,
   showAllOption: PropTypes.bool,
+  // New PropTypes
+  searchable: PropTypes.bool,
+  onSearch: PropTypes.func,
+  loading: PropTypes.bool,
+  loadingMore: PropTypes.bool,
+  onScroll: PropTypes.func,
+  error: PropTypes.any,
+  customOptionRenderer: PropTypes.func,
 };
 
 export default MultiSelectDropdown;

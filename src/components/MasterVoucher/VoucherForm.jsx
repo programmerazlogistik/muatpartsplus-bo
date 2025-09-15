@@ -6,6 +6,7 @@ import { FormContainer, FormLabel } from "@/components/Form/Form";
 import Input from "@/components/Form/Input";
 import { MyTextArea } from "@/components/Form/TextArea";
 import { LocationSelector } from "@/components/MasterVoucher/LocationSelector";
+import UserDropdown from "@/components/MasterVoucher/UserDropdown";
 import MultiSelectDropdown from "@/components/MultiSelectDropdown/MultiSelectDropdown";
 import RadioButton from "@/components/Radio/RadioButton";
 
@@ -14,19 +15,6 @@ import {
   useAddVoucherFormErrors,
   useAddVoucherFormValues,
 } from "@/store/MasterVoucher/addVoucherStore";
-
-const userOptions = [
-  { value: "081236632731", label: "081236632731" },
-  { value: "081234654673", label: "081234654673" },
-  { value: "085737737171", label: "085737737171" },
-  { value: "085737737172", label: "085737737172" },
-  { value: "085737737173", label: "085737737173" },
-  { value: "085737737174", label: "085737737174" },
-  { value: "085737737175", label: "085737737175" },
-  { value: "085737737176", label: "085737737176" },
-  { value: "085737737177", label: "085737737177" },
-  { value: "085737737178", label: "085737737178" },
-];
 
 const paymentMethodOptions = [
   { value: "credit-card-bca", label: "Credit Card - BCA" },
@@ -294,10 +282,8 @@ const VoucherForm = ({ mode = "add" }) => {
           </FormContainer>
           <FormContainer>
             <FormLabel required>User (No. WhatsApp)</FormLabel>
-            <MultiSelectDropdown
-              options={userOptions}
+            <UserDropdown
               selectedItems={formValues.userWhatsApp}
-              placeholder="Pilih User"
               onSelectionChange={(selectedUsers) =>
                 setField("userWhatsApp", selectedUsers)
               }
