@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { useGetVoucherLocations } from "@/services/mastervoucher/getVoucherLocations";
+
 import Button from "@/components/Button/Button";
 import Checkbox from "@/components/Form/Checkbox";
 import Input from "@/components/Form/Input";
 import IconComponent from "@/components/IconComponent/IconComponent";
 import { citiesByProvince, provinces } from "@/components/MasterVoucher/dummy";
 import {
-  isAllProvincesSelected as checkAllProvincesSelected,
   generateBadges,
-  getAllLocations,
   getProvinceSelectionState,
+  isAllProvincesSelected,
   removeBadgeFromLocations,
 } from "@/components/MasterVoucher/locationHelpers";
 import { Modal, ModalContent, ModalTitle } from "@/components/Modal/Modal";
@@ -32,17 +33,64 @@ export const LocationSelectorModal = ({
   );
   const [showAllModal, setShowAllModal] = useState(false);
 
+  // Fetch locations from API
+  const useFetcherMuatrans = false; // Set to false as requested
+  const {
+    data: locationsData,
+    error,
+    isLoading,
+  } = useGetVoucherLocations(useFetcherMuatrans);
+
+  // Transform API data to match existing format
+  const { provinces: apiProvinces, citiesByProvince: apiCitiesByProvince } =
+    useMemo(() => {
+      if (!locationsData?.Data) {
+        return { provinces: [], citiesByProvince: {} };
+      }
+
+      const provincesArray = locationsData.Data.map(
+        (province) => province.name
+      );
+      const citiesMap = {};
+
+      locationsData.Data.forEach((province) => {
+        citiesMap[province.name] = province.cities.map((city) => city.name);
+      });
+
+      return {
+        provinces: provincesArray,
+        citiesByProvince: citiesMap,
+      };
+    }, [locationsData]);
+
+  // Use API data if available, fallback to dummy data
+  const currentProvinces = apiProvinces.length > 0 ? apiProvinces : provinces;
+  const currentCitiesByProvince =
+    Object.keys(apiCitiesByProvince).length > 0
+      ? apiCitiesByProvince
+      : citiesByProvince;
+
   useEffect(() => {
     if (open) {
       setTempSelectedLocations(initialSelectedLocations);
     }
   }, [open, initialSelectedLocations]);
 
-  const allLocations = useMemo(() => getAllLocations(), []);
+  const allLocations = useMemo(() => {
+    const locations = [];
+    currentProvinces.forEach((province) => {
+      const cities = currentCitiesByProvince[province] || [];
+      cities.forEach((city) => {
+        locations.push({ province, city });
+      });
+    });
+    return locations;
+  }, [currentProvinces, currentCitiesByProvince]);
 
-  const isAllProvincesSelected = useMemo(
-    () => checkAllProvincesSelected(tempSelectedLocations),
-    [tempSelectedLocations]
+  const isAllProvincesSelectedState = useMemo(
+    () =>
+      isAllProvincesSelected(tempSelectedLocations, currentCitiesByProvince),
+    [tempSelectedLocations, currentCitiesByProvince]
   );
 
   const handleToggleProvince = (province) => {
@@ -67,7 +115,7 @@ export const LocationSelectorModal = ({
   };
 
   const handleProvinceSelect = (province, { checked }) => {
-    const citiesInProvince = citiesByProvince[province] || [];
+    const citiesInProvince = currentCitiesByProvince[province] || [];
     let newSelections = [...tempSelectedLocations];
 
     if (checked) {
@@ -99,19 +147,26 @@ export const LocationSelectorModal = ({
   };
 
   const getProvSelectionState = useCallback(
-    (province) => getProvinceSelectionState(province, tempSelectedLocations),
-    [tempSelectedLocations]
+    (province) => {
+      return getProvinceSelectionState(
+        province,
+        tempSelectedLocations,
+        currentCitiesByProvince
+      );
+    },
+    [tempSelectedLocations, currentCitiesByProvince]
   );
 
   const badges = useMemo(() => {
-    return generateBadges(tempSelectedLocations);
-  }, [tempSelectedLocations]);
+    return generateBadges(tempSelectedLocations, currentCitiesByProvince);
+  }, [tempSelectedLocations, currentCitiesByProvince]);
 
   const handleRemoveBadge = (e, badge) => {
     e.stopPropagation();
     const newSelections = removeBadgeFromLocations(
       badge,
-      tempSelectedLocations
+      tempSelectedLocations,
+      currentCitiesByProvince
     );
     setTempSelectedLocations(newSelections);
   };
@@ -128,7 +183,7 @@ export const LocationSelectorModal = ({
             key={badge.value}
             className="flex items-center gap-2 rounded-full border border-primary-700 bg-white px-3 py-[6px]"
           >
-            <span className="text-xxs font-medium text-primary-700">
+            <span className="text-xxs font-semibold text-primary-700">
               {badge.label}
             </span>
             <button
@@ -151,7 +206,7 @@ export const LocationSelectorModal = ({
     );
   };
 
-  const filteredProvinces = provinces.filter((province) =>
+  const filteredProvinces = currentProvinces.filter((province) =>
     province.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -213,7 +268,7 @@ export const LocationSelectorModal = ({
             <div className="!mt-0 px-6">
               <div className="border-b border-b-[#868686] py-6">
                 <Checkbox
-                  checked={isAllProvincesSelected}
+                  checked={isAllProvincesSelectedState}
                   onChange={handleSelectAllProvinces}
                   label="Pilih Semua Provinsi"
                   appearance={{
@@ -264,18 +319,20 @@ export const LocationSelectorModal = ({
 
                       {isOpen && (
                         <div className="grid grid-cols-3 gap-x-4 gap-y-3 pb-4 pr-4">
-                          {(citiesByProvince[province] || []).map((city) => (
-                            <Checkbox
-                              key={city}
-                              checked={tempSelectedLocations.includes(
-                                `${province} - ${city}`
-                              )}
-                              onChange={(payload) =>
-                                handleCitySelect(province, city, payload)
-                              }
-                              label={city}
-                            />
-                          ))}
+                          {(currentCitiesByProvince[province] || []).map(
+                            (city) => (
+                              <Checkbox
+                                key={city}
+                                checked={tempSelectedLocations.includes(
+                                  `${province} - ${city}`
+                                )}
+                                onChange={(payload) =>
+                                  handleCitySelect(province, city, payload)
+                                }
+                                label={city}
+                              />
+                            )
+                          )}
                         </div>
                       )}
                     </div>
@@ -305,7 +362,7 @@ export const LocationSelectorModal = ({
         <SelectedItemsModal
           isOpen={showAllModal}
           onClose={() => setShowAllModal(false)}
-          items={badges}
+          items={badges?.slice(3)}
           title={modalTitle}
         />
       )}

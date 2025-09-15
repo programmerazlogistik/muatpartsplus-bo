@@ -8,6 +8,8 @@ import {
 } from "@/components/MasterVoucher/locationHelpers";
 import SelectedItemsModal from "@/components/SelectedItemsModal/SelectedItemsModal";
 
+import { useLocationData } from "@/hooks/useLocationData";
+
 import { cn } from "@/lib/utils";
 
 export const LocationSelector = ({
@@ -25,9 +27,12 @@ export const LocationSelector = ({
   const [isSelectedItemsModalOpen, setIsSelectedItemsModalOpen] =
     useState(false);
 
+  // Get location data from API with fallback
+  const { currentCitiesByProvince } = useLocationData();
+
   const badges = useMemo(() => {
-    return generateBadges(selectedLocations);
-  }, [selectedLocations]);
+    return generateBadges(selectedLocations, currentCitiesByProvince);
+  }, [selectedLocations, currentCitiesByProvince]);
 
   const handleApply = (locations) => {
     onSelectionChange?.(locations);
@@ -36,7 +41,11 @@ export const LocationSelector = ({
 
   const handleRemoveBadge = (e, badge) => {
     e.stopPropagation();
-    const newLocations = removeBadgeFromLocations(badge, selectedLocations);
+    const newLocations = removeBadgeFromLocations(
+      badge,
+      selectedLocations,
+      currentCitiesByProvince
+    );
     onSelectionChange?.(newLocations);
   };
 
