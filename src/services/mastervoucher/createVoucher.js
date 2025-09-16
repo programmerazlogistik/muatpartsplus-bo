@@ -43,7 +43,7 @@ export const createVoucher = async (url, { arg }) => {
  */
 export const transformFormValuesToRequestBody = (formValues) => {
   // Transform discount type
-  const discountType = formValues.jenisPotongan === "Rp x" ? "fixed" : "percentage";
+  const discountType = formValues.jenisPotongan === "Rp x" ? "nominal" : "percentage";
   
   // Transform locations - LocationSelector can store locations in different formats:
   // 1. Array of strings in format "Province - City" (legacy format)

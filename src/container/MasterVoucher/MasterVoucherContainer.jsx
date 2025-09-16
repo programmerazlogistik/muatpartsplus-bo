@@ -44,6 +44,79 @@ const MasterVoucherContainer = () => {
     isActive: "isActive"
   };
 
+  // Transform filters to API parameter names
+  const transformFiltersToApiParams = (filters) => {
+    const apiFilters = {};
+
+    // Status active filter (only for !expired)
+    if (activeTab !== "expired") {
+      const statusArray = [];
+      if (filters.status_active) statusArray.push(true);
+      if (filters.status_inactive) statusArray.push(false);
+      if (statusArray.length > 0) {
+        apiFilters.is_active = statusArray;
+      }
+    }
+
+    // Discount type
+    const discountTypes = [];
+    if (filters.discount_type_fixed) discountTypes.push("nominal");
+    if (filters.discount_type_percentage) discountTypes.push("percentage");
+    if (discountTypes.length > 0) {
+      apiFilters.jenis_diskon = discountTypes;
+    }
+
+    // Discount range
+    if (filters.discountMin) {
+      apiFilters.range_diskon_min = parseFloat(filters.discountMin.replace(/[^0-9]/g, ""));
+    }
+    if (filters.discountMax) {
+      apiFilters.range_diskon_max = parseFloat(filters.discountMax.replace(/[^0-9]/g, ""));
+    }
+
+    // Minimum purchase range
+    if (filters.minPurchaseMin) {
+      apiFilters.minimum_pembelian_min = parseFloat(filters.minPurchaseMin.replace(/[^0-9]/g, ""));
+    }
+    if (filters.minPurchaseMax) {
+      apiFilters.minimum_pembelian_max = parseFloat(filters.minPurchaseMax.replace(/[^0-9]/g, ""));
+    }
+
+    // Quota range
+    if (filters.quotaMin) {
+      apiFilters.kuota_voucher_min = parseFloat(filters.quotaMin.replace(/[^0-9]/g, ""));
+    }
+    if (filters.quotaMax) {
+      apiFilters.kuota_voucher_max = parseFloat(filters.quotaMax.replace(/[^0-9]/g, ""));
+    }
+
+    // Remaining quota range
+    if (filters.remainingQuotaMin) {
+      apiFilters.sisa_kuota_min = parseFloat(filters.remainingQuotaMin.replace(/[^0-9]/g, ""));
+    }
+    if (filters.remainingQuotaMax) {
+      apiFilters.sisa_kuota_max = parseFloat(filters.remainingQuotaMax.replace(/[^0-9]/g, ""));
+    }
+
+    // Total claim value range
+    if (filters.totalClaimMin) {
+      apiFilters.total_nilai_klaim_min = parseFloat(filters.totalClaimMin.replace(/[^0-9]/g, ""));
+    }
+    if (filters.totalClaimMax) {
+      apiFilters.total_nilai_klaim_max = parseFloat(filters.totalClaimMax.replace(/[^0-9]/g, ""));
+    }
+
+    // Validity period
+    if (filters.validFrom) {
+      apiFilters.masa_berlaku_dari = filters.validFrom;
+    }
+    if (filters.validTo) {
+      apiFilters.masa_berlaku_sampai = filters.validTo;
+    }
+
+    return apiFilters;
+  };
+
   // API parameters
   const apiParams = {
     is_expired: activeTab === "expired",
@@ -52,7 +125,7 @@ const MasterVoucherContainer = () => {
     sortBy: sorting.sort ? (sortKeyMapping[sorting.sort] || "createdAt") : "createdAt",
     sortOrder: (sorting.order || "desc").toUpperCase(),
     ...(searchQuery && { search: searchQuery }),
-    ...filters,
+    ...transformFiltersToApiParams(filters),
   };
 
   // Use SWR hook to fetch vouchers
