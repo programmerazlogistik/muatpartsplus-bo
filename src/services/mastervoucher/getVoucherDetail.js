@@ -195,7 +195,10 @@ export const transformVoucherDetailToFormValues = (apiData) => {
   // Handle "all" case from backend
   const userWhatsApp = (() => {
     // If backend returns "all" string, set a special indicator
-    if (apiData.users === "all" || apiData.userWhatsApp === "all") {
+    if (
+      (typeof apiData.users === "string" && apiData.users.toLowerCase() === "all") ||
+      (typeof apiData.userWhatsApp === "string" && apiData.userWhatsApp.toLowerCase() === "all")
+    ) {
       return [{ 
         value: "all", 
         label: "Semua User", 
