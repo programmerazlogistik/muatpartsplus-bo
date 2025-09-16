@@ -1,3 +1,8 @@
+import useSWR from "swr";
+
+import { fetcherMuatrans } from "@/lib/axios";
+import { fetcherMuatransCS } from "@/lib/fetcherBasicAuth";
+
 // Mock API result for development/testing
 export const mockAPIResult = {
   data: {
@@ -9,16 +14,34 @@ export const mockAPIResult = {
       data: [
         {
           paymentMethods: [
-            { id: "874df675-a424-4e41-a2b4-07b8c05b6c2f", nama: "Permata Virtual Account" },
-            { id: "1a7097be-a91e-40c9-a181-3b3812e31b0c", nama: "CIMB Virtual Account" },
-            { id: "83351a03-b112-4320-b7df-a59d0cd91876", nama: "BRI Virtual Account" },
+            {
+              id: "874df675-a424-4e41-a2b4-07b8c05b6c2f",
+              nama: "Permata Virtual Account",
+            },
+            {
+              id: "1a7097be-a91e-40c9-a181-3b3812e31b0c",
+              nama: "CIMB Virtual Account",
+            },
+            {
+              id: "83351a03-b112-4320-b7df-a59d0cd91876",
+              nama: "BRI Virtual Account",
+            },
           ],
           waktuUpdate: "2025-09-09T09:43:16.845Z",
           aktivitas: "updated",
-          user: { id: "ec04a097-5ef1-4b42-a92e-28e4783a36f7", nama: null, email: null },
-          syaratDanKetentuan: "Voucher berlaku untuk semua pengguna terdaftar. Tidak dapat digabungkan dengan promosi lain. Berlaku selama periode yang ditentukan.",
-          caraPemakaian: "Masukkan kode voucher pada halaman checkout sebelum melakukan pembayaran untuk mendapatkan diskon otomatis",
-          periodeWaktu: { mulai: "2025-02-01T00:00:00.000Z", berakhir: "2025-12-31T23:59:59.000Z" },
+          user: {
+            id: "ec04a097-5ef1-4b42-a92e-28e4783a36f7",
+            nama: null,
+            email: null,
+          },
+          syaratDanKetentuan:
+            "Voucher berlaku untuk semua pengguna terdaftar. Tidak dapat digabungkan dengan promosi lain. Berlaku selama periode yang ditentukan.",
+          caraPemakaian:
+            "Masukkan kode voucher pada halaman checkout sebelum melakukan pembayaran untuk mendapatkan diskon otomatis",
+          periodeWaktu: {
+            mulai: "2025-02-01T00:00:00.000Z",
+            berakhir: "2025-12-31T23:59:59.000Z",
+          },
           users: [
             { id: null, nomorTelepon: "Unknown" },
             { id: null, nomorTelepon: "Unknown" },
@@ -29,12 +52,31 @@ export const mockAPIResult = {
           kuotaUser: 5,
           lokasiMuatDanBongkar: {
             muat: [
-              { cities: [3171, 3172, 3173], provinceId: "31" },
-              { cities: [3571, 3572], provinceId: "35" },
+              {
+                cities: [
+                  { id: 3101, city: "KAB. ADM. KEP. SERIBU" },
+                  { id: 3173, city: "KOTA JAKARTA BARAT" },
+                  { id: 3171, city: "KOTA JAKARTA PUSAT" },
+                  { id: 3174, city: "KOTA JAKARTA SELATAN" },
+                  { id: 3175, city: "KOTA JAKARTA TIMUR" },
+                  { id: 3172, city: "KOTA JAKARTA UTARA" },
+                ],
+                provinceId: "31",
+                provinceName: "DKI JAKARTA",
+              },
             ],
             bongkar: [
-              { cities: [3201, 3202, 3203], provinceId: "32" },
-              { cities: [3573, 3574, 3575], provinceId: "35" },
+              {
+                cities: [
+                  { id: 3402, city: "KAB. BANTUL" },
+                  { id: 3403, city: "KAB. GUNUNGKIDUL" },
+                  { id: 3401, city: "KAB. KULON PROGO" },
+                  { id: 3404, city: "KAB. SLEMAN" },
+                  { id: 3471, city: "KOTA YOGYAKARTA" },
+                ],
+                provinceId: "34",
+                provinceName: "DAERAH ISTIMEWA YOGYAKARTA",
+              },
             ],
           },
           status: "active",
@@ -47,16 +89,34 @@ export const mockAPIResult = {
         },
         {
           paymentMethods: [
-            { id: "874df675-a424-4e41-a2b4-07b8c05b6c2f", nama: "Permata Virtual Account" },
-            { id: "1a7097be-a91e-40c9-a181-3b3812e31b0c", nama: "CIMB Virtual Account" },
-            { id: "83351a03-b112-4320-b7df-a59d0cd91876", nama: "BRI Virtual Account" },
+            {
+              id: "874df675-a424-4e41-a2b4-07b8c05b6c2f",
+              nama: "Permata Virtual Account",
+            },
+            {
+              id: "1a7097be-a91e-40c9-a181-3b3812e31b0c",
+              nama: "CIMB Virtual Account",
+            },
+            {
+              id: "83351a03-b112-4320-b7df-a59d0cd91876",
+              nama: "BRI Virtual Account",
+            },
           ],
           waktuUpdate: "2025-09-09T09:42:27.067Z",
           aktivitas: "created",
-          user: { id: "ec04a097-5ef1-4b42-a92e-28e4783a36f7", nama: null, email: null },
-          syaratDanKetentuan: "Voucher berlaku untuk semua pengguna terdaftar. Tidak dapat digabungkan dengan promosi lain. Berlaku selama periode yang ditentukan.",
-          caraPemakaian: "Masukkan kode voucher pada halaman checkout sebelum melakukan pembayaran untuk mendapatkan diskon otomatis",
-          periodeWaktu: { mulai: "2025-02-01T00:00:00.000Z", berakhir: "2025-12-31T23:59:59.000Z" },
+          user: {
+            id: "ec04a097-5ef1-4b42-a92e-28e4783a36f7",
+            nama: null,
+            email: null,
+          },
+          syaratDanKetentuan:
+            "Voucher berlaku untuk semua pengguna terdaftar. Tidak dapat digabungkan dengan promosi lain. Berlaku selama periode yang ditentukan.",
+          caraPemakaian:
+            "Masukkan kode voucher pada halaman checkout sebelum melakukan pembayaran untuk mendapatkan diskon otomatis",
+          periodeWaktu: {
+            mulai: "2025-02-01T00:00:00.000Z",
+            berakhir: "2025-12-31T23:59:59.000Z",
+          },
           users: [
             { id: null, nomorTelepon: null },
             { id: null, nomorTelepon: null },
@@ -67,12 +127,31 @@ export const mockAPIResult = {
           kuotaUser: 5,
           lokasiMuatDanBongkar: {
             muat: [
-              { cities: [3171, 3172, 3173], provinceId: "31" },
-              { cities: [3571, 3572], provinceId: "35" },
+              {
+                cities: [
+                  { id: 3101, city: "KAB. ADM. KEP. SERIBU" },
+                  { id: 3173, city: "KOTA JAKARTA BARAT" },
+                  { id: 3171, city: "KOTA JAKARTA PUSAT" },
+                  { id: 3174, city: "KOTA JAKARTA SELATAN" },
+                  { id: 3175, city: "KOTA JAKARTA TIMUR" },
+                  { id: 3172, city: "KOTA JAKARTA UTARA" },
+                ],
+                provinceId: "31",
+                provinceName: "DKI JAKARTA",
+              },
             ],
             bongkar: [
-              { cities: [3201, 3202, 3203], provinceId: "32" },
-              { cities: [3573, 3574, 3575], provinceId: "35" },
+              {
+                cities: [
+                  { id: 3402, city: "KAB. BANTUL" },
+                  { id: 3403, city: "KAB. GUNUNGKIDUL" },
+                  { id: 3401, city: "KAB. KULON PROGO" },
+                  { id: 3404, city: "KAB. SLEMAN" },
+                  { id: 3471, city: "KOTA YOGYAKARTA" },
+                ],
+                provinceId: "34",
+                provinceName: "DAERAH ISTIMEWA YOGYAKARTA",
+              },
             ],
           },
           status: "active",
@@ -97,11 +176,6 @@ export const mockAPIResult = {
   },
 };
 
-
-import useSWR from "swr";
-import { fetcherMuatransCS } from "@/lib/fetcherBasicAuth";
-import { fetcherMuatrans } from "@/lib/axios";
-
 // Mapping function to match mock data structure
 function mapApiToMockStructure(item, idx = 0) {
   return {
@@ -110,7 +184,7 @@ function mapApiToMockStructure(item, idx = 0) {
       ? new Date(item.waktuUpdate).toLocaleDateString("id-ID")
       : item.updateTime || "",
     updateDate: item.waktuUpdate
-      ? `${new Date(item.waktuUpdate).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })  } WIB`
+      ? `${new Date(item.waktuUpdate).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} WIB`
       : item.updateDate || "",
     activity: item.aktivitas || item.activity || "",
     user:
@@ -118,65 +192,93 @@ function mapApiToMockStructure(item, idx = 0) {
         ? item.user
         : item.user?.nama || item.user?.name || item.user?.email || "Unknown",
     termsConditions:
-      item.syaratDanKetentuan || item.termsConditions || item.termsAndConditions || "",
-    paymentMethods:
-      item.caraPemakaian || item.paymentMethods || "",
-    validPeriod:
-      item.periodeWaktu
-        ? {
-            start: item.periodeWaktu.mulai
-              ? new Date(item.periodeWaktu.mulai).toLocaleDateString("id-ID")
-              : "",
-            end: item.periodeWaktu.berakhir
-              ? new Date(item.periodeWaktu.berakhir).toLocaleDateString("id-ID")
-              : "",
-          }
-        : item.validPeriod || { start: "", end: "" },
+      item.syaratDanKetentuan ||
+      item.termsConditions ||
+      item.termsAndConditions ||
+      "",
+    paymentMethods: item.caraPemakaian || item.paymentMethods || "",
+    validPeriod: item.periodeWaktu
+      ? {
+          start: item.periodeWaktu.mulai
+            ? new Date(item.periodeWaktu.mulai).toLocaleDateString("id-ID")
+            : "",
+          end: item.periodeWaktu.berakhir
+            ? new Date(item.periodeWaktu.berakhir).toLocaleDateString("id-ID")
+            : "",
+        }
+      : item.validPeriod || { start: "", end: "" },
     userType:
       item.users && Array.isArray(item.users)
-        ? item.users.map((u) => ({ label: u.nomorTelepon || "Unknown", value: u.nomorTelepon || "Unknown" }))
+        ? item.users.map((u) => ({
+            label: u.nomorTelepon || "Unknown",
+            value: u.nomorTelepon || "Unknown",
+          }))
         : item.userType || [],
     quota: item.kuotaVoucher?.toLocaleString("id-ID") || item.quota || "",
     quotaPerUser: item.kuotaUser?.toString() || item.quotaPerUser || "",
-    paymentInstallment:
-      item.paymentInstallment || [
-        { label: "Transfer Virtual Account - ECA", value: "va-eca" },
-        { label: "Transfer Virtual Account - Mandiri", value: "va-mandiri" },
-        { label: "Transfer Virtual Account - Danamon", value: "va-danamon" },
-        { label: "Transfer Virtual Account - BRI", value: "va-bri" },
-        { label: "Transfer Virtual Account - BNI", value: "va-bni" },
-        { label: "Transfer Virtual Account - BCA", value: "va-bca" },
-        { label: "Credit Card", value: "cc" },
-        { label: "OVO", value: "ovo" },
-      ],
+    paymentInstallment: item.paymentInstallment || [
+      { label: "Transfer Virtual Account - ECA", value: "va-eca" },
+      { label: "Transfer Virtual Account - Mandiri", value: "va-mandiri" },
+      { label: "Transfer Virtual Account - Danamon", value: "va-danamon" },
+      { label: "Transfer Virtual Account - BRI", value: "va-bri" },
+      { label: "Transfer Virtual Account - BNI", value: "va-bni" },
+      { label: "Transfer Virtual Account - BCA", value: "va-bca" },
+      { label: "Credit Card", value: "cc" },
+      { label: "OVO", value: "ovo" },
+    ],
     location:
-      item.lokasiMuatDanBongkar?.muat?.map((loc) => ({
-        label: `Provinsi ${loc.provinceId} - Kota/Kabupaten ${loc.cities.join(",")}`,
-        value: `${loc.provinceId}-${loc.cities.join("-")}`,
-      })) || item.location || [],
+      item.lokasiMuatDanBongkar?.muat?.flatMap((loc) =>
+        loc.cities.map((city) => ({
+          label: `${loc.provinceName || loc.provinceId} - ${city.city}`,
+          value: `${loc.provinceId}-${city.id}`,
+        }))
+      ) ||
+      item.location ||
+      [],
     originLocation:
-      item.lokasiMuatDanBongkar?.bongkar?.map((loc) => ({
-        label: `Provinsi ${loc.provinceId} - Kota/Kabupaten ${loc.cities.join(",")}`,
-        value: `${loc.provinceId}-${loc.cities.join("-")}`,
-      })) || item.originLocation || [],
-    status: item.status === "active" ? "Aktif" : item.status || "",
+      item.lokasiMuatDanBongkar?.bongkar?.flatMap((loc) =>
+        loc.cities.map((city) => ({
+          label: `${loc.provinceName || loc.provinceId} - ${city.city}`,
+          value: `${loc.provinceId}-${city.id}`,
+        }))
+      ) ||
+      item.originLocation ||
+      [],
+    status: item.status === "active" ? "Aktif" : "Tidak Aktif" || "",
   };
 }
 
-
-export const getVoucherChangeHistory = async (voucherId, params = {}, useFetcherMuatrans = false) => {
+export const getVoucherChangeHistory = async (
+  voucherId,
+  params = {},
+  useFetcherMuatrans = false
+) => {
   const fetcher = useFetcherMuatrans ? fetcherMuatrans : fetcherMuatransCS;
   const query = new URLSearchParams(params).toString();
   const url = `/v1/bo/vouchers/${voucherId}/history/changes${query ? `?${query}` : ""}`;
   const res = await fetcher.get(url);
   // Map data to mock structure
   if (res.data?.Data?.data) {
-    res.data.Data.data = res.data.Data.data.map((item, idx) => mapApiToMockStructure(item, idx));
+    res.data.Data.data = res.data.Data.data.map((item, idx) =>
+      mapApiToMockStructure(item, idx)
+    );
   }
   return res.data;
 };
 
-export const useGetVoucherChangeHistory = (voucherId, params = {}, useFetcherMuatrans = false) => {
-  const key = voucherId ? [`/v1/bo/vouchers/${voucherId}/history/changes`, params, useFetcherMuatrans] : null;
-  return useSWR(key, () => getVoucherChangeHistory(voucherId, params, useFetcherMuatrans));
+export const useGetVoucherChangeHistory = (
+  voucherId,
+  params = {},
+  useFetcherMuatrans = false
+) => {
+  const key = voucherId
+    ? [
+        `/v1/bo/vouchers/${voucherId}/history/changes`,
+        params,
+        useFetcherMuatrans,
+      ]
+    : null;
+  return useSWR(key, () =>
+    getVoucherChangeHistory(voucherId, params, useFetcherMuatrans)
+  );
 };

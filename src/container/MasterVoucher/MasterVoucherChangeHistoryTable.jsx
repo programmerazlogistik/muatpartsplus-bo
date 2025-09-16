@@ -113,8 +113,9 @@ const MasterVoucherChangeHistoryTable = ({
           "Syarat & Ketentuan"
         ),
         width: "164px",
+        className: "whitespace-pre-line",
         sortable: false,
-        render: (row) => <div>{row.termsConditions}</div>,
+        render: (row) => <p className="whitespace-pre-line break-words">{row.termsConditions}</p>,
       },
       {
         key: "paymentMethods",
