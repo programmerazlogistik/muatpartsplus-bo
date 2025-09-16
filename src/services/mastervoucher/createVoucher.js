@@ -39,9 +39,10 @@ export const createVoucher = async (url, { arg }) => {
 /**
  * Transform form values to API request body format
  * @param {Object} formValues - Form values from the voucher form
+ * @param {Array} allPaymentMethods - All available payment methods for "all" detection
  * @returns {Object} - Transformed data for API request
  */
-export const transformFormValuesToRequestBody = (formValues) => {
+export const transformFormValuesToRequestBody = (formValues, allPaymentMethods = []) => {
   // Transform discount type
   const discountType = formValues.jenisPotongan === "Rp x" ? "nominal" : "percentage";
   
@@ -122,11 +123,25 @@ export const transformFormValuesToRequestBody = (formValues) => {
     }).filter(Boolean);
   })();
 
-  // Transform payment method IDs
-  const paymentMethodIds = formValues.metodeInstansiTujuanPembayaran?.map(method => {
+  // Transform payment method IDs - check if all are selected
+  let paymentMethodIds = formValues.metodeInstansiTujuanPembayaran?.map(method => {
     if (typeof method === 'string') return method;
     return method.value || method.id;
   }).filter(Boolean) || [];
+
+  // If all available payment methods are selected, send "all" instead of individual IDs
+  if (allPaymentMethods.length > 0 && paymentMethodIds.length === allPaymentMethods.length) {
+    const allMethodIds = allPaymentMethods.map(method => method.id || method.value);
+    const allSelected = paymentMethodIds.every(id => allMethodIds.includes(id));
+    if (allSelected) {
+      paymentMethodIds = "all";
+    }
+  }
+
+  // Handle case where form contains "all" indicator directly
+  if (paymentMethodIds.length === 1 && paymentMethodIds[0] === "all") {
+    paymentMethodIds = "all";
+  }
 
   const result = {
     voucherCode: formValues.kodeVoucher,

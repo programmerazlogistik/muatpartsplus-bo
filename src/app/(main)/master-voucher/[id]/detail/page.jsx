@@ -12,6 +12,8 @@ import { MasterVoucherUsageHistoryContainer } from "@/container/MasterVoucher";
 
 import { useGetVoucherDetail, transformVoucherDetailToFormValues } from "@/services/mastervoucher/getVoucherDetail";
 
+import { useGetVoucherPaymentMethods } from "@/services/mastervoucher/getVoucherPaymentMethods";
+
 import { useAddVoucherActions } from "@/store/MasterVoucher/addVoucherStore";
 
 const DetailVoucherPage = () => {
@@ -32,13 +34,26 @@ const DetailVoucherPage = () => {
     revalidateOnMount: !!params.id
   });
 
+  // Fetch payment methods for handling "all" case
+  const { data: paymentMethodsData } = useGetVoucherPaymentMethods(false);
+
   // Transform and set form values when data is loaded
   useEffect(() => {
     if (apiResponse?.data?.Data) {
       const transformedData = transformVoucherDetailToFormValues(apiResponse.data.Data);
+      
+      // Handle "all" payment methods case - replace with all available payment methods
+      if (paymentMethodsData?.Data && transformedData.metodeInstansiTujuanPembayaran?.some(item => item.isAllSelected)) {
+        const allPaymentMethods = (paymentMethodsData.Data || []).map((method) => ({
+          value: method.id,
+          label: method.name,
+        }));
+        transformedData.metodeInstansiTujuanPembayaran = allPaymentMethods;
+      }
+      
       setFormValues(transformedData);
     }
-  }, [apiResponse, setFormValues]);
+  }, [apiResponse, paymentMethodsData, setFormValues]);
 
   // Handle loading state
   if (isLoading) {

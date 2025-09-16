@@ -16,6 +16,7 @@ import {
   useCreateVoucher, 
   transformFormValuesToRequestBody 
 } from "@/services/mastervoucher/createVoucher";
+import { useGetVoucherPaymentMethods } from "@/services/mastervoucher/getVoucherPaymentMethods";
 
 const TambahVoucherPage = () => {
   const router = useRouter();
@@ -30,6 +31,9 @@ const TambahVoucherPage = () => {
 
   // SWR mutation hook for creating vouchers
   const { trigger: createVoucher, isMutating } = useCreateVoucher();
+
+  // Fetch payment methods for "all" detection
+  const { data: paymentMethodsData } = useGetVoucherPaymentMethods(false);
 
   // Reset form on mount for a clean state
   useEffect(() => {
@@ -47,7 +51,11 @@ const TambahVoucherPage = () => {
     
     try {
       // Transform form data to match API request body
-      const requestBody = transformFormValuesToRequestBody(formValues);
+      const allPaymentMethods = (paymentMethodsData?.Data || []).map((method) => ({
+        id: method.id,
+        value: method.id,
+      }));
+      const requestBody = transformFormValuesToRequestBody(formValues, allPaymentMethods);
       console.log("Transformed request body:", requestBody);
       
       // Call API to create voucher

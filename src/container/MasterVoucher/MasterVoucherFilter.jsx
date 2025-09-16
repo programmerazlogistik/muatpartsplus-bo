@@ -36,7 +36,7 @@ const MasterVoucherFilter = ({
       [
         "discountMin",
         "discountMax",
-        "minPurchaseMin",
+        "minPurchase",
         "quotaMin",
         "quotaMax",
         "remainingQuotaMin",
@@ -188,9 +188,9 @@ const MasterVoucherFilter = ({
               </label>
               <div className="col-span-2">
                 <Input
-                  name="minPurchaseMin"
+                  name="minPurchase"
                   placeholder="Minimal"
-                  value={filters.minPurchaseMin || ""}
+                  value={filters.minPurchase || ""}
                   onChange={handleInputChange}
                 />
               </div>

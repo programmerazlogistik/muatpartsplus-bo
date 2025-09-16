@@ -8,6 +8,8 @@ import {
   useGetVoucherDetail,
 } from "@/services/mastervoucher/getVoucherDetail";
 
+import { useGetVoucherPaymentMethods } from "@/services/mastervoucher/getVoucherPaymentMethods";
+
 import { 
   useUpdateVoucher, 
   transformFormValuesToUpdateRequestBody 
@@ -37,6 +39,9 @@ const UbahVoucherPage = () => {
 
   const { data, error, isLoading } = useGetVoucherDetail(params.id);
   
+  // Fetch payment methods for "all" detection
+  const { data: paymentMethodsData } = useGetVoucherPaymentMethods(false);
+  
   // SWR mutation hook for updating voucher
   const { trigger: updateVoucher, isMutating } = useUpdateVoucher(params.id);
 
@@ -45,9 +50,19 @@ const UbahVoucherPage = () => {
       const transformedData = transformVoucherDetailToFormValues(
         data.data.Data
       );
+      
+      // Handle "all" payment methods case - replace with all available payment methods
+      if (paymentMethodsData?.Data && transformedData.metodeInstansiTujuanPembayaran?.some(item => item.isAllSelected)) {
+        const allPaymentMethods = (paymentMethodsData.Data || []).map((method) => ({
+          value: method.id,
+          label: method.name,
+        }));
+        transformedData.metodeInstansiTujuanPembayaran = allPaymentMethods;
+      }
+      
       setFormValues(transformedData);
     }
-  }, [data, setFormValues]);
+  }, [data, paymentMethodsData, setFormValues]);
 
   const handleSubmit = () => {
     if (validateForm()) {
@@ -60,7 +75,11 @@ const UbahVoucherPage = () => {
     
     try {
       // Transform form data to match API request body
-      const requestBody = transformFormValuesToUpdateRequestBody(formValues);
+      const allPaymentMethods = (paymentMethodsData?.Data || []).map((method) => ({
+        id: method.id,
+        value: method.id,
+      }));
+      const requestBody = transformFormValuesToUpdateRequestBody(formValues, allPaymentMethods);
       
       console.log("🚀 Updating voucher:", params.id);
       console.log("Request body:", requestBody);

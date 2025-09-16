@@ -6,9 +6,10 @@ import { fetcherMuatrans } from "@/lib/axios";
  * Transform form values to request body for voucher update
  * Similar to createVoucher but for PUT request
  * @param {Object} formValues - Form values from Zustand store
+ * @param {Array} allPaymentMethods - All available payment methods for "all" detection
  * @returns {Object} - Request body for API
  */
-export const transformFormValuesToUpdateRequestBody = (formValues) => {
+export const transformFormValuesToUpdateRequestBody = (formValues, allPaymentMethods = []) => {
   // Transform locations - LocationSelector can store locations in different formats:
   // 1. Array of strings in format "Province - City" (legacy format)
   // 2. Array of objects with provinceId, cityId, and label properties (new format)
@@ -83,11 +84,25 @@ export const transformFormValuesToUpdateRequestBody = (formValues) => {
     }).filter(Boolean);
   })();
 
-  // Transform payment method IDs (always individual IDs, never "all")
-  const paymentMethodIds = formValues.metodeInstansiTujuanPembayaran?.map(method => {
+  // Transform payment method IDs - check if all are selected
+  let paymentMethodIds = formValues.metodeInstansiTujuanPembayaran?.map(method => {
     if (typeof method === 'string') return method;
     return method.value || method.id;
   }).filter(Boolean) || [];
+
+  // If all available payment methods are selected, send "all" instead of individual IDs
+  if (allPaymentMethods.length > 0 && paymentMethodIds.length === allPaymentMethods.length) {
+    const allMethodIds = allPaymentMethods.map(method => method.id || method.value);
+    const allSelected = paymentMethodIds.every(id => allMethodIds.includes(id));
+    if (allSelected) {
+      paymentMethodIds = "all";
+    }
+  }
+
+  // Handle case where form contains "all" indicator directly
+  if (paymentMethodIds.length === 1 && paymentMethodIds[0] === "all") {
+    paymentMethodIds = "all";
+  }
 
   const result = {
     termsAndConditions: formValues.syaratDanKetentuan,
