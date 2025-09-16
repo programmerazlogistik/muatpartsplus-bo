@@ -58,6 +58,12 @@ const TambahVoucherPage = () => {
     } catch (error) {
       console.error("Error creating voucher:", error);
       
+      // Handle specific case for voucher code already exists
+      if (error.response?.data?.Data === "Voucher code already exists") {
+        setError("kodeVoucher", "Kode Voucher telah digunakan pada periode yang sama");
+        return; // Don't show error modal
+      }
+      
       // Handle API validation errors
       if (error.response?.data?.Data?.errors) {
         const apiErrors = error.response.data.Data.errors;

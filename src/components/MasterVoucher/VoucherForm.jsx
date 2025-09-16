@@ -133,7 +133,7 @@ const VoucherForm = ({ mode = "add" }) => {
           </FormContainer>
 
           {formValues.jenisPotongan === "x %" && (
-            <FormContainer className="items-center !gap-y-0">
+            <FormContainer className="items-center md:!gap-y-0">
               <FormLabel required>Maksimal Potongan (Rp)</FormLabel>
               <div className="flex gap-4">
                 <RadioButton
@@ -181,7 +181,7 @@ const VoucherForm = ({ mode = "add" }) => {
             </FormContainer>
           )}
 
-          <FormContainer className="items-center !gap-y-0">
+          <FormContainer className="items-center md:!gap-y-0">
             <FormLabel required>Minimal Transaksi (Rp)</FormLabel>
             <div className="flex gap-4">
               <RadioButton
@@ -383,7 +383,7 @@ const VoucherForm = ({ mode = "add" }) => {
           </FormContainer>
         </div>
         <div className="mt-6">
-          <FormContainer className="items-center !gap-y-0">
+          <FormContainer className="items-center md:!gap-y-0">
             <FormLabel>Berlaku Rute Sebaliknya</FormLabel>
             <Checkbox
               checked={formValues.berlakuRuteSebaliknya}
