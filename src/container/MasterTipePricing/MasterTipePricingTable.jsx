@@ -44,14 +44,14 @@ const MasterTipePricingTable = ({
           <div className="flex flex-col gap-[6px]">
             <Button
               variant="muatparts-primary-secondary"
-              onClick={() => router.push(`/master-tipe-pricing/${row.id}/edit`)}
+              onClick={() => router.push(`/master-pricing/master-tipe-pricing/${row.id}/edit`)}
               className="!h-[20px] !w-[83px] font-semibold"
             >
               Ubah
             </Button>
             <Button
               variant="muatparts-primary"
-              onClick={() => router.push(`/master-tipe-pricing/${row.id}/detail`)}
+              onClick={() => router.push(`/master-pricing/master-tipe-pricing/${row.id}/detail`)}
               className="!h-[20px] !w-[83px] font-semibold"
             >
               Detail

@@ -1,18 +1,56 @@
 "use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
 import MasterRutePricingForm from "@/container/MasterRutePricing/MasterRutePricingForm";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import ConfirmationModal from "@/components/Modal/ConfirmationModal";
 
-export default function MasterRutePricingAddPage() {
+export default function MasterRutePricingEditPage() {
   const router = useRouter();
+  const params = useParams();
   const [loading, setLoading] = useState(false);
+  const [initialData, setInitialData] = useState(null);
+  const [pageLoading, setPageLoading] = useState(true);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSaveConfirmModal, setShowSaveConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [pendingFormData, setPendingFormData] = useState(null);
+
+  // Simulate fetching data for edit
+  useEffect(() => {
+    const fetchData = async () => {
+      setPageLoading(true);
+      
+      try {
+        // Simulate API call to get route pricing data
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Mock data - in real app, fetch from API using params.id
+        const mockData = {
+          id: params.id,
+          alias: "Jawa - Sumatera",
+          loadingProvince: "jawa-barat",
+          unloadingProvince: "sumatera-utara",
+          isActive: true,
+          createSpecialPriceRoute: false,
+        };
+        
+        setInitialData(mockData);
+        
+      } catch (error) {
+        console.error("Error fetching route pricing data:", error);
+        alert("Gagal memuat data. Silakan coba lagi.");
+        router.push("/master-pricing/master-rute-pricing");
+      } finally {
+        setPageLoading(false);
+      }
+    };
+
+    if (params.id) {
+      fetchData();
+    }
+  }, [params.id, router]);
 
   const handleBack = () => {
     if (hasUnsavedChanges) {
@@ -36,16 +74,16 @@ export default function MasterRutePricingAddPage() {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      console.log("Creating new route pricing:", pendingFormData);
+      console.log("Updating route pricing:", { id: params.id, ...pendingFormData });
       
       // In real app, call API here
-      // await createRoutePricing(pendingFormData);
+      // await updateRoutePricing(params.id, pendingFormData);
       
       setHasUnsavedChanges(false);
       setShowSuccessModal(true);
       
     } catch (error) {
-      console.error("Error creating route pricing:", error);
+      console.error("Error updating route pricing:", error);
       alert("Gagal menyimpan data. Silakan coba lagi.");
     } finally {
       setLoading(false);
@@ -71,14 +109,26 @@ export default function MasterRutePricingAddPage() {
     setShowConfirmModal(false);
   };
 
+  if (pageLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Memuat data...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="space-y-6">
         <PageTitle showBackButton={true} onBackClick={handleBack}>
-          Tambah Rute Pricing
+          Edit Rute Pricing
         </PageTitle>
         <MasterRutePricingForm 
-          mode="add"
+          mode="edit"
+          initialData={initialData}
           onSubmit={handleSubmit}
           loading={loading}
           onDataChange={setHasUnsavedChanges}

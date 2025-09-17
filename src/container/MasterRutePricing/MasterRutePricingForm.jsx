@@ -12,10 +12,14 @@ import Toggle from "@/components/Toggle/Toggle";
 import { useTranslation } from "@/hooks/use-translation";
 
 const MasterRutePricingForm = ({ 
-  mode = "add", // "add" or "edit"
-  initialData = null, // Data for edit mode
+  mode = "add", // "add", "edit", or "detail"
+  initialData = null, // Data for edit/detail mode
   onSubmit,
-  loading = false 
+  loading = false,
+  onDataChange,
+  disabled = false, // For detail mode
+  onEdit, // Callback for edit button in detail mode
+  onBack // Callback for back button in detail mode
 }) => {
   const { t = (key, _, fallback) => fallback || key } = useTranslation() || {};
   const router = useRouter();
@@ -97,9 +101,9 @@ const MasterRutePricingForm = ({
     { value: "kota-bekasi", label: "Kota Bekasi" },
   ];
 
-  // Load initial data for edit mode
+  // Load initial data for edit/detail mode
   useEffect(() => {
-    if (mode === "edit" && initialData) {
+    if ((mode === "edit" || mode === "detail") && initialData) {
       setFormData({
         alias: initialData.alias || "",
         loadingProvince: initialData.loadingProvince || "",
@@ -107,19 +111,33 @@ const MasterRutePricingForm = ({
         isActive: initialData.isActive || false,
         createSpecialPriceRoute: initialData.createSpecialPriceRoute || false,
       });
+      
+      // Load special routes if they exist
+      if (initialData.specialRoutes && initialData.specialRoutes.length > 0) {
+        setSpecialRoutes(initialData.specialRoutes);
+      }
     }
   }, [mode, initialData]);
 
   // Handle form input changes
   const handleInputChange = (field, value) => {
+    if (disabled) return; // Don't allow changes in detail mode
+    
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
+    
+    // Notify parent component about data changes
+    if (onDataChange) {
+      onDataChange(true);
+    }
   };
 
   // Handle special routes changes
   const handleSpecialRouteChange = (routeId, field, value) => {
+    if (disabled) return; // Don't allow changes in detail mode
+    
     setSpecialRoutes(prev => 
       prev.map(route => 
         route.id === routeId 
@@ -127,10 +145,17 @@ const MasterRutePricingForm = ({
           : route
       )
     );
+    
+    // Notify parent component about data changes
+    if (onDataChange) {
+      onDataChange(true);
+    }
   };
 
   // Add new special route
   const addSpecialRoute = () => {
+    if (disabled) return; // Don't allow changes in detail mode
+    
     const newId = Math.max(...specialRoutes.map(r => r.id), 0) + 1;
     setSpecialRoutes(prev => [
       ...prev,
@@ -140,18 +165,32 @@ const MasterRutePricingForm = ({
         destinationLocation: "",
       }
     ]);
+    
+    // Notify parent component about data changes
+    if (onDataChange) {
+      onDataChange(true);
+    }
   };
 
   // Remove special route
   const removeSpecialRoute = (routeId) => {
+    if (disabled) return; // Don't allow changes in detail mode
+    
     if (specialRoutes.length > 1) {
       setSpecialRoutes(prev => prev.filter(route => route.id !== routeId));
+      
+      // Notify parent component about data changes
+      if (onDataChange) {
+        onDataChange(true);
+      }
     }
   };
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    if (disabled) return; // Don't submit in detail mode
     
     // Basic validation
     // if (!formData.alias.trim()) {
@@ -201,53 +240,62 @@ const MasterRutePricingForm = ({
         <div className="grid grid-cols-1">
           <div className="space-y-6">
             <FormContainer>
-              <FormLabel required>Alias</FormLabel>
+              <FormLabel required={!disabled}>Alias</FormLabel>
               <Input
                 placeholder="Masukkan Alias"
                 value={formData.alias}
                 onChange={(e) => handleInputChange("alias", e.target.value)}
-                required
+                required={!disabled}
+                disabled={disabled}
               />
             </FormContainer>
 
             <FormContainer>
-              <FormLabel required>Provinsi Muat</FormLabel>
+              <FormLabel required={!disabled}>Provinsi Muat</FormLabel>
               <Select
                 placeholder="Pilih Provinsi Muat"
                 value={formData.loadingProvince}
                 onChange={(value) => handleInputChange("loadingProvince", value)}
                 options={provinceOptions}
-                required
+                required={!disabled}
+                disabled={disabled}
               />
             </FormContainer>
 
             <FormContainer>
-              <FormLabel required>Provinsi Bongkar</FormLabel>
+              <FormLabel required={!disabled}>Provinsi Bongkar</FormLabel>
               <Select
                 placeholder="Pilih Provinsi Bongkar"
                 value={formData.unloadingProvince}
                 onChange={(value) => handleInputChange("unloadingProvince", value)}
                 options={provinceOptions}
-                required
+                required={!disabled}
+                disabled={disabled}
               />
             </FormContainer>
 
             <FormContainer className="items-center">
               <FormLabel>Status</FormLabel>
-              <Toggle
-                value={formData.isActive}
-                onClick={(value) => handleInputChange("isActive", value)}
-                type="primary"
-              />
+              <div onClick={(e) => e.preventDefault()}>
+                <Toggle
+                  value={formData.isActive}
+                  onClick={(value) => handleInputChange("isActive", value)}
+                  type="primary"
+                  disabled={disabled}
+                />
+              </div>
             </FormContainer>
 
             <FormContainer className="items-center">
               <FormLabel>Buat Rute Harga Khusus</FormLabel>
-              <Toggle
-                value={formData.createSpecialPriceRoute}
-                onClick={(value) => handleInputChange("createSpecialPriceRoute", value)}
-                type="primary"
-              />
+              <div onClick={(e) => e.preventDefault()}>
+                <Toggle
+                  value={formData.createSpecialPriceRoute}
+                  onClick={(value) => handleInputChange("createSpecialPriceRoute", value)}
+                  type="primary"
+                  disabled={disabled}
+                />
+              </div>
             </FormContainer>
             {formData.createSpecialPriceRoute && (
               <hr className="border-1 border-[#A8A8A8]" />
@@ -336,15 +384,35 @@ const MasterRutePricingForm = ({
         )}
 
         {/* Action Buttons */}
-        <div className="flex justify-center space-x-4 pt-6">
-          <Button
-            type="submit"
-            variant="muatparts-primary"
-            disabled={loading}
-          >
-            {loading ? "Menyimpan..." : "Simpan"}
-          </Button>
-        </div>
+        {mode === "detail" ? (
+          <div className="flex justify-end space-x-4 pt-6">
+            {/* <Button
+              type="button"
+              variant="muatparts-primary-secondary"
+              onClick={onBack}
+            >
+              Kembali
+            </Button>
+            <Button
+              type="button"
+              variant="muatparts-primary"
+              onClick={onEdit}
+            >
+              Edit
+            </Button> */}
+            <></>
+          </div>
+        ) : (
+          <div className="flex justify-center space-x-4 pt-6">
+            <Button
+              type="submit"
+              variant="muatparts-primary"
+              disabled={loading}
+            >
+              {loading ? "Menyimpan..." : "Simpan"}
+            </Button>
+          </div>
+        )}
       </form>
     </div>
   );

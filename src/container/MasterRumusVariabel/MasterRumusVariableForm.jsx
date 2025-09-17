@@ -11,10 +11,14 @@ import Toggle from "@/components/Toggle/Toggle";
 import { useTranslation } from "@/hooks/use-translation";
 
 const MasterRumusVariableForm = ({ 
-  mode = "add", // "add" or "edit"
-  initialData = null, // Data for edit mode
+  mode = "add", // "add", "edit", or "detail"
+  initialData = null, // Data for edit/detail mode
   onSubmit,
-  loading = false 
+  loading = false,
+  onDataChange,
+  disabled = false, // For detail mode
+  onEdit, // Callback for edit button in detail mode
+  onBack // Callback for back button in detail mode
 }) => {
   const { t = (key, _, fallback) => fallback || key } = useTranslation() || {};
   const router = useRouter();
@@ -33,9 +37,9 @@ const MasterRumusVariableForm = ({
     }
   ]);
 
-  // Load initial data for edit mode
+  // Load initial data for edit/detail mode
   useEffect(() => {
-    if (mode === "edit" && initialData) {
+    if ((mode === "edit" || mode === "detail") && initialData) {
       setFormData({
         formulaName: initialData.formulaName || "",
         isActive: initialData.isActive || false,
@@ -50,14 +54,23 @@ const MasterRumusVariableForm = ({
 
   // Handle form input changes
   const handleInputChange = (field, value) => {
+    if (disabled) return; // Don't allow changes in detail mode
+    
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
+    
+    // Notify parent component about data changes
+    if (onDataChange) {
+      onDataChange(true);
+    }
   };
 
   // Handle variable changes
   const handleVariableChange = (variableId, value) => {
+    if (disabled) return; // Don't allow changes in detail mode
+    
     setVariables(prev => 
       prev.map(variable => 
         variable.id === variableId 
@@ -65,10 +78,17 @@ const MasterRumusVariableForm = ({
           : variable
       )
     );
+    
+    // Notify parent component about data changes
+    if (onDataChange) {
+      onDataChange(true);
+    }
   };
 
   // Add new variable
   const addVariable = () => {
+    if (disabled) return; // Don't allow changes in detail mode
+    
     const newId = Math.max(...variables.map(v => v.id), 0) + 1;
     setVariables(prev => [
       ...prev,
@@ -77,18 +97,32 @@ const MasterRumusVariableForm = ({
         name: "",
       }
     ]);
+    
+    // Notify parent component about data changes
+    if (onDataChange) {
+      onDataChange(true);
+    }
   };
 
   // Remove variable
   const removeVariable = (variableId) => {
+    if (disabled) return; // Don't allow changes in detail mode
+    
     if (variables.length > 1) {
       setVariables(prev => prev.filter(variable => variable.id !== variableId));
+      
+      // Notify parent component about data changes
+      if (onDataChange) {
+        onDataChange(true);
+      }
     }
   };
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    if (disabled) return; // Don't submit in detail mode
     
     // Basic validation
     if (!formData.formulaName.trim()) {
@@ -124,22 +158,26 @@ const MasterRumusVariableForm = ({
         <div className="grid grid-cols-1">
           <div className="space-y-6">
             <FormContainer>
-              <FormLabel required>Nama Rumus</FormLabel>
+              <FormLabel required={!disabled}>Nama Rumus</FormLabel>
               <Input
                 placeholder="Masukkan Nama Rumus"
                 value={formData.formulaName}
                 onChange={(e) => handleInputChange("formulaName", e.target.value)}
-                required
+                required={!disabled}
+                disabled={disabled}
               />
             </FormContainer>
 
             <FormContainer className="items-center">
               <FormLabel>Status</FormLabel>
-              <Toggle
-                value={formData.isActive}
-                onClick={(value) => handleInputChange("isActive", value)}
-                type="primary"
-              />
+              <div onClick={(e) => e.preventDefault()}>
+                <Toggle
+                  value={formData.isActive}
+                  onClick={(value) => handleInputChange("isActive", value)}
+                  type="primary"
+                  disabled={disabled}
+                />
+              </div>
             </FormContainer>
 
             {/* Variables Section */}
@@ -155,7 +193,8 @@ const MasterRumusVariableForm = ({
                           placeholder="Masukkan Nama Variabel"
                           value={variable.name}
                           onChange={(e) => handleVariableChange(variable.id, e.target.value)}
-                          required
+                          required={!disabled}
+                          disabled={disabled}
                         />
                       </FormContainer>
                     </div>
@@ -188,15 +227,35 @@ const MasterRumusVariableForm = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex justify-center space-x-4 pt-6">
-          <Button
-            type="submit"
-            variant="muatparts-primary"
-            disabled={loading}
-          >
-            {loading ? "Menyimpan..." : "Simpan"}
-          </Button>
-        </div>
+        {mode === "detail" ? (
+        //   <div className="flex justify-end space-x-4 pt-6">
+        //     <Button
+        //       type="button"
+        //       variant="muatparts-primary-secondary"
+        //       onClick={onBack}
+        //     >
+        //       Kembali
+        //     </Button>
+        //     <Button
+        //       type="button"
+        //       variant="muatparts-primary"
+        //       onClick={onEdit}
+        //     >
+        //       Edit
+        //     </Button>
+        //   </div>
+        <></>
+        ) : (
+          <div className="flex justify-center space-x-4 pt-6">
+            <Button
+              type="submit"
+              variant="muatparts-primary"
+              disabled={loading}
+            >
+              {loading ? "Menyimpan..." : "Simpan"}
+            </Button>
+          </div>
+        )}
       </form>
     </div>
   );
