@@ -28,6 +28,26 @@ const Sidebar = () => {
           name: "Master Rumus & Variabel",
           href: "/master-pricing/master-rumus-variabel",
         },
+        {
+          name: "Setting Nilai Variabel",
+          href: "/master-pricing/setting-nilai-variabel",
+        },
+        {
+          name: "Setting Tarif Minimal",
+          href: "/master-pricing/setting-tarif-minimal",
+        },
+        {
+          name: "Setting Rumus Pricing",
+          href: "/master-pricing/setting-rumus-pricing",
+        },
+        {
+          name: "Setting Default Pricing",
+          href: "/master-pricing/setting-default-pricing",
+        },
+        {
+          name: "Setting Margin",
+          href: "/master-pricing/setting-margin",
+        }
       ],
     },
     {
