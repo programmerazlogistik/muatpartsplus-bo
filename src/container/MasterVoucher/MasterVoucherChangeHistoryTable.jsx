@@ -115,7 +115,11 @@ const MasterVoucherChangeHistoryTable = ({
         width: "164px",
         className: "whitespace-pre-line",
         sortable: false,
-        render: (row) => <p className="whitespace-pre-line break-words">{row.termsConditions}</p>,
+        render: (row) => (
+          <p className="whitespace-pre-line break-words">
+            {row.termsConditions}
+          </p>
+        ),
       },
       {
         key: "paymentMethods",
@@ -154,7 +158,8 @@ const MasterVoucherChangeHistoryTable = ({
         header: t("MasterVoucher.changeHistory.column.userType", {}, "User"),
         width: "164px",
         sortable: false,
-        render: (row) => <ListItemsRenderer items={row.userType} />,
+        render: (row) =>
+          row.isAllUser ? "All" : <ListItemsRenderer items={row.userType} />,
       },
       {
         key: "quota",
@@ -189,7 +194,13 @@ const MasterVoucherChangeHistoryTable = ({
         ),
         width: "164px",
         sortable: false,
-        render: (row) => <ListItemsRenderer items={row.paymentInstallment} />,
+        render: (row) => {
+          return row.isAllPaymentMethod ? (
+            "All"
+          ) : (
+            <ListItemsRenderer items={row.paymentInstallment} />
+          );
+        },
       },
       {
         key: "location",

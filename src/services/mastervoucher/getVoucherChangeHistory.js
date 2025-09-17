@@ -245,6 +245,8 @@ function mapApiToMockStructure(item, idx = 0) {
       item.originLocation ||
       [],
     status: item.status === "active" ? "Aktif" : "Tidak Aktif" || "",
+    isAllPaymentMethod: item.isAllPaymentMethod || false,
+    isAllUser: item.isAllUser || false,
   };
 }
 
