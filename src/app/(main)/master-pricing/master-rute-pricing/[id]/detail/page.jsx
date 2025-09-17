@@ -24,8 +24,14 @@ export default function MasterRutePricingDetailPage() {
         const mockData = {
           id: params.id,
           alias: "Jawa - Sumatera",
-          loadingProvince: "Jawa Barat",
-          unloadingProvince: "Sumatera Utara",
+          loadingProvince: [
+            { value: "jawa-barat", label: "Jawa Barat" },
+            { value: "dki-jakarta", label: "DKI Jakarta" }
+          ],
+          unloadingProvince: [
+            { value: "sumatera-utara", label: "Sumatera Utara" },
+            { value: "sumatera-selatan", label: "Sumatera Selatan" }
+          ],
           isActive: true,
           createSpecialPriceRoute: true,
           specialRoutes: [

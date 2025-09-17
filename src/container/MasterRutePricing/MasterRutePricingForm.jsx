@@ -10,6 +10,7 @@ import { Select } from "@/components/Form/Select";
 import Toggle from "@/components/Toggle/Toggle";
 
 import { useTranslation } from "@/hooks/use-translation";
+import MultiSelectDropdown from "@/components/MultiSelectDropdown/MultiSelectDropdown";
 
 const MasterRutePricingForm = ({ 
   mode = "add", // "add", "edit", or "detail"
@@ -27,8 +28,8 @@ const MasterRutePricingForm = ({
   // Form state
   const [formData, setFormData] = useState({
     alias: "",
-    loadingProvince: "",
-    unloadingProvince: "",
+    loadingProvince: [],
+    unloadingProvince: [],
     isActive: false,
     createSpecialPriceRoute: false,
   });
@@ -106,8 +107,8 @@ const MasterRutePricingForm = ({
     if ((mode === "edit" || mode === "detail") && initialData) {
       setFormData({
         alias: initialData.alias || "",
-        loadingProvince: initialData.loadingProvince || "",
-        unloadingProvince: initialData.unloadingProvince || "",
+        loadingProvince: initialData.loadingProvince || [],
+        unloadingProvince: initialData.unloadingProvince || [],
         isActive: initialData.isActive || false,
         createSpecialPriceRoute: initialData.createSpecialPriceRoute || false,
       });
@@ -197,11 +198,11 @@ const MasterRutePricingForm = ({
     //   alert("Alias harus diisi");
     //   return;
     // }
-    // if (!formData.loadingProvince) {
+    // if (!formData.loadingProvince || formData.loadingProvince.length === 0) {
     //   alert("Provinsi Muat harus dipilih");
     //   return;
     // }
-    // if (!formData.unloadingProvince) {
+    // if (!formData.unloadingProvince || formData.unloadingProvince.length === 0) {
     //   alert("Provinsi Bongkar harus dipilih");
     //   return;
     // }
@@ -252,11 +253,12 @@ const MasterRutePricingForm = ({
 
             <FormContainer>
               <FormLabel required={!disabled}>Provinsi Muat</FormLabel>
-              <Select
+              <MultiSelectDropdown
                 placeholder="Pilih Provinsi Muat"
-                value={formData.loadingProvince}
-                onChange={(value) => handleInputChange("loadingProvince", value)}
+                selectedItems={formData.loadingProvince}
+                onSelectionChange={(value) => handleInputChange("loadingProvince", value)}
                 options={provinceOptions}
+                titleModal="Provinsi Muat"
                 required={!disabled}
                 disabled={disabled}
               />
@@ -264,11 +266,12 @@ const MasterRutePricingForm = ({
 
             <FormContainer>
               <FormLabel required={!disabled}>Provinsi Bongkar</FormLabel>
-              <Select
+              <MultiSelectDropdown
                 placeholder="Pilih Provinsi Bongkar"
-                value={formData.unloadingProvince}
-                onChange={(value) => handleInputChange("unloadingProvince", value)}
+                selectedItems={formData.unloadingProvince}
+                onSelectionChange={(value) => handleInputChange("unloadingProvince", value)}
                 options={provinceOptions}
+                titleModal="Provinsi Bongkar"
                 required={!disabled}
                 disabled={disabled}
               />
