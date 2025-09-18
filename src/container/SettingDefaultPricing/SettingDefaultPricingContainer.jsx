@@ -7,9 +7,10 @@ import PageTitle from "@/components/PageTitle/PageTitle";
 
 import { cn } from "@/lib/utils";
 
+import { IconComponent } from "@/components";
+
 import NonRuteKhusus from "./NonRuteKhusus";
 import RuteKhusus from "./RuteKhusus";
-import { IconComponent } from "@/components";
 
 const SettingDefaultPricingContainer = () => {
   const [activeTab, setActiveTab] = useState("nonRuteKhusus"); // default tab
@@ -31,9 +32,12 @@ const SettingDefaultPricingContainer = () => {
 
       {/* Tabs */}
       {data ? (
-        <div className="flex items-center justify-center gap-2 mt-3">
-        <IconComponent src="/icons/search.svg" />
-        <span className="text-sm font-semibold text-[#868686]">  Belum ada data rute pricing</span>
+        <div className="mt-3 flex items-center justify-center gap-2">
+          <IconComponent src="/icons/search.svg" />
+          <span className="text-sm font-semibold text-[#868686]">
+            {" "}
+            Belum ada data rute pricing
+          </span>
         </div>
       ) : (
         <div>

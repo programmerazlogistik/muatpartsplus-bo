@@ -15,3 +15,21 @@ export const mapValibotErrors = (valibotErrors) => {
 
   return newErrors;
 };
+
+/**
+ * Validates if dropdown fields are filled.
+ * @param {object} formData - The form data to validate.
+ * @param {array} requiredDropdownFields - Array of field names that are required dropdowns.
+ * @returns {object} Validation errors for empty dropdowns.
+ */
+export const validateRequiredDropdowns = (formData, requiredDropdownFields) => {
+  const errors = {};
+
+  requiredDropdownFields.forEach((field) => {
+    if (!formData[field] || formData[field] === "") {
+      errors[field] = "Tipe Pricing Default wajib diisi";
+    }
+  });
+
+  return errors;
+};

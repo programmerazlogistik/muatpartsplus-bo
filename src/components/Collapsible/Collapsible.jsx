@@ -51,7 +51,7 @@ export const CollapsibleTrigger = React.forwardRef(
       <CollapsiblePrimitive.Trigger
         ref={ref}
         className={cn(
-          "!hover:none flex !h-11 w-full items-center justify-between !rounded-[10px] !border !border-[#176CF7] !bg-[#D1E2FD] py-4 !ps-[34px] !text-xl !text-[#176CF7] transition-all hover:underline [&>span]:!font-semibold [&[data-state=open]>svg]:rotate-180",
+          "!hover:none flex !h-11 w-full items-center justify-between !rounded-[10px] !border  !bg-[#D1E2FD] py-4 !ps-[34px] !text-xl !text-[#176CF7] transition-all hover:underline [&>span]:!font-semibold [&[data-state=open]>svg]:rotate-180",
           className
         )}
         {...props}
