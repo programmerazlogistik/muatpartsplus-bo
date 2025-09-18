@@ -1,7 +1,5 @@
-export default function SettingTarifMinimal() {
-  return (
-    <div>
-      <h1>Setting Tarif Minimal</h1>
-    </div>
-  );
+import SettingTarifMinimalContainer from "@/container/SettingTarifMinimal/SettingTarifMinimalContainer";
+
+export default function SettingTarifMinimalPage() {
+  return <SettingTarifMinimalContainer />;
 }

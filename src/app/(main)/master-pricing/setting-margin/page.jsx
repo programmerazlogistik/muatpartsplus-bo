@@ -1,7 +1,8 @@
-export default function SettingMargin() {
+"use client";
+import SettingMarginContainer from "@/container/SettingMargin/SettingMarginContainer";
+
+export default function SettingMarginPage() {
   return (
-    <div>
-      <h1>Setting Margin</h1>
-    </div>
+    <SettingMarginContainer />
   );
 }

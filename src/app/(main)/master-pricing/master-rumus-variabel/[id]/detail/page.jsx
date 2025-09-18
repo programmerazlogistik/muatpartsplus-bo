@@ -60,8 +60,7 @@ export default function MasterRumusVariabelDetailPage() {
   };
 
   const handleViewHistory = () => {
-    // TODO: Implement history view functionality
-    console.log("View change history for ID:", params.id);
+    router.push(`/master-pricing/master-rumus-variabel/${params.id}/history`);
   };
 
   if (loading) {
@@ -100,7 +99,7 @@ export default function MasterRumusVariabelDetailPage() {
         </PageTitle>
         <Button
           variant="muatparts-primary"
-          onClick={handleViewHistory}
+          onClick={() => router.push(`/master-pricing/master-rumus-variabel/${params.id}/history`)}
         >
           Lihat History Perubahan
         </Button>

@@ -67,8 +67,7 @@ export default function MasterRutePricingDetailPage() {
   };
 
   const handleViewHistory = () => {
-    // TODO: Implement history view functionality
-    console.log("View change history for ID:", params.id);
+    router.push(`/master-pricing/master-rute-pricing/${params.id}/history`);
   };
 
   if (loading) {
@@ -107,7 +106,7 @@ export default function MasterRutePricingDetailPage() {
         </PageTitle>
         <Button
           variant="muatparts-primary"
-          onClick={handleViewHistory}
+          onClick={() => router.push(`/master-pricing/master-rute-pricing/${params.id}/history`)}
         >
           Lihat History Perubahan
         </Button>
