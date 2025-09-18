@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import Button from "@/components/Button/Button";
+import ConfirmationModal from "@/components/Modal/ConfirmationModal";
 import PageTitle from "@/components/PageTitle/PageTitle";
 
 import { cn } from "@/lib/utils";
@@ -13,10 +15,38 @@ import NonRuteKhusus from "./NonRuteKhusus";
 import RuteKhusus from "./RuteKhusus";
 
 const SettingDefaultPricingContainer = () => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("nonRuteKhusus"); // default tab
   const [data, setData] = useState(false);
+  const [isNavigationModalOpen, setIsNavigationModalOpen] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
   const handleTabChange = (tab) => {
     setActiveTab(tab);
+  };
+
+  // This would be called by child components when form data changes
+  const handleFormDataChange = (hasChanges) => {
+    setHasUnsavedChanges(hasChanges);
+  };
+
+  // Handle back navigation with confirmation
+  const handleBackClick = () => {
+    if (hasUnsavedChanges) {
+      setIsNavigationModalOpen(true);
+    } else {
+      router.back();
+    }
+  };
+
+  const handleConfirmNavigation = () => {
+    setIsNavigationModalOpen(false);
+    setHasUnsavedChanges(false);
+    router.back();
+  };
+
+  const handleCancelNavigation = () => {
+    setIsNavigationModalOpen(false);
   };
 
   return (
@@ -80,11 +110,31 @@ const SettingDefaultPricingContainer = () => {
 
           {/* Tab content */}
           <div className="mt-5">
-            {activeTab === "nonRuteKhusus" && <NonRuteKhusus />}
+            {activeTab === "nonRuteKhusus" && (
+              <NonRuteKhusus onFormChange={handleFormDataChange} />
+            )}
             {activeTab === "ruteKhusus" && <RuteKhusus />}
           </div>
         </div>
       )}
+
+      {/* Navigation Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isNavigationModalOpen}
+        setIsOpen={setIsNavigationModalOpen}
+        title={{ text: "Warning" }}
+        description={{
+          text: "Apakah kamu yakin ingin berpindah halaman?<br/>Data yang telah diisi tidak akan disimpan",
+        }}
+        cancel={{
+          text: "Batal",
+          onClick: handleCancelNavigation,
+        }}
+        confirm={{
+          text: "Ya",
+          onClick: handleConfirmNavigation,
+        }}
+      />
     </div>
   );
 };

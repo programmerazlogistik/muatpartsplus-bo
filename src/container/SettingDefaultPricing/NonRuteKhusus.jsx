@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 import Button from "@/components/Button/Button";
 import {
@@ -15,8 +16,11 @@ import { pricingOptions } from "@/lib/constants/pricingOptions";
 import { vehicleTypes } from "@/lib/constants/vehicleTypes";
 import { validateRequiredDropdowns } from "@/lib/utils/valibot";
 
-const NonRuteKhusus = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const NonRuteKhusus = ({ onFormChange }) => {
+  const router = useRouter();
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isNavigationModalOpen, setIsNavigationModalOpen] = useState(false);
   const [dropdownValues, setDropdownValues] = useState(
     vehicleTypes.reduce((acc, vehicle) => {
       acc[vehicle.key] = "";
@@ -24,6 +28,33 @@ const NonRuteKhusus = () => {
     }, {})
   );
   const [errors, setErrors] = useState({});
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  // Check if form has any values
+  useEffect(() => {
+    const hasValues = Object.values(dropdownValues).some(
+      (value) => value !== ""
+    );
+    setHasUnsavedChanges(hasValues);
+    // Notify parent component about form changes
+    if (onFormChange) {
+      onFormChange(hasValues);
+    }
+  }, [dropdownValues, onFormChange]);
+
+  // Handle browser back/refresh
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = "";
+        return "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   const handleSimpanClick = (e) => {
     e.stopPropagation();
@@ -42,12 +73,23 @@ const NonRuteKhusus = () => {
 
     // Clear errors if validation passes
     setErrors({});
-    setIsModalOpen(true);
+    setIsSaveModalOpen(true);
   };
 
   const handleConfirmSimpan = () => {
-    alert("Data saved!");
-    setIsModalOpen(false);
+    // In a real app, you would save the data here
+    // For now, we'll just show the success modal
+    setIsSaveModalOpen(false);
+    setIsSuccessModalOpen(true);
+    setHasUnsavedChanges(false);
+    // Notify parent that form is now saved
+    if (onFormChange) {
+      onFormChange(false);
+    }
+  };
+
+  const handleSuccessModalClose = () => {
+    setIsSuccessModalOpen(false);
   };
 
   const handleDropdownChange = (vehicleKey, value) => {
@@ -66,6 +108,35 @@ const NonRuteKhusus = () => {
     }
   };
 
+  // Handle navigation away with confirmation
+  const handleNavigationAttempt = (path) => {
+    if (hasUnsavedChanges) {
+      setIsNavigationModalOpen(true);
+    } else {
+      if (path) {
+        router.push(path);
+      } else {
+        router.back();
+      }
+    }
+  };
+
+  const handleConfirmNavigation = () => {
+    setIsNavigationModalOpen(false);
+    setHasUnsavedChanges(false);
+    // Notify parent that form changes are discarded
+    if (onFormChange) {
+      onFormChange(false);
+    }
+    // In a real app, you would navigate to the target page
+    // For now, we'll just go back as an example
+    router.back();
+  };
+
+  const handleCancelNavigation = () => {
+    setIsNavigationModalOpen(false);
+  };
+
   const hasErrors = Object.keys(errors).length > 0;
 
   return (
@@ -74,6 +145,7 @@ const NonRuteKhusus = () => {
         <button
           type="button"
           className="rounded-md border border-gray-100 p-2 text-xs font-semibold shadow-sm"
+          onClick={() => handleNavigationAttempt("/master-pricing")}
         >
           Tampilkan Semua
         </button>
@@ -109,18 +181,23 @@ const NonRuteKhusus = () => {
             </>
           )}
         </CollapsibleTrigger>
-        <CollapsibleContent>
-          <div className="grid grid-cols-[224px_1fr] items-center gap-x-6 gap-y-4">
+        <CollapsibleContent className="flex flex-col">
+          <div className="flex flex-col gap-y-4 p-4">
             {/* Header Row */}
-            <span className="text-base font-bold">Jenis Truck</span>
-            <span className="text-base font-bold">Tipe Pricing Default</span>
+            <div className="flex items-center gap-x-6">
+              <span className="w-56 text-base font-bold">Jenis Truck</span>
+              <span className="text-base font-bold">Tipe Pricing Default</span>
+            </div>
+
             {vehicleTypes.map((vehicle) => (
-              <React.Fragment key={vehicle.key}>
+              <div key={vehicle.key} className="flex items-start gap-x-6">
                 {/* Column 1: Vehicle Label */}
-                <span className="text-sm font-medium">{vehicle.label}</span>
+                <span className="w-56 flex-shrink-0 pt-2 text-sm font-medium">
+                  {vehicle.label}
+                </span>
 
                 {/* Column 2: Dropdown Input */}
-                <div className="w-72">
+                <div className="max-w-72 flex-1">
                   <Dropdown
                     placeholder="Pilih Tipe Pricing"
                     options={pricingOptions}
@@ -136,7 +213,7 @@ const NonRuteKhusus = () => {
                     </p>
                   )}
                 </div>
-              </React.Fragment>
+              </div>
             ))}
           </div>
         </CollapsibleContent>
@@ -152,9 +229,10 @@ const NonRuteKhusus = () => {
         </Button>
       </div>
 
+      {/* Save Confirmation Modal */}
       <ConfirmationModal
-        isOpen={isModalOpen}
-        setIsOpen={setIsModalOpen}
+        isOpen={isSaveModalOpen}
+        setIsOpen={setIsSaveModalOpen}
         title={{ text: "Pemberitahuan" }}
         description={{ text: "Apakah Anda yakin ingin menyimpan data?" }}
         confirm={{
@@ -163,6 +241,37 @@ const NonRuteKhusus = () => {
         }}
         cancel={{
           text: "Batal",
+        }}
+      />
+
+      {/* Success Notification Modal */}
+      <ConfirmationModal
+        isOpen={isSuccessModalOpen}
+        setIsOpen={setIsSuccessModalOpen}
+        title={{ text: "Pemberitahuan" }}
+        description={{ text: "Data berhasil disimpan." }}
+        withCancel={false}
+        confirm={{
+          text: "OK",
+          onClick: handleSuccessModalClose,
+        }}
+      />
+
+      {/* Navigation Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={isNavigationModalOpen}
+        setIsOpen={setIsNavigationModalOpen}
+        title={{ text: "Warning" }}
+        description={{
+          text: "Apakah kamu yakin ingin berpindah halaman?<br/>Data yang telah diisi tidak akan disimpan",
+        }}
+        cancel={{
+          text: "Batal",
+          onClick: handleCancelNavigation,
+        }}
+        confirm={{
+          text: "Ya",
+          onClick: handleConfirmNavigation,
         }}
       />
     </form>
