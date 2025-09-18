@@ -197,6 +197,8 @@ const config = {
           800: "#59321b",
           900: "#461b02",
         },
+        "dark-gray": "#868686",
+        "stroke-data": "#A8A8A8",
       },
       width: {
         "modal-small": "386px",
