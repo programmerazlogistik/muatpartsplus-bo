@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import Button from "@/components/Button/Button";
@@ -6,7 +7,7 @@ import DatePicker from "@/components/DatePicker/DatePicker";
 import { FormContainer, FormLabel } from "@/components/Form/Form";
 import Input from "@/components/Form/Input";
 
-export default function SettingTarifMinimalForm({ onSaveClick, isSubmitting }) {
+export default function SettingTarifMinimalForm({ onSaveClick, isSubmitting, onDataChange }) {
   const {
     register,
     handleSubmit,
@@ -29,8 +30,22 @@ export default function SettingTarifMinimalForm({ onSaveClick, isSubmitting }) {
 
   const handleSubmitClick = (e) => {
     e.preventDefault();
-    onSaveClick();
+    handleSubmit((data) => {
+      console.log("Form data:", data);
+      onDataChange(false); // Reset unsaved changes after successful save
+      onSaveClick();
+    })();
   };
+
+  // Watch for form changes
+  const watchedValues = watch();
+  
+  useEffect(() => {
+    const hasChanges = Object.values(watchedValues).some(value => 
+      value !== "" && value !== null && value !== undefined
+    );
+    onDataChange(hasChanges);
+  }, [watchedValues, onDataChange]);
 
   const vehicleTypes = [
     {
@@ -73,11 +88,11 @@ export default function SettingTarifMinimalForm({ onSaveClick, isSubmitting }) {
         {/* Vehicle Type Fields */}
         {vehicleTypes.map((vehicle) => (
           <div key={vehicle.key} className="flex items-start space-x-4">
-            <div className="w-80 flex-shrink-0 pt-2">
+            <div className="w-48 flex-shrink-0 pt-2">
               <FormLabel>{vehicle.label}</FormLabel>
             </div>
             <div className="flex-1 mt-1.5">
-              <div className="flex items-center">
+              <div className="flex items-center w-72">
                 <Input
                   type="number"
                   placeholder="Masukkan Minimal Jarak Tempuh"
@@ -93,16 +108,16 @@ export default function SettingTarifMinimalForm({ onSaveClick, isSubmitting }) {
                 />
                 <span className="ml-2 text-gray-600 font-medium">km</span>
               </div>
-              {errors[vehicle.key] && (
+              {/* {errors[vehicle.key] && (
                 <span className="text-red-500 text-sm">{errors[vehicle.key].message}</span>
-              )}
+              )} */}
             </div>
           </div>
         ))}
 
         {/* Effective Date Field */}
         <div className="flex items-start space-x-4">
-          <div className="w-80 flex-shrink-0 pt-2">
+          <div className="w-48 flex-shrink-0 pt-2">
             <FormLabel required>Berlaku Mulai</FormLabel>
           </div>
           <div className="flex-1 mt-1.5">
@@ -115,7 +130,7 @@ export default function SettingTarifMinimalForm({ onSaveClick, isSubmitting }) {
               onChange={(date) => setValue("effectiveDate", date, { shouldValidate: true })}
               placeholder="dd/mm/yyyy"
               errorMessage={errors.effectiveDate?.message}
-              className="w-full"
+              className="w-72"
             />
           </div>
         </div>

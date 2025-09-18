@@ -1,9 +1,11 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import DataTableBO from "@/components/DataTableBO/DataTableBO";
 
 export default function SettingTarifMinimalTableHistory() {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
@@ -103,7 +105,7 @@ export default function SettingTarifMinimalTableHistory() {
       sortable: false,
       render: (row) => (
         <button
-          onClick={() => (router.push(`/master-pricing/setting-tarif-minimal/${row.id}/detail`))}
+          onClick={() => (router.push(`/master-pricing/setting-tarif-minimal/${row.id}/history`))}
           className="text-blue-600 hover:text-blue-800 underline text-sm font-medium"
         >
           {row.action}
