@@ -46,7 +46,7 @@ const SettingDefaultPricingTable = ({
               }
               className="!h-[20px] !w-[83px] font-semibold"
             >
-              Ubah
+              Atur
             </Button>
             <Button
               variant="muatparts-primary"

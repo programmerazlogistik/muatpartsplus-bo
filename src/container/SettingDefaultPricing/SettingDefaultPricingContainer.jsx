@@ -53,7 +53,12 @@ const SettingDefaultPricingContainer = () => {
     <div className="flex h-full flex-col">
       <div className="flex justify-between">
         <PageTitle withBack={false}>Setting Default Pricing</PageTitle>
-        <Button variant="muatparts-primary" disabled={true}>
+        <Button
+          variant="muatparts-primary"
+          onClick={() =>
+            router.push("/master-pricing/setting-default-pricing/history")
+          }
+        >
           <span className="pt-0.5 text-xs font-semibold">
             Lihat History Perubahan
           </span>
