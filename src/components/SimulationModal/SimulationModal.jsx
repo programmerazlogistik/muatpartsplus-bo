@@ -216,9 +216,7 @@ const SimulationModal = ({
         >
           {/* Title */}
           <div className="flex flex-col items-center justify-center">
-            <ModalTitle>
-              Masukkan Data Simulasi Rumus 4PL
-            </ModalTitle>
+            <ModalTitle>Masukkan Data Simulasi Rumus 4PL</ModalTitle>
           </div>
 
           {/* Form Fields */}
