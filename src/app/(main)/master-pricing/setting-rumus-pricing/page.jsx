@@ -156,21 +156,29 @@ export default function SettingRumusPricing() {
         <PageTitle withBack={false}>Setting Rumus Pricing</PageTitle>
         <Button>Lihat History Perubahan</Button>
       </div>
-      <div className="flex">
-        <div className="flex w-fit min-w-[200px]">
-          <p className="font-semibold">4PL </p>
-        </div>
-        <div className="flex w-full gap-4">
-          <FormulaCalculator
-            variables={variables}
-            onFormulaChange={handleFormulaChange}
-            initialFormula=""
-            className="w-full flex-grow"
-          />
-          <Button className="text-nowrap" onClick={handleSimulateClick}>
-            Simulasikan Rumus
-          </Button>
-        </div>
+      <div className="flex flex-col gap-4">
+        {rumusData &&
+          rumusData.rumus &&
+          rumusData.rumus.length > 0 &&
+          rumusData.rumus.map((r) => (
+            <div className="flex" key={r.id}>
+              <div className="flex w-fit min-w-[200px]">
+                <p className="font-semibold">4PL </p>
+              </div>
+
+              <div className="flex w-full gap-4">
+                <FormulaCalculator
+                  variables={variables}
+                  onFormulaChange={handleFormulaChange}
+                  initialFormula=""
+                  className="w-full flex-grow"
+                />
+                <Button className="text-nowrap" onClick={handleSimulateClick}>
+                  Simulasikan Rumus
+                </Button>
+              </div>
+            </div>
+          ))}
       </div>
 
       {/* Simulation Modal */}

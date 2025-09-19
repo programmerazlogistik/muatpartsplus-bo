@@ -183,6 +183,13 @@ const SimulationModal = ({
   const handleReset = () => {
     setCalculationResults(null);
     setVariableValues(null);
+    setFormData({
+      jarak: "",
+      rute: "",
+      jenisTruk: "",
+      jenisCarrier: "",
+      tonase: 2.5,
+    });
   };
 
   const formatCurrency = (amount) => {
@@ -206,39 +213,33 @@ const SimulationModal = ({
       <ModalContent
         size="medium"
         type="muattrans"
-        className={`w-[500px] ${calculationResults ? "h-[528px]" : "h-[362px]"}`}
+        className={`w-full max-w-[500px]`}
         withCloseButton={true}
         closeOnOutsideClick={true}
+        appearance={{
+          closeButtonClassname: "size-3 text-black",
+        }}
       >
         {/* Modal Content */}
-        <div
-          className={`flex w-full flex-col items-center gap-5 p-5 ${calculationResults ? "h-[463px]" : "h-[297px]"}`}
-        >
+        <div className={`flex w-full flex-col items-center gap-5 px-2 py-8`}>
           {/* Title */}
           <div className="flex flex-col items-center justify-center">
             <ModalTitle>Masukkan Data Simulasi Rumus 4PL</ModalTitle>
           </div>
 
           {/* Form Fields */}
-          <div className="flex w-full flex-col gap-[10px]">
+          <div className="flex w-full flex-col gap-[10px] px-5">
             {/* Jarak Field */}
             <div className="flex items-center gap-[25px]">
               <label className="w-[140px] text-base font-semibold leading-[19px] text-[#1B1B1B]">
-                {calculationResults ? "x*" : "Jarak*"}
+                Jarak*
               </label>
               <div className="flex-1">
                 <Input
                   placeholder="Masukkan Nilai Jarak"
-                  value={
-                    calculationResults
-                      ? variableValues?.jarak ||
-                        variableValues?.x ||
-                        formData.jarak
-                      : formData.jarak
-                  }
+                  value={formData.jarak}
                   onChange={(e) => handleInputChange("jarak", e.target.value)}
                   className="w-full"
-                  disabled={calculationResults}
                 />
               </div>
             </div>
@@ -249,25 +250,13 @@ const SimulationModal = ({
                 Rute*
               </label>
               <div className="flex-1">
-                {calculationResults ? (
-                  <div className="flex h-8 items-center rounded-md border border-[#A8A8A8] bg-white px-2 py-[7px] text-sm font-medium leading-[17px] text-[#1B1B1B]">
-                    {getSelectedLabel(ruteOptions, formData.rute)}
-                    <IconComponent
-                      src="/icons/chevron-down.svg"
-                      width={16}
-                      height={16}
-                      className="ml-auto"
-                    />
-                  </div>
-                ) : (
-                  <Select
-                    options={ruteOptions}
-                    value={formData.rute}
-                    onChange={(value) => handleInputChange("rute", value)}
-                    placeholder="Pilih Rute"
-                    className="w-full"
-                  />
-                )}
+                <Select
+                  options={ruteOptions}
+                  value={formData.rute}
+                  onChange={(value) => handleInputChange("rute", value)}
+                  placeholder="Pilih Rute"
+                  className="w-full"
+                />
               </div>
             </div>
 
@@ -277,25 +266,13 @@ const SimulationModal = ({
                 Jenis Truk*
               </label>
               <div className="flex-1">
-                {calculationResults ? (
-                  <div className="flex h-8 items-center rounded-md border border-[#A8A8A8] bg-white px-2 py-[7px] text-sm font-medium leading-[17px] text-[#1B1B1B]">
-                    {getSelectedLabel(trukOptions, formData.jenisTruk)}
-                    <IconComponent
-                      src="/icons/chevron-down.svg"
-                      width={16}
-                      height={16}
-                      className="ml-auto"
-                    />
-                  </div>
-                ) : (
-                  <Select
-                    options={trukOptions}
-                    value={formData.jenisTruk}
-                    onChange={(value) => handleInputChange("jenisTruk", value)}
-                    placeholder="Pilih Jenis Truk"
-                    className="w-full"
-                  />
-                )}
+                <Select
+                  options={trukOptions}
+                  value={formData.jenisTruk}
+                  onChange={(value) => handleInputChange("jenisTruk", value)}
+                  placeholder="Pilih Jenis Truk"
+                  className="w-full"
+                />
               </div>
             </div>
 
@@ -305,27 +282,13 @@ const SimulationModal = ({
                 Jenis Carrier*
               </label>
               <div className="flex-1">
-                {calculationResults ? (
-                  <div className="flex h-8 items-center rounded-md border border-[#A8A8A8] bg-white px-2 py-[7px] text-sm font-medium leading-[17px] text-[#1B1B1B]">
-                    {getSelectedLabel(carrierOptions, formData.jenisCarrier)}
-                    <IconComponent
-                      src="/icons/chevron-down.svg"
-                      width={16}
-                      height={16}
-                      className="ml-auto"
-                    />
-                  </div>
-                ) : (
-                  <Select
-                    options={carrierOptions}
-                    value={formData.jenisCarrier}
-                    onChange={(value) =>
-                      handleInputChange("jenisCarrier", value)
-                    }
-                    placeholder="Pilih Jenis Carrier"
-                    className="w-full"
-                  />
-                )}
+                <Select
+                  options={carrierOptions}
+                  value={formData.jenisCarrier}
+                  onChange={(value) => handleInputChange("jenisCarrier", value)}
+                  placeholder="Pilih Jenis Carrier"
+                  className="w-full"
+                />
               </div>
             </div>
 
@@ -342,8 +305,7 @@ const SimulationModal = ({
                     onChange={(e) =>
                       handleInputChange("tonase", e.target.value)
                     }
-                    disabled
-                    className="w-full bg-[#D7D7D7] text-[#868686]"
+                    className="w-full"
                   />
                 </div>
                 <span className="text-sm font-medium leading-[17px] text-[#1B1B1B]">
@@ -354,20 +316,24 @@ const SimulationModal = ({
           </div>
 
           {/* Calculate Button */}
-          {!calculationResults && (
+          <div className="flex gap-3">
             <Button
-              variant="muattrans-primary"
+              variant="muatparts-primary"
               onClick={handleCalculate}
               disabled={isCalculating}
               className="w-[135px] rounded-[20px] px-6 py-2"
             >
-              {isCalculating ? "Menghitung..." : "Hitung Harga"}
+              {isCalculating
+                ? "Menghitung..."
+                : calculationResults
+                  ? "Hitung Ulang"
+                  : "Hitung Harga"}
             </Button>
-          )}
+          </div>
 
           {/* Results Section */}
           {calculationResults && (
-            <div className="flex w-full flex-col gap-[15px]">
+            <div className="flex w-full flex-col gap-[15px] px-5">
               <h3 className="text-base font-bold leading-[19px] text-[#1B1B1B]">
                 Hasil Perhitungan Harga
               </h3>
