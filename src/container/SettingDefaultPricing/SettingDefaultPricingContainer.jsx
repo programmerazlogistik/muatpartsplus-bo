@@ -56,7 +56,11 @@ const SettingDefaultPricingContainer = () => {
         <Button
           variant="muatparts-primary"
           onClick={() =>
-            router.push("/master-pricing/setting-default-pricing/history")
+            router.push(
+              activeTab === "nonRuteKhusus"
+                ? "/master-pricing/setting-default-pricing/non-rute-khusus/history"
+                : "/master-pricing/setting-default-pricing/rute-khusus/history"
+            )
           }
         >
           <span className="pt-0.5 text-xs font-semibold">

@@ -35,14 +35,16 @@ const SettingDefaultPricingTable = ({
         key: "actions",
         header: t("SettingDefaultPricing.column.actions", {}, "Aksi"),
         width: "83px",
-        headerClassName: "!justify-center",
-        sortable: false,
+        headerClassName: "justify-center",
+        sortable: true,
         render: (row) => (
-          <div className="flex flex-col gap-[6px]">
+          <div className="flex flex-col items-center gap-[6px]">
             <Button
               variant="muatparts-primary-secondary"
               onClick={() =>
-                router.push(`/setting/default-pricing/${row.id}/edit`)
+                router.push(
+                  `/master-pricing/setting-default-pricing/rute-khusus/${row.id}/atur`
+                )
               }
               className="!h-[20px] !w-[83px] font-semibold"
             >
@@ -51,7 +53,9 @@ const SettingDefaultPricingTable = ({
             <Button
               variant="muatparts-primary"
               onClick={() =>
-                router.push(`/setting/default-pricing/${row.id}/detail`)
+                router.push(
+                  `/master-pricing/setting-default-pricing/rute-khusus/${row.id}/detail`
+                )
               }
               className="!h-[20px] !w-[83px] font-semibold"
             >
@@ -67,11 +71,12 @@ const SettingDefaultPricingTable = ({
           {},
           "Rute Khusus"
         ),
-        sortable: false,
-        width: "350px",
-        className: "p-0",
+        sortable: true,
+        width: "347px",
         render: (row) => (
-          <div className="font-medium text-gray-900">{row.specialRoute}</div>
+          <div className="text-xs font-semibold text-gray-900">
+            {row.specialRoute}
+          </div>
         ),
       },
       {
@@ -79,9 +84,8 @@ const SettingDefaultPricingTable = ({
         header: t("SettingDefaultPricing.column.pricing", {}, "Pricing"),
         sortable: false,
         width: "200px",
-        className: "p-0",
         render: (row) => (
-          <div className="text-sm text-gray-700">
+          <div className="text-xs font-semibold">
             {row.pricing ? `Rp ${row.pricing.toLocaleString("id-ID")}` : "-"}
           </div>
         ),

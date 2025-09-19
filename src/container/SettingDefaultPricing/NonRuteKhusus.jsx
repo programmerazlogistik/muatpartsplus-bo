@@ -182,7 +182,7 @@ const NonRuteKhusus = ({ onFormChange }) => {
           )}
         </CollapsibleTrigger>
         <CollapsibleContent className="flex flex-col">
-          <div className="flex flex-col gap-y-4 p-4">
+          <div className="flex flex-col gap-y-4">
             {/* Header Row */}
             <div className="flex items-center gap-x-6">
               <span className="w-56 text-base font-bold">Jenis Truck</span>
@@ -251,10 +251,7 @@ const NonRuteKhusus = ({ onFormChange }) => {
         title={{ text: "Pemberitahuan" }}
         description={{ text: "Data berhasil disimpan." }}
         withCancel={false}
-        confirm={{
-          text: "OK",
-          onClick: handleSuccessModalClose,
-        }}
+        withButtons={false}
       />
 
       {/* Navigation Confirmation Modal */}
