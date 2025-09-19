@@ -398,14 +398,6 @@ export default function SettingRumusPricing() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <div className="text-lg">Loading rumus data...</div>
-      </div>
-    );
-  }
-
   return (
     <div>
       <div className="mb-8 flex items-center justify-between">
@@ -512,7 +504,9 @@ export default function SettingRumusPricing() {
                     <Button
                       type="button"
                       className="text-nowrap"
-                      onClick={() => handleSimulateClick(index, watchedRumus?.[index])}
+                      onClick={() =>
+                        handleSimulateClick(index, watchedRumus?.[index])
+                      }
                       disabled={
                         watchedRumus?.[index]?.formula?.length === 0 ||
                         errors.rumus?.[index]?.formula
