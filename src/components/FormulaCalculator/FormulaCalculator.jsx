@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 
 import { cn } from "@/lib/utils";
 
+import Button from "../Button/Button";
 import IconComponent from "../IconComponent/IconComponent";
 
 /**
@@ -21,31 +22,38 @@ import IconComponent from "../IconComponent/IconComponent";
 const FormulaCalculator = ({
   variables = [],
   onFormulaChange,
-  initialFormula = "",
+  initialFormula = {
+    formula: "",
+    displayFormula: [],
+  },
   className,
   placeholder = "Masukkan Rumus",
 }) => {
+  // Handle both string and array initialFormula
+  const getInitialFormulaArray = (initial) => {
+    if (!initial) return [];
+    if (Array.isArray(initial)) return initial;
+    if (typeof initial === "string") {
+      return initial.split(" ").filter((item) => item !== "");
+    }
+    return [];
+  };
+
   const [formula, setFormula] = useState(
-    initialFormula
-      ? initialFormula.split(" ").filter((item) => item !== "")
-      : []
+    getInitialFormulaArray(initialFormula)
   );
-  const [displayFormula, setDisplayFormula] = useState(
-    initialFormula
-      ? initialFormula.split(" ").filter((item) => item !== "")
-      : []
-  );
+  const [displayFormula, setDisplayFormula] = useState([]);
   const inputRef = useRef(null);
 
   // Operators available for the calculator
   const operators = [
-    { id: "add", symbol: "+", display: "+" },
-    { id: "subtract", symbol: "-", display: "-" },
-    { id: "multiply", symbol: "*", display: "×" },
-    { id: "divide", symbol: "/", display: "÷" },
-    { id: "power", symbol: "^", display: "^" },
-    { id: "openParen", symbol: "(", display: "(" },
-    { id: "closeParen", symbol: ")", display: ")" },
+    { symbol: "+", display: "+" },
+    { symbol: "-", display: "-" },
+    { symbol: "*", display: "×" },
+    { symbol: "/", display: "÷" },
+    { symbol: "^", display: "^" },
+    { symbol: "(", display: "(" },
+    { symbol: ")", display: ")" },
   ];
 
   // Number buttons (0-9)
@@ -58,6 +66,14 @@ const FormulaCalculator = ({
     }
   }, []);
 
+  // Update formula state when initialFormula prop changes
+  useEffect(() => {
+    if (initialFormula) {
+      setFormula(initialFormula.formula);
+      setDisplayFormula(initialFormula.displayFormula);
+    }
+  }, [initialFormula]);
+
   const handleVariableClick = (variable) => {
     const newFormula = [...formula, variable.id];
 
@@ -69,7 +85,7 @@ const FormulaCalculator = ({
   };
 
   const handleOperatorClick = (operator) => {
-    const newFormula = [...formula, operator.id];
+    const newFormula = [...formula, operator.display];
     const newDisplayFormula = [...displayFormula, operator.display];
 
     setFormula(newFormula);
@@ -78,8 +94,30 @@ const FormulaCalculator = ({
   };
 
   const handleNumberClick = (number) => {
-    const newFormula = [...formula, number];
-    const newDisplayFormula = [...displayFormula, number];
+    // Check if the last element in the formula is also a number
+    // If so, concatenate them to form multi-digit numbers
+    const lastFormulaElement = formula[formula.length - 1];
+    const lastDisplayElement = displayFormula[displayFormula.length - 1];
+
+    // Check if last element is a number (string of digits or decimal)
+    const isLastElementNumber =
+      lastFormulaElement && /^[\d.]+$/.test(lastFormulaElement);
+
+    let newFormula;
+    let newDisplayFormula;
+
+    if (isLastElementNumber) {
+      // Concatenate with the last number
+      newFormula = [...formula.slice(0, -1), `${lastFormulaElement}${number}`];
+      newDisplayFormula = [
+        ...displayFormula.slice(0, -1),
+        `${lastDisplayElement}${number}`,
+      ];
+    } else {
+      // Add as new number element
+      newFormula = [...formula, number];
+      newDisplayFormula = [...displayFormula, number];
+    }
 
     setFormula(newFormula);
     setDisplayFormula(newDisplayFormula);
@@ -91,9 +129,43 @@ const FormulaCalculator = ({
       e.stopPropagation();
     }
 
-    // Remove last character from formula
-    const newFormula = formula.slice(0, -1);
-    const newDisplayFormula = displayFormula.slice(0, -1);
+    if (formula.length === 0) return;
+
+    // Get the last element
+    const lastFormulaElement = formula[formula.length - 1];
+    const lastDisplayElement = displayFormula[displayFormula.length - 1];
+
+    // Check if the last element is a multi-digit number or decimal
+    const isMultiDigitNumber =
+      lastFormulaElement &&
+      /^[\d.]+$/.test(lastFormulaElement) &&
+      lastFormulaElement.length > 1;
+
+    let newFormula;
+    let newDisplayFormula;
+
+    if (isMultiDigitNumber) {
+      // Remove one digit/character from the end of the number
+      const shortenedNumber = lastFormulaElement.slice(0, -1);
+      const shortenedDisplayNumber = lastDisplayElement.slice(0, -1);
+
+      if (shortenedNumber.length > 0) {
+        // Still has digits left, keep the shortened number
+        newFormula = [...formula.slice(0, -1), shortenedNumber];
+        newDisplayFormula = [
+          ...displayFormula.slice(0, -1),
+          shortenedDisplayNumber,
+        ];
+      } else {
+        // No digits left, remove the entire element
+        newFormula = formula.slice(0, -1);
+        newDisplayFormula = displayFormula.slice(0, -1);
+      }
+    } else {
+      // For single digits, operators, or variables, remove the entire element
+      newFormula = formula.slice(0, -1);
+      newDisplayFormula = displayFormula.slice(0, -1);
+    }
 
     setFormula(newFormula);
     setDisplayFormula(newDisplayFormula);
@@ -119,6 +191,36 @@ const FormulaCalculator = ({
     // Handle numbers (0-9)
     if (/^[0-9]$/.test(key)) {
       handleNumberClick(key);
+      return;
+    }
+
+    // Handle decimal point for decimal numbers
+    if (key === ".") {
+      // Check if the last element is a number and doesn't already contain a decimal point
+      const lastFormulaElement = formula[formula.length - 1];
+      const isLastElementNumber =
+        lastFormulaElement && /^\d+$/.test(lastFormulaElement);
+
+      if (isLastElementNumber) {
+        // Add decimal point to the last number
+        const newFormula = [...formula.slice(0, -1), `${lastFormulaElement}.`];
+        const newDisplayFormula = [
+          ...displayFormula.slice(0, -1),
+          `${lastFormulaElement}.`,
+        ];
+
+        setFormula(newFormula);
+        setDisplayFormula(newDisplayFormula);
+        onFormulaChange?.(newFormula, newDisplayFormula);
+      } else {
+        // Start a new decimal number
+        const newFormula = [...formula, "0."];
+        const newDisplayFormula = [...displayFormula, "0."];
+
+        setFormula(newFormula);
+        setDisplayFormula(newDisplayFormula);
+        onFormulaChange?.(newFormula, newDisplayFormula);
+      }
       return;
     }
 
@@ -172,7 +274,7 @@ const FormulaCalculator = ({
       <div
         ref={inputRef}
         tabIndex={0}
-        className="border-dark-gray flex w-full items-center justify-between rounded-md border px-4 py-3 hover:cursor-text focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="flex w-full items-center justify-between rounded-md border border-dark-gray px-4 py-3 hover:cursor-text focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
         onClick={handleFocusInput}
         onKeyDown={handleKeyDown}
       >
@@ -186,6 +288,7 @@ const FormulaCalculator = ({
         {/* Delete Button */}
 
         <button
+          type="button"
           onClick={handleDelete}
           disabled={!formula}
           className="flex items-center justify-center gap-2 rounded-lg text-sm font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:bg-gray-300"
@@ -197,39 +300,41 @@ const FormulaCalculator = ({
       {/* Main Calculator Layout */}
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Variables Section */}
-        <div className="border-stroke-data rounded-lg border p-4">
+        <div className="rounded-lg border border-stroke-data p-4">
           <h4 className="mb-4 text-base font-semibold text-gray-900">
             Variabel:
           </h4>
           <div className="grid grid-cols-2 gap-3">
             {variables.map((variable) => (
-              <button
+              <Button
+                type="button"
                 key={variable.id}
                 onClick={() => handleVariableClick(variable)}
                 className="flex items-center justify-center rounded-lg bg-blue-500 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-600"
               >
                 {variable.name}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
 
         {/* Operators & Numbers Section */}
-        <div className="border-stroke-data rounded-lg border p-4">
+        <div className="rounded-lg border border-stroke-data p-4">
           <h4 className="mb-4 text-base font-semibold text-gray-900">
             Operator:
           </h4>
 
           {/* Operators Grid */}
           <div className="mb-4 grid grid-cols-4 gap-2">
-            {operators.map((operator) => (
-              <button
-                key={operator.id}
+            {operators.map((operator, index) => (
+              <Button
+                type="button"
+                key={`${operator.symbol}-${index}`}
                 onClick={() => handleOperatorClick(operator)}
                 className="flex h-10 items-center justify-center rounded-lg bg-blue-500 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-600"
               >
                 {operator.display}
-              </button>
+              </Button>
             ))}
           </div>
 
