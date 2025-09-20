@@ -51,12 +51,12 @@ const SettingNilaiVariabelTable = ({
               variant="muatparts-primary-secondary"
               onClick={() =>
                 router.push(
-                  `/master-pricing/setting-nilai-variabel/${row.id}/edit`
+                  `/master-pricing/setting-nilai-variabel/${row.id}/atur`
                 )
               }
               className="!h-[20px] !w-[83px] font-semibold"
             >
-              Ubah
+              Atur
             </Button>
             <Button
               variant="muatparts-primary"
@@ -74,6 +74,7 @@ const SettingNilaiVariabelTable = ({
       },
       {
         key: "truckType",
+        width: "348px",
         header: t("SettingNilaiVariabel.column.truckType", {}, "Jenis Truck"),
         sortable: true,
         render: (row) => <div>{row.truckType || "-"}</div>,
@@ -135,7 +136,7 @@ const SettingNilaiVariabelTable = ({
           onPerPageChange={onPerPageChange}
           showFilter={true}
           showSearch={true}
-          showPagination={true}
+          showPagination={false}
           showTotalCount={false}
           totalCountLabel={t(
             "SettingNilaiVariabel.totalCountLabel",
