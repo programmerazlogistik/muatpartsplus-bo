@@ -4,12 +4,14 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { ChevronDownIcon } from "public/icons";
+// Import Valibot for validation
+import * as v from "valibot";
 
 import Button from "@/components/Button/Button";
+import DatePicker from "@/components/DatePicker/DatePicker";
 import { FormContainer, FormLabel } from "@/components/Form/Form";
 import Input from "@/components/Form/Input";
 import Select from "@/components/Select/Select";
-import Toggle from "@/components/Toggle/Toggle";
 
 import VariablePricing from "@/container/SettingNilaiVariabel/VariablePricing";
 
@@ -17,8 +19,6 @@ import { useTranslation } from "@/hooks/use-translation";
 
 // Import formula options
 import { formulaOptions } from "@/lib/constants/formulaOptions";
-
-import { IconComponent } from "@/components";
 
 import SpecialPricePricing from "./SpecialPricePricing";
 
@@ -48,14 +48,8 @@ const SettingNilaiVariabelForm = ({
     isActive: true,
   });
 
-  // Truck type options
-  const truckTypeOptions = [
-    { value: "CDD", label: "CDD" },
-    { value: "CDL", label: "CDL" },
-    { value: "Fuso", label: "Fuso" },
-    { value: "Tronton", label: "Tronton" },
-    { value: "Wing Box", label: "Wing Box" },
-  ];
+  // Validation errors state
+  const [errors, setErrors] = useState({});
 
   // Update form data when routeValue or truckTypeValue props change
   useEffect(() => {
@@ -91,10 +85,71 @@ const SettingNilaiVariabelForm = ({
       [field]: value,
     }));
 
+    // Clear error for this field when user starts typing
+    if (errors[field]) {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: "",
+      }));
+    }
+
     // Notify parent component about data changes
     if (onDataChange) {
       onDataChange(true);
     }
+  };
+
+  // Validate form using Valibot
+  const validateForm = () => {
+    // Define validation schema
+    const schema = v.object({
+      route: v.string(),
+      truckType: v.string(),
+      formula: v.nullable(v.string()),
+      variable: v.string(),
+      specialPrice: v.string(),
+      applicableFrom: v.string(),
+      isActive: v.boolean(),
+    });
+
+    // Create partial schema for conditional validation
+    const partialSchema = v.partial(schema);
+
+    // Validate basic form data
+    const result = v.safeParse(partialSchema, formData);
+
+    if (!result.success) {
+      // If validation fails, extract error messages
+      const fieldErrors = {};
+      result.issues.forEach((issue) => {
+        const path = issue.path?.[0]?.key || "";
+        fieldErrors[path] = issue.message;
+      });
+      return fieldErrors;
+    }
+
+    // Additional custom validation
+    const customErrors = {};
+
+    // Validate formula is selected
+    if (formData.formula === null || formData.formula === undefined) {
+      customErrors.formula = "Rumus wajib dipilih";
+    }
+
+    // If a formula is selected, validate the additional fields
+    if (formData.formula && !formData.variable.trim()) {
+      customErrors.variable = "Variabel harus diisi";
+    }
+
+    if (formData.formula && !formData.specialPrice.trim()) {
+      customErrors.specialPrice = "Harga khusus harus diisi";
+    }
+
+    if (!formData.applicableFrom) {
+      customErrors.applicableFrom = "Berlaku Mulai wajib diisi";
+    }
+
+    return customErrors;
   };
 
   // Handle form submission
@@ -103,35 +158,12 @@ const SettingNilaiVariabelForm = ({
 
     if (disabled) return; // Don't submit in detail mode
 
-    // Basic validation
-    if (!formData.route.trim()) {
-      alert("Rute harus diisi");
-      return;
-    }
+    // Validate form
+    const validationErrors = validateForm();
+    setErrors(validationErrors);
 
-    if (!formData.truckType) {
-      alert("Jenis truk harus dipilih");
-      return;
-    }
-
-    if (formData.formula === null || formData.formula === undefined) {
-      alert("Rumus harus dipilih");
-      return;
-    }
-
-    // If a formula is selected, validate the additional fields
-    if (formData.formula && !formData.variable.trim()) {
-      alert("Variabel harus diisi");
-      return;
-    }
-
-    if (formData.formula && !formData.specialPrice.trim()) {
-      alert("Harga khusus harus diisi");
-      return;
-    }
-
-    if (!formData.applicableFrom) {
-      alert("Berlaku mulai harus diisi");
+    // If there are validation errors, don't submit
+    if (Object.keys(validationErrors).length > 0) {
       return;
     }
 
@@ -175,7 +207,11 @@ const SettingNilaiVariabelForm = ({
                 onValueChange={(value) => handleInputChange("formula", value)}
                 disabled={disabled}
               >
-                <Select.Trigger placeholder="Pilih Rumus">
+                <Select.Trigger
+                  placeholder="Pilih Rumus"
+                  errorMessage={errors.formula}
+                  isError={!!errors.formula}
+                >
                   <Select.Value placeholder="Pilih Rumus">
                     {formData.formula
                       ? formulaOptions.find(
@@ -184,13 +220,12 @@ const SettingNilaiVariabelForm = ({
                       : "Pilih Rumus"}
                   </Select.Value>
                 </Select.Trigger>
-                <Select.Content searchable searchPlaceholder="Cari rumus...">
+                <Select.Content searchable searchPlaceholder="Cari Rumus">
                   {formulaOptions.map((option) => (
                     <Select.Item
                       key={option.value}
                       value={option.value}
                       textValue={option.label}
-                      className="mb-3"
                     >
                       <span className="h-3 truncate text-xs font-medium text-neutral-900">
                         {option.label}
@@ -233,15 +268,22 @@ const SettingNilaiVariabelForm = ({
 
             <FormContainer>
               <FormLabel required={!disabled}>Berlaku Mulai</FormLabel>
-              <Input
-                placeholder="Masukkan Tanggal Berlaku"
-                value={formData.applicableFrom}
-                onChange={(e) =>
-                  handleInputChange("applicableFrom", e.target.value)
+              <DatePicker
+                placeholder="dd/mm/yyyy"
+                value={
+                  formData.applicableFrom
+                    ? new Date(formData.applicableFrom)
+                    : null
                 }
-                required={!disabled}
+                onChange={(date) => {
+                  const dateString = date
+                    ? date.toISOString().split("T")[0]
+                    : "";
+                  handleInputChange("applicableFrom", dateString);
+                }}
                 disabled={disabled}
-                type="date"
+                iconPosition="right"
+                errorMessage={errors.applicableFrom}
               />
             </FormContainer>
           </div>

@@ -69,6 +69,11 @@ const SelectTrigger = ({
 }) => {
   const { value, disabled, open } = useSelect();
 
+  // Determine if there's an error
+  const hasError = () => {
+    return Boolean(errorMessage) || isError;
+  };
+
   return (
     <div className="w-full">
       <Popover.Trigger asChild>
@@ -83,8 +88,9 @@ const SelectTrigger = ({
               "cursor-not-allowed border-neutral-400 bg-neutral-100 text-neutral-500",
             open && "border-primary-700 text-neutral-900",
             !open &&
+              !hasError() &&
               "border-neutral-600 text-neutral-900 hover:border-primary-700",
-            (errorMessage || isError) && "border-error-400",
+            hasError() && "border-error-400",
             className
           )}
         >

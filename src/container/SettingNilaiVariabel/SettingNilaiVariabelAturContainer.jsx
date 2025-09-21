@@ -45,10 +45,10 @@ export default function SettingNilaiVariabelAturContainer({
           id: id,
           route: "Jakarta - Surabaya",
           truckType: "CDD",
-          formula: "formula_1",
-          variable: "Tarif Dasar",
-          specialPrice: "15000",
-          applicableFrom: "2023-01-01",
+          formula: null,
+          variable: "",
+          specialPrice: "",
+          applicableFrom: "",
           isActive: true,
         };
 
