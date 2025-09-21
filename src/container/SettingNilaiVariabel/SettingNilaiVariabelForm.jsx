@@ -99,6 +99,14 @@ const SettingNilaiVariabelForm = ({
     }
   };
 
+  // Handle error from child components
+  const handleChildError = (field, errorMessage) => {
+    setErrors((prev) => ({
+      ...prev,
+      [field]: errorMessage,
+    }));
+  };
+
   // Validate form using Valibot
   const validateForm = () => {
     // Define validation schema
@@ -250,6 +258,7 @@ const SettingNilaiVariabelForm = ({
                   onSpecialPriceChange={(value) =>
                     handleInputChange("specialPrice", value)
                   }
+                  onError={handleChildError}
                 />
                 <SpecialPricePricing
                   disabled={disabled}
@@ -262,6 +271,7 @@ const SettingNilaiVariabelForm = ({
                   onSpecialPriceChange={(value) =>
                     handleInputChange("specialPrice", value)
                   }
+                  onError={handleChildError}
                 />
               </>
             )}

@@ -164,10 +164,7 @@ export default function SettingNilaiVariabelAturContainer({
           text: "Data berhasil disimpan.",
         }}
         withCancel={false}
-        confirm={{
-          text: "OK",
-          onClick: handleSuccessModalClose,
-        }}
+        withButtons={false}
       />
     </>
   );

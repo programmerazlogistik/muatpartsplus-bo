@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 
 import { ChevronDownIcon } from "public/icons";
+// Import Valibot for validation
+import * as v from "valibot";
 
 import { FormContainer, FormLabel } from "@/components/Form/Form";
 import Input from "@/components/Form/Input";
@@ -17,6 +19,7 @@ const SpecialPricePricing = ({
   variableValue = "",
   specialPriceValue = "",
   required = false,
+  onError, // Callback for validation errors
 }) => {
   // State for expandable sections
   const [expandedSections, setExpandedSections] = useState({
@@ -30,6 +33,11 @@ const SpecialPricePricing = ({
     low: "",
     medium: "",
     high: "",
+  });
+
+  // Validation error state
+  const [errors, setErrors] = useState({
+    specialPrice: "",
   });
 
   const toggleSection = (section) => {
@@ -47,6 +55,34 @@ const SpecialPricePricing = ({
     }));
   };
 
+  // Validate the special price input
+  const validateSpecialPrice = (value) => {
+    if (required && !value.trim()) {
+      return "Harga khusus harus diisi";
+    }
+    return "";
+  };
+
+  // Handle special price input change with validation
+  const handleSpecialPriceChange = (value) => {
+    // Validate the input
+    const errorMessage = validateSpecialPrice(value);
+    setErrors((prev) => ({
+      ...prev,
+      specialPrice: errorMessage,
+    }));
+
+    // Call parent onChange handler
+    if (onSpecialPriceChange) {
+      onSpecialPriceChange(value);
+    }
+
+    // Notify parent component about validation errors
+    if (onError) {
+      onError("specialPrice", errorMessage);
+    }
+  };
+
   return (
     <>
       <FormContainer>
@@ -55,7 +91,11 @@ const SpecialPricePricing = ({
         </FormLabel>
         <div className="flex flex-col gap-3">
           <div
-            className="flex cursor-pointer items-center"
+            className={`flex cursor-pointer items-center ${
+              errors.specialPrice && !expandedSections.route
+                ? "rounded border border-red-500 p-2"
+                : ""
+            }`}
             onClick={() => toggleSection("route")}
           >
             <span className="text-base font-bold">Kota Surabaya - Malang </span>
@@ -67,6 +107,10 @@ const SpecialPricePricing = ({
               data-expanded={expandedSections.route}
             />
           </div>
+          {/* Error message */}
+          {errors.specialPrice && !expandedSections.route && (
+            <p className="mt-1 text-sm text-red-500">{errors.specialPrice}</p>
+          )}
 
           {expandedSections.route && (
             <div className="ml-4 flex flex-col gap-3">
@@ -169,9 +213,13 @@ const SpecialPricePricing = ({
                         </div>
                         <Input
                           value={variableValue}
-                          onChange={(e) => onVariableChange(e.target.value)}
+                          onChange={(e) =>
+                            handleSpecialPriceChange(e.target.value)
+                          }
                           placeholder="Masukkan nilai variabel"
                           disabled={disabled}
+                          isError={!!errors.specialPrice}
+                          errorMessage={errors.specialPrice}
                         />
                       </div>
                     </div>
@@ -183,9 +231,13 @@ const SpecialPricePricing = ({
                         </div>
                         <Input
                           value={variableValue}
-                          onChange={(e) => onVariableChange(e.target.value)}
+                          onChange={(e) =>
+                            handleSpecialPriceChange(e.target.value)
+                          }
                           placeholder="Masukkan nilai variabel"
                           disabled={disabled}
+                          isError={!!errors.specialPrice}
+                          errorMessage={errors.specialPrice}
                         />
                       </div>
                     </div>
@@ -197,9 +249,13 @@ const SpecialPricePricing = ({
                         </div>
                         <Input
                           value={variableValue}
-                          onChange={(e) => onVariableChange(e.target.value)}
+                          onChange={(e) =>
+                            handleSpecialPriceChange(e.target.value)
+                          }
                           placeholder="Masukkan nilai variabel"
                           disabled={disabled}
+                          isError={!!errors.specialPrice}
+                          errorMessage={errors.specialPrice}
                         />
                       </div>
                     </div>
