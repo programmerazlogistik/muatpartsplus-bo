@@ -1,7 +1,7 @@
 import GaleriIcon from "./Galeri.svg";
 import GiftIcon from "./Gift.svg";
 import HargaIcon from "./Harga.svg";
-import HomeIcon from "./Home.svg";
+// import HomeIcon from "./Home.svg";
 import InfoPraTenderIcon from "./Info-Pra-Tender.svg";
 import InfoIcon from "./Info.svg";
 import KapasitasIcon from "./Kapasitas.svg";
