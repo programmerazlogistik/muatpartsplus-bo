@@ -38,6 +38,7 @@ const SimulationModal = ({
   const [isCalculating, setIsCalculating] = useState(false);
   const [calculationResults, setCalculationResults] = useState(null);
   const [variableValues, setVariableValues] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({});
 
   // Sample data - in real app, these would come from API
   const ruteOptions = [
@@ -66,6 +67,15 @@ const SimulationModal = ({
       ...prev,
       [field]: value,
     }));
+
+    // Clear validation error for this field when user starts typing
+    if (validationErrors[field]) {
+      setValidationErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
   };
 
   // Mock API call to fetch variable values
@@ -216,8 +226,35 @@ const SimulationModal = ({
   };
 
   const handleCalculate = async () => {
-    if (!formData.rute || !formData.jenisTruk || !formData.jarak) {
-      alert("Please fill in all required fields");
+    // Reset previous validation errors
+    setValidationErrors({});
+
+    // Validate required fields
+    const errors = {};
+
+    if (!formData.jarak || formData.jarak.trim() === "") {
+      errors.jarak = "Jarak wajib diisi";
+    }
+
+    if (!formData.rute) {
+      errors.rute = "Rute wajib diisi";
+    }
+
+    if (!formData.jenisTruk) {
+      errors.jenisTruk = "Jenis Truk wajib diisi";
+    }
+
+    if (!formData.jenisCarrier) {
+      errors.jenisCarrier = "Jenis Carrier wajib diisi";
+    }
+
+    if (!formData.tonase || parseFloat(formData.tonase) <= 0) {
+      errors.tonase = "Tonase wajib diisi";
+    }
+
+    // If there are validation errors, set them and return
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
       return;
     }
 
@@ -274,6 +311,7 @@ const SimulationModal = ({
     // Clear all form data and calculation results when modal closes
     setCalculationResults(null);
     setVariableValues(null);
+    setValidationErrors({});
     setFormData({
       jarak: "",
       rute: "",
@@ -286,7 +324,6 @@ const SimulationModal = ({
     // Call the original onClose callback
     onClose();
   };
-
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -351,8 +388,13 @@ const SimulationModal = ({
                   placeholder="Masukkan Nilai Jarak"
                   value={formData.jarak}
                   onChange={(e) => handleInputChange("jarak", e.target.value)}
-                  className="w-full"
+                  className={`w-full ${validationErrors.jarak ? "border-red-500" : ""}`}
                 />
+                {validationErrors.jarak && (
+                  <div className="mt-1 text-sm text-red-600">
+                    {validationErrors.jarak}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -363,12 +405,22 @@ const SimulationModal = ({
               </label>
               <div className="flex-1">
                 <Select
-                  options={ruteOptions}
-                  value={formData.rute}
-                  onChange={(value) => handleInputChange("rute", value)}
                   placeholder="Pilih Rute"
-                  className="w-full"
+                  value={formData.rute}
+                  onValueChange={(value) => handleInputChange("rute", value)}
+                  className={validationErrors.rute ? "border-red-500" : ""}
+                  options={[
+                    { value: "jakarta-bandung", label: "Jakarta - Bandung" },
+                    { value: "jakarta-surabaya", label: "Jakarta - Surabaya" },
+                    { value: "jakarta-medan", label: "Jakarta - Medan" },
+                    { value: "surabaya-bandung", label: "Surabaya - Bandung" },
+                  ]}
                 />
+                {validationErrors.rute && (
+                  <div className="mt-1 text-sm text-red-600">
+                    {validationErrors.rute}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -379,12 +431,26 @@ const SimulationModal = ({
               </label>
               <div className="flex-1">
                 <Select
-                  options={trukOptions}
-                  value={formData.jenisTruk}
-                  onChange={(value) => handleInputChange("jenisTruk", value)}
                   placeholder="Pilih Jenis Truk"
-                  className="w-full"
+                  value={formData.jenisTruk}
+                  onValueChange={(value) =>
+                    handleInputChange("jenisTruk", value)
+                  }
+                  className={validationErrors.jenisTruk ? "border-red-500" : ""}
+                  options={[
+                    { value: "pickup", label: "Pickup" },
+                    { value: "cdd", label: "CDD" },
+                    { value: "cde", label: "CDE" },
+                    { value: "truck", label: "Truck" },
+                    { value: "tronton", label: "Tronton" },
+                    { value: "trailer", label: "Trailer" },
+                  ]}
                 />
+                {validationErrors.jenisTruk && (
+                  <div className="mt-1 text-sm text-red-600">
+                    {validationErrors.jenisTruk}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -395,12 +461,29 @@ const SimulationModal = ({
               </label>
               <div className="flex-1">
                 <Select
-                  options={carrierOptions}
-                  value={formData.jenisCarrier}
-                  onChange={(value) => handleInputChange("jenisCarrier", value)}
                   placeholder="Pilih Jenis Carrier"
-                  className="w-full"
+                  value={formData.jenisCarrier}
+                  onValueChange={(value) =>
+                    handleInputChange("jenisCarrier", value)
+                  }
+                  className={
+                    validationErrors.jenisCarrier ? "border-red-500" : ""
+                  }
+                  options={[
+                    { value: "bak-terbuka", label: "Bak Terbuka" },
+                    { value: "engkel", label: "Engkel Box" },
+                    { value: "cdd-box", label: "CDD Box" },
+                    { value: "cde-box", label: "CDE Box" },
+                    { value: "truck-box", label: "Truck Box" },
+                    { value: "container", label: "Container" },
+                    { value: "tanki", label: "Tanki" },
+                  ]}
                 />
+                {validationErrors.jenisCarrier && (
+                  <div className="mt-1 text-sm text-red-600">
+                    {validationErrors.jenisCarrier}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -417,9 +500,14 @@ const SimulationModal = ({
                     onChange={(e) =>
                       handleInputChange("tonase", e.target.value)
                     }
-                    className="w-full"
+                    className={`w-full ${validationErrors.tonase ? "border-red-500" : ""}`}
                     disabled
                   />
+                  {validationErrors.tonase && (
+                    <div className="mt-1 text-sm text-red-600">
+                      {validationErrors.tonase}
+                    </div>
+                  )}
                 </div>
                 <span className="text-sm font-medium leading-[17px] text-[#1B1B1B]">
                   Ton

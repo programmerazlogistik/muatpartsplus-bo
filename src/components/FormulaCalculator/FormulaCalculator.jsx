@@ -28,6 +28,7 @@ const FormulaCalculator = ({
   },
   className,
   placeholder = "Masukkan Rumus",
+  hasError = false,
 }) => {
   // Handle both string and array initialFormula
   const getInitialFormulaArray = (initial) => {
@@ -274,7 +275,11 @@ const FormulaCalculator = ({
       <div
         ref={inputRef}
         tabIndex={0}
-        className="flex w-full items-center justify-between rounded-md border border-dark-gray px-4 py-3 hover:cursor-text focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className={`flex w-full items-center justify-between rounded-md border px-4 py-3 hover:cursor-text focus:outline-none focus:ring-2 ${
+          hasError
+            ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+            : "border-dark-gray focus:border-blue-500 focus:ring-blue-500"
+        }`}
         onClick={handleFocusInput}
         onKeyDown={handleKeyDown}
       >

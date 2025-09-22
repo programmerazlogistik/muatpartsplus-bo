@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { useForm } from "react-hook-form";
@@ -402,7 +403,9 @@ export default function SettingRumusPricing() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <PageTitle withBack={false}>Setting Rumus Pricing</PageTitle>
-        <Button>Lihat History Perubahan</Button>
+        <Link href="/master-pricing/setting-rumus-pricing/history">
+          <Button>Lihat History Perubahan</Button>
+        </Link>
       </div>
       {loading ? (
         <div className="flex h-64 items-center justify-center">
@@ -416,7 +419,6 @@ export default function SettingRumusPricing() {
           {watchedRumus &&
             watchedRumus.length > 0 &&
             watchedRumus.map((rumus, index) => {
-              console.log("rumus", rumus);
               return (
                 <div className="flex" key={rumus.id || index}>
                   <div className="flex w-fit min-w-[200px]">
@@ -429,11 +431,11 @@ export default function SettingRumusPricing() {
                       <input
                         type="hidden"
                         {...register(`rumus.${index}.formula`, {
-                          required: "Formula harus diisi",
+                          required: `Rumus ${rumus.name} wajib diisi`,
                           validate: {
                             notEmpty: (value) =>
                               (value && value.length > 0) ||
-                              "Formula tidak boleh kosong",
+                              `Rumus ${rumus.name} wajib diisi`,
                             validFormula: (value) => {
                               // Get the current formula for this rumus
                               const currentFormula =
@@ -479,26 +481,14 @@ export default function SettingRumusPricing() {
                             ? "border-2 border-red-500"
                             : ""
                         }`}
+                        hasError={!!errors.rumus?.[index]?.formula}
                       />
 
                       {errors.rumus?.[index]?.formula && (
-                        <div className="mt-2 rounded-md bg-red-50 p-2">
-                          <div className="flex">
-                            <div className="text-sm text-red-600">
-                              <strong>Formula Error:</strong>{" "}
-                              {errors.rumus[index].formula.message}
-                            </div>
-                          </div>
+                        <div className="mt-2 text-sm text-red-600">
+                          {errors.rumus[index].formula.message}
                         </div>
                       )}
-
-                      {/* Show validation success when formula is valid */}
-                      {!errors.rumus?.[index]?.formula &&
-                        watchedRumus?.[index]?.formula?.length > 0 && (
-                          <div className="mt-1 text-sm text-green-600">
-                            ✓ Formula valid dan siap digunakan
-                          </div>
-                        )}
                     </div>
 
                     <Button
@@ -532,7 +522,7 @@ export default function SettingRumusPricing() {
               disabled={formIsSubmitting || !isValid}
               className="mx-auto"
             >
-              {formIsSubmitting ? "Menyimpan..." : "Submit"}
+              {formIsSubmitting ? "Menyimpan..." : "Simpan"}
             </Button>
 
             {isDirty && (
