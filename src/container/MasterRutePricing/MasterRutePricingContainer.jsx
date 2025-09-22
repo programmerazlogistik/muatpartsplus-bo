@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 import Button from "@/components/Button/Button";
 import MasterRutePricingTable from "./MasterRutePricingTable";
+import { useGetRouteList, transformRouteListToTableData } from "@/services/masterpricing/masterrute/getRouteList";
 
 export default function MasterRutePricingContainer() {
   const router = useRouter();
@@ -14,60 +15,22 @@ export default function MasterRutePricingContainer() {
   const [perPage, setPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [updatingRoutes, setUpdatingRoutes] = useState(new Set());
-  const [loading, setLoading] = useState(false);
 
-  // Dummy data for the table
-  const dummyData = [
-    {
-      id: 1,
-      alias: "Jawa - Sumatera",
-      originProvince: "Banten, Daerah Istimewa Yogyakarta, DKI Jakarta, Jawa Barat, Jawa Tengah, Jawa Timur",
-      destinationProvince: "Banten, Daerah Istimewa Yogyakarta, DKI Jakarta, Jawa Barat, Jawa Tengah, Jawa Timur",
-      isActive: true,
-    },
-    {
-      id: 2,
-      alias: "Jawa - Jawa",
-      originProvince: "Banten, Daerah Istimewa Yogyakarta, DKI Jakarta, Jawa Barat, Jawa Tengah, Jawa Timur",
-      destinationProvince: "Banten, Daerah Istimewa Yogyakarta, DKI Jakarta, Jawa Barat, Jawa Tengah, Jawa Timur",
-      isActive: true,
-    },
-    {
-      id: 3,
-      alias: "Sumatera - Kalimantan",
-      originProvince: "Aceh, Sumatera Utara, Sumatera Barat, Riau, Kepulauan Riau, Jambi, Sumatera Selatan, Bangka Belitung, Lampung",
-      destinationProvince: "Kalimantan Barat, Kalimantan Tengah, Kalimantan Selatan, Kalimantan Timur, Kalimantan Utara",
-      isActive: false,
-    },
-    {
-      id: 4,
-      alias: "Sulawesi - Papua",
-      originProvince: "Sulawesi Utara, Gorontalo, Sulawesi Tengah, Sulawesi Selatan, Sulawesi Tenggara, Sulawesi Barat",
-      destinationProvince: "Papua, Papua Barat, Papua Selatan, Papua Tengah, Papua Pegunungan",
-      isActive: true,
-    },
-    {
-      id: 5,
-      alias: "Bali - Nusa Tenggara",
-      originProvince: "Bali",
-      destinationProvince: "Nusa Tenggara Barat, Nusa Tenggara Timur",
-      isActive: false,
-    },
-  ];
+  // Use API hook to fetch route list
+  const { data: apiResponse, error, isLoading, mutate } = useGetRouteList({
+    search: searchQuery,
+    page: currentPage,
+    limit: perPage
+  });
 
-  // Filter data based on search query
-  const filteredData = dummyData.filter((item) =>
-    item.alias.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.originProvince.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.destinationProvince.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Transform API data for table usage
+  const tableData = apiResponse.data.Data ? transformRouteListToTableData(apiResponse.data.Data) : [];
+  const paginationData = apiResponse.data.Pagination || {};
 
-  // Calculate pagination
-  const totalItems = filteredData.length;
-  const totalPages = Math.ceil(totalItems / perPage);
-  const startIndex = (currentPage - 1) * perPage;
-  const endIndex = startIndex + perPage;
-  const paginatedData = filteredData.slice(startIndex, endIndex);
+  // Extract pagination values
+  const totalItems = paginationData.totalRecords || 0;
+  const totalPages = paginationData.totalPages || 1;
+  const loading = isLoading;
 
   // Event handlers
   const handleSearch = useCallback((query) => {
@@ -86,14 +49,18 @@ export default function MasterRutePricingContainer() {
 
   const handleStatusChange = useCallback(async (routeId, newStatus) => {
     setUpdatingRoutes(prev => new Set(prev).add(routeId));
-    setLoading(true);
 
     try {
-      // Simulate API call
+      // TODO: Implement actual API call for status update
+      // await patchStatusRoute(routeId, newStatus);
+      
+      // Simulate API call for now
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Update the data (in real app, this would be an API call)
       console.log(`Updating route ${routeId} status to ${newStatus}`);
+      
+      // Revalidate data after successful update
+      mutate();
       
     } catch (error) {
       console.error('Error updating route status:', error);
@@ -103,9 +70,8 @@ export default function MasterRutePricingContainer() {
         newSet.delete(routeId);
         return newSet;
       });
-      setLoading(false);
     }
-  }, []);
+  }, [mutate]);
 
   const handleSort = useCallback((sortField, sortOrder) => {
     console.log(`Sorting by ${sortField} in ${sortOrder} order`);
@@ -127,7 +93,7 @@ export default function MasterRutePricingContainer() {
       </div>
 
         <MasterRutePricingTable
-          data={paginatedData}
+          data={tableData}
           loading={loading}
           updatingRoutes={updatingRoutes}
           onSearch={handleSearch}
