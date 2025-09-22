@@ -7,7 +7,15 @@ import DatePicker from "@/components/DatePicker/DatePicker";
 import { FormContainer, FormLabel } from "@/components/Form/Form";
 import Input from "@/components/Form/Input";
 
-export default function SettingTarifMinimalForm({ onSaveClick, isSubmitting, onDataChange }) {
+export default function SettingTarifMinimalForm({ 
+  mode = "add", 
+  initialData = null, 
+  onSaveClick, 
+  isSubmitting, 
+  onDataChange 
+}) {
+  const isDetailMode = mode === "detail";
+  
   const {
     register,
     handleSubmit,
@@ -15,7 +23,7 @@ export default function SettingTarifMinimalForm({ onSaveClick, isSubmitting, onD
     watch,
     setValue
   } = useForm({
-    defaultValues: {
+    defaultValues: initialData || {
       coltDieselEngkel: "",
       coltDieselDouble: "",
       mediumTruckRigid4x2: "",
@@ -25,11 +33,23 @@ export default function SettingTarifMinimalForm({ onSaveClick, isSubmitting, onD
       tractorHead4x2SemiTrailer: "",
       tractorHead6x4SemiTrailer: "",
       effectiveDate: null
-    }
+    },
+    mode: isDetailMode ? "onSubmit" : "onChange" // Disable real-time validation for detail mode
   });
+
+  // Load initial data for edit/detail mode
+  useEffect(() => {
+    if (initialData && (mode === "edit" || mode === "detail")) {
+      Object.keys(initialData).forEach(key => {
+        setValue(key, initialData[key]);
+      });
+    }
+  }, [initialData, mode, setValue]);
 
   const handleSubmitClick = (e) => {
     e.preventDefault();
+    if (isDetailMode) return; // Don't submit in detail mode
+    
     handleSubmit((data) => {
       console.log("Form data:", data);
       onDataChange(false); // Reset unsaved changes after successful save
@@ -37,15 +57,25 @@ export default function SettingTarifMinimalForm({ onSaveClick, isSubmitting, onD
     })();
   };
 
-  // Watch for form changes
+  // Watch for form changes (only for add/edit mode)
   const watchedValues = watch();
   
   useEffect(() => {
-    const hasChanges = Object.values(watchedValues).some(value => 
-      value !== "" && value !== null && value !== undefined
-    );
+    if (isDetailMode) return; // Don't watch changes in detail mode
+    
+    // Check if any field has meaningful data (not empty, not null, not undefined)
+    const hasChanges = Object.entries(watchedValues).some(([key, value]) => {
+      if (key === 'effectiveDate') {
+        return value !== null && value !== undefined;
+      }
+      // For number fields, only consider it changed if it's a positive number
+      return value !== "" && value !== null && value !== undefined && value > 0;
+    });
+    
+    console.log("Form values:", watchedValues);
+    console.log("Has changes:", hasChanges);
     onDataChange(hasChanges);
-  }, [watchedValues, onDataChange]);
+  }, [watchedValues, onDataChange, isDetailMode]);
 
   const vehicleTypes = [
     {
@@ -96,21 +126,22 @@ export default function SettingTarifMinimalForm({ onSaveClick, isSubmitting, onD
                 <Input
                   type="number"
                   placeholder="Masukkan Minimal Jarak Tempuh"
+                  disabled={isDetailMode}
                   {...register(vehicle.key, { 
                     valueAsNumber: true,
-                    required: `${vehicle.label} wajib diisi`,
+                    required: isDetailMode ? false : `${vehicle.label} wajib diisi`,
                     min: {
                       value: 0,
                       message: "Jarak tempuh harus lebih dari atau sama dengan 0"
                     }
                   })}
-                  className={`flex-1 ${errors[vehicle.key] ? "border-red-500" : ""}`}
+                  className={`flex-1 ${errors[vehicle.key] ? "border-red-500" : ""} ${isDetailMode ? "bg-gray-50" : ""}`}
                 />
                 <span className="ml-2 text-gray-600 font-medium">km</span>
               </div>
-              {/* {errors[vehicle.key] && (
+              {!isDetailMode && errors[vehicle.key] && (
                 <span className="text-red-500 text-sm">{errors[vehicle.key].message}</span>
-              )} */}
+              )}
             </div>
           </div>
         ))}
@@ -118,34 +149,37 @@ export default function SettingTarifMinimalForm({ onSaveClick, isSubmitting, onD
         {/* Effective Date Field */}
         <div className="flex items-start space-x-4">
           <div className="w-48 flex-shrink-0 pt-2">
-            <FormLabel required>Berlaku Mulai</FormLabel>
+            <FormLabel required={!isDetailMode}>Berlaku Mulai</FormLabel>
           </div>
           <div className="flex-1 mt-1.5">
             <input
               type="hidden"
-              {...register("effectiveDate", { required: "Berlaku Mulai wajib diisi" })}
+              {...register("effectiveDate", { required: isDetailMode ? false : "Berlaku Mulai wajib diisi" })}
             />
             <DatePicker
               value={watch("effectiveDate")}
-              onChange={(date) => setValue("effectiveDate", date, { shouldValidate: true })}
+              onChange={(date) => !isDetailMode && setValue("effectiveDate", date, { shouldValidate: true })}
               placeholder="dd/mm/yyyy"
-              errorMessage={errors.effectiveDate?.message}
-              className="w-72"
+              errorMessage={!isDetailMode ? errors.effectiveDate?.message : undefined}
+              className={`w-72 ${isDetailMode ? "bg-gray-50" : ""}`}
+              disabled={isDetailMode}
             />
           </div>
         </div>
 
-        {/* Submit Button */}
-        <div className="flex justify-center pt-6">
-          <Button
-            type="submit"
-            variant="muatparts-primary"
-            disabled={isSubmitting}
-            className="px-8 py-2"
-          >
-            {isSubmitting ? "Menyimpan..." : "Simpan"}
-          </Button>
-        </div>
+        {/* Submit Button - Only show in add/edit mode */}
+        {!isDetailMode && (
+          <div className="flex justify-center pt-6">
+            <Button
+              type="submit"
+              variant="muatparts-primary"
+              disabled={isSubmitting}
+              className="px-8 py-2"
+            >
+              {isSubmitting ? "Menyimpan..." : "Simpan"}
+            </Button>
+          </div>
+        )}
       </form>
     </div>
   );

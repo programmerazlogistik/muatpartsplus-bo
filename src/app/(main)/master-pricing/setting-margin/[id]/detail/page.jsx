@@ -4,19 +4,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import Button from "@/components/Button/Button";
-import SettingTarifMinimalForm from "@/container/SettingTarifMinimal/SettingTarifMinimalForm";
+import SettingMarginForm from "@/container/SettingMargin/SettingMarginForm";
 
-export default function SettingTarifMinimalDetailPage() {
+export default function SettingMarginDetailPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    coltDieselEngkel: "3",
-    coltDieselDouble: "3", 
-    mediumTruckRigid4x2: "15",
-    mediumTruck6x2Rigid: "15",
-    mediumTruckRigid6x4: "15",
-    mediumTruck4x2Gandengan: "15",
-    tractorHead4x2SemiTrailer: "20",
-    tractorHead6x4SemiTrailer: "20",
+    margin: "15",
+    modelMargin: "added",
     effectiveDate: new Date("2024-12-30")
   });
 
@@ -25,7 +19,7 @@ export default function SettingTarifMinimalDetailPage() {
   };
 
   const handleViewHistory = () => {
-    router.push("/master-pricing/setting-tarif-minimal/1/history");
+    router.push("/master-pricing/setting-margin/1/history");
   };
 
   return (
@@ -60,7 +54,7 @@ export default function SettingTarifMinimalDetailPage() {
       </div>
 
       <div>
-        <SettingTarifMinimalForm 
+        <SettingMarginForm 
           mode="detail"
           initialData={formData}
           onSaveClick={() => {}}
@@ -71,3 +65,4 @@ export default function SettingTarifMinimalDetailPage() {
     </>
   );
 }
+

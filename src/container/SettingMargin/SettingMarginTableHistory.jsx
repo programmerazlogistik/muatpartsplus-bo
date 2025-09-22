@@ -64,6 +64,7 @@ export default function SettingMarginTableHistory() {
     {
       key: "updateTime",
       header: "Waktu Update",
+      headerClassName: "text-center",
       sortable: false,
       render: (row) => (
         <div className="text-sm text-gray-900">{row.updateTime}</div>
@@ -118,19 +119,32 @@ export default function SettingMarginTableHistory() {
   return (
     <div className="space-y-4">
       <DataTableBO
-        data={paginatedData}
         columns={columns}
+        data={paginatedData}
+        loading={false}
+        searchPlaceholder="Cari berdasarkan user, aktivitas, atau model margin..."
+        onSearch={handleSearch}
+        showSearch={false}
+        onFilter={null}
+        onSort={null}
         currentPage={currentPage}
-        perPage={perPage}
-        totalData={totalData}
         totalPages={totalPages}
+        totalItems={totalData}
+        perPage={perPage}
         onPageChange={handlePageChange}
         onPerPageChange={handlePerPageChange}
-        onSearch={handleSearch}
-        searchPlaceholder="Cari berdasarkan user, aktivitas, atau model margin..."
-        showSearch={false}
+        showFilter={false}
         showPagination={true}
-        loading={false}
+        showTotalCount={true}
+        totalCountLabel="data"
+        className="my-[10px]"
+        emptyState={
+          <div className="flex h-[66px] items-center justify-center">
+            <p className="text-xs font-semibold text-[#868686]">
+              Belum ada data history
+            </p>
+          </div>
+        }
       />
     </div>
   );

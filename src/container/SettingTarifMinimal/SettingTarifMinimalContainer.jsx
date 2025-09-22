@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import Button from "@/components/Button/Button";
 import ConfirmationModal from "@/components/Modal/ConfirmationModal";
+import PageTitle from "@/components/PageTitle/PageTitle";
+
 import SettingTarifMinimalForm from "./SettingTarifMinimalForm";
 
 export default function SettingTarifMinimalContainer() {
@@ -23,14 +25,14 @@ export default function SettingTarifMinimalContainer() {
   const handleConfirmSave = async () => {
     setShowSaveConfirmModal(false);
     setIsSubmitting(true);
-    
+
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       console.log("Data berhasil disimpan!");
+      setHasUnsavedChanges(false); // Reset unsaved changes after successful save
       setShowSuccessModal(true);
-      
     } catch (error) {
       console.error("Error saving data:", error);
       alert("Gagal menyimpan data. Silakan coba lagi.");
@@ -87,7 +89,8 @@ export default function SettingTarifMinimalContainer() {
     const handleBeforeUnload = (e) => {
       if (hasUnsavedChanges) {
         e.preventDefault();
-        e.returnValue = "Apakah kamu yakin ingin berpindah halaman? Data yang telah diisi tidak akan disimpan";
+        e.returnValue =
+          "Apakah kamu yakin ingin berpindah halaman? Data yang telah diisi tidak akan disimpan";
       }
     };
 
@@ -97,25 +100,21 @@ export default function SettingTarifMinimalContainer() {
 
   return (
     <>
-      <div className="flex justify-between mb-6">
+      <div className="mb-6 flex justify-between">
         <div className="flex items-center space-x-4">
-          <button
-            onClick={handleBackClick}
-            className="flex items-center text-gray-600 hover:text-gray-800"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span className="text-xl font-semibold">Setting Tarif Minimal</span>
-          </button>
+          <PageTitle withBack={false}>
+            Setting Tarif Minimal
+          </PageTitle>
         </div>
         <Button variant="muatparts-primary" onClick={handleViewHistory}>
-          <span className="pt-0.5 font-semibold text-sm">Lihat History Perubahan</span>
+          <span className="pt-0.5 text-sm font-semibold">
+            Lihat History Perubahan
+          </span>
         </Button>
       </div>
 
       <div>
-        <SettingTarifMinimalForm 
+        <SettingTarifMinimalForm
           onSaveClick={handleSaveClick}
           isSubmitting={isSubmitting}
           onDataChange={handleDataChange}
@@ -127,16 +126,16 @@ export default function SettingTarifMinimalContainer() {
         isOpen={showSaveConfirmModal}
         setIsOpen={setShowSaveConfirmModal}
         title={{ text: "Pemberitahuan" }}
-        description={{ 
-          text: "Apakah Anda yakin ingin menyimpan data?" 
+        description={{
+          text: "Apakah Anda yakin ingin menyimpan data?",
         }}
         cancel={{
           text: "Tidak",
-          onClick: handleCancelSave
+          onClick: handleCancelSave,
         }}
         confirm={{
           text: "Ya",
-          onClick: handleConfirmSave
+          onClick: handleConfirmSave,
         }}
       />
 
@@ -145,12 +144,12 @@ export default function SettingTarifMinimalContainer() {
         isOpen={showSuccessModal}
         setIsOpen={setShowSuccessModal}
         title={{ text: "Pemberitahuan" }}
-        description={{ 
-          text: "Data berhasil disimpan!" 
+        description={{
+          text: "Data berhasil disimpan!",
         }}
         confirm={{
           text: "OK",
-          onClick: handleCloseSuccessModal
+          onClick: handleCloseSuccessModal,
         }}
       />
 
@@ -159,16 +158,16 @@ export default function SettingTarifMinimalContainer() {
         isOpen={showBackConfirmModal}
         setIsOpen={setShowBackConfirmModal}
         title={{ text: "Warning" }}
-        description={{ 
-          text: "Apakah kamu yakin ingin berpindah halaman?<br/>Data yang telah diisi tidak akan disimpan" 
+        description={{
+          text: "Apakah kamu yakin ingin berpindah halaman?<br/>Data yang telah diisi tidak akan disimpan",
         }}
         cancel={{
           text: "Batal",
-          onClick: handleCancelBack
+          onClick: handleCancelBack,
         }}
         confirm={{
           text: "Ya",
-          onClick: handleConfirmBack
+          onClick: handleConfirmBack,
         }}
       />
     </>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import Button from "@/components/Button/Button";
@@ -11,7 +11,10 @@ export default function SettingMarginContainer() {
   const router = useRouter();
   const [showSaveConfirmModal, setShowSaveConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showBackConfirmModal, setShowBackConfirmModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [pendingNavigation, setPendingNavigation] = useState(null);
 
   const handleSaveClick = () => {
     setShowSaveConfirmModal(true);
@@ -26,6 +29,7 @@ export default function SettingMarginContainer() {
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       console.log("Data berhasil disimpan!");
+      setHasUnsavedChanges(false); // Reset unsaved changes after successful save
       setShowSuccessModal(true);
       
     } catch (error) {
@@ -43,6 +47,54 @@ export default function SettingMarginContainer() {
   const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
   };
+
+  const handleViewHistory = () => {
+    if (hasUnsavedChanges) {
+      setPendingNavigation("/master-pricing/setting-margin/1/history");
+      setShowBackConfirmModal(true);
+    } else {
+      router.push("/master-pricing/setting-margin/1/history");
+    }
+  };
+
+  const handleBackClick = () => {
+    if (hasUnsavedChanges) {
+      setPendingNavigation("/master-pricing");
+      setShowBackConfirmModal(true);
+    } else {
+      router.push("/master-pricing");
+    }
+  };
+
+  const handleConfirmBack = () => {
+    setShowBackConfirmModal(false);
+    if (pendingNavigation) {
+      router.push(pendingNavigation);
+      setPendingNavigation(null);
+    }
+  };
+
+  const handleCancelBack = () => {
+    setShowBackConfirmModal(false);
+    setPendingNavigation(null);
+  };
+
+  const handleDataChange = (hasChanges) => {
+    setHasUnsavedChanges(hasChanges);
+  };
+
+  // Handle browser back button
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = "Apakah kamu yakin ingin berpindah halaman? Data yang telah diisi tidak akan disimpan";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
   
   return (
     <>
@@ -57,6 +109,7 @@ export default function SettingMarginContainer() {
         <SettingMarginForm 
           onSaveClick={handleSaveClick}
           isSubmitting={isSubmitting}
+          onDataChange={handleDataChange}
         />
       </div>
 
@@ -89,6 +142,24 @@ export default function SettingMarginContainer() {
         confirm={{
           text: "OK",
           onClick: handleCloseSuccessModal
+        }}
+      />
+
+      {/* Back Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showBackConfirmModal}
+        setIsOpen={setShowBackConfirmModal}
+        title={{ text: "Warning" }}
+        description={{ 
+          text: "Apakah kamu yakin ingin berpindah halaman?<br/>Data yang telah diisi tidak akan disimpan" 
+        }}
+        cancel={{
+          text: "Batal",
+          onClick: handleCancelBack
+        }}
+        confirm={{
+          text: "Ya",
+          onClick: handleConfirmBack
         }}
       />
     </>

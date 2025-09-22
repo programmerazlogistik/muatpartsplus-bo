@@ -71,42 +71,45 @@ export default function SettingTarifMinimalTableHistory() {
 
   const columns = [
     {
+      key: "updateTime",
       header: "Waktu Update",
-      accessorKey: "updateTime",
+      className: "text-center",
+      headerClassName: "text-center",
+      width: "200px",
       sortable: false,
       render: (row) => (
-        <div>
-          <div className="font-medium">{row.updateTime}</div>
-          <div className="text-sm text-gray-500">{row.updateTimeDetail}</div>
+        <div className="text-center">
+          <div className="font-xs font-semibold">{row.updateTime}</div>
+          <div className="text-xs font-semibold">{row.updateTimeDetail}</div>
         </div>
       )
     },
     {
+      key: "activity",
       header: "Aktivitas",
-      accessorKey: "activity",
       sortable: false,
       render: (row) => (
-        <span className="px-2 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800">
+        <span className="text-xs font-medium p-0">
           {row.activity}
         </span>
       )
     },
     {
+      key: "user",
       header: "User",
-      accessorKey: "user",
       sortable: false,
       render: (row) => (
         <span className="font-medium">{row.user}</span>
       )
     },
     {
+      key: "action",
       header: "Aksi",
-      accessorKey: "action",
       sortable: false,
       render: (row) => (
         <button
-          onClick={() => (router.push(`/master-pricing/setting-tarif-minimal/${row.id}/history`))}
-          className="text-blue-600 hover:text-blue-800 underline text-sm font-medium"
+          onClick={() => (router.push(`/master-pricing/setting-tarif-minimal/${row.id}/detail`))}
+          className="text-blue-600 hover:text-blue-800 underline text-xs font-semibold"
         >
           {row.action}
         </button>
@@ -117,19 +120,32 @@ export default function SettingTarifMinimalTableHistory() {
   return (
     <div>
       <DataTableBO
-        data={paginatedData}
         columns={columns}
-        showPagination={true}
-        className={"my-[20px]"}
+        data={paginatedData}
+        loading={false}
+        searchPlaceholder="Cari berdasarkan aktivitas, user, atau waktu..."
+        onSearch={handleSearch}
+        showSearch={false}
+        onFilter={null}
+        onSort={null}
         currentPage={currentPage}
         totalPages={Math.ceil(filteredData.length / perPage)}
-        perPage={perPage}
         totalItems={filteredData.length}
+        perPage={perPage}
         onPageChange={handlePageChange}
         onPerPageChange={handlePerPageChange}
-        onSearch={handleSearch}
-        searchPlaceholder="Cari berdasarkan aktivitas, user, atau waktu..."
-        showSearch={true}
+        showFilter={false}
+        showPagination={true}
+        showTotalCount={true}
+        totalCountLabel="data"
+        className="my-[10px]"
+        emptyState={
+          <div className="flex h-[66px] items-center justify-center">
+            <p className="text-xs font-semibold text-[#868686]">
+              Belum ada data history
+            </p>
+          </div>
+        }
       />
     </div>
   );
