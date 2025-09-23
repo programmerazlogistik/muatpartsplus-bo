@@ -14,7 +14,6 @@ export default function HistorySettingDefaultPricingNonRuteKhususPage() {
       <PageTitle showBackButton={true} onBackClick={router.back}>
         History Perubahan Data (Non Rute Khusus)
       </PageTitle>
-
       <SettingDefaultPricingNonRuteKhususHistoryTable />
     </div>
   );

@@ -1,34 +1,52 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
+import { useGetRegular } from "@/services/masterpricing/settingdefaultpricing/getRegular";
 
 import Button from "@/components/Button/Button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/Collapsible/Collapsible";
-import Dropdown from "@/components/Form/Dropdown";
 import ConfirmationModal from "@/components/Modal/ConfirmationModal";
 
-import { pricingOptions } from "@/lib/constants/pricingOptions";
-import { vehicleTypes } from "@/lib/constants/vehicleTypes";
 import { validateRequiredDropdowns } from "@/lib/utils/valibot";
+
+import { IconComponent } from "@/components";
+
+import RoutePricingSection from "./RoutePricingSection";
 
 const NonRuteKhusus = ({ onFormChange }) => {
   const router = useRouter();
+  const { data, error, isLoading } = useGetRegular();
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isNavigationModalOpen, setIsNavigationModalOpen] = useState(false);
-  const [dropdownValues, setDropdownValues] = useState(
-    vehicleTypes.reduce((acc, vehicle) => {
-      acc[vehicle.key] = "";
-      return acc;
-    }, {})
-  );
+  const [routesData, setRoutesData] = useState([]);
+  const [dropdownValues, setDropdownValues] = useState({});
   const [errors, setErrors] = useState({});
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [openStates, setOpenStates] = useState({}); // Track open state for each collapsible
+  const [showAll, setShowAll] = useState(false); // Track if all should be shown
+
+  // Process API data when it's available
+  useEffect(() => {
+    if (data?.data?.Data?.routes) {
+      setRoutesData(data?.data?.Data?.routes);
+
+      // Initialize dropdown values based on API data
+      const initialDropdownValues = {};
+      const initialOpenStates = {};
+      data.data.Data.routes.forEach((route) => {
+        // Set initial open state to false for all
+        initialOpenStates[route.routePricingId] = false;
+        route.truckTypes.forEach((truckType) => {
+          const key = `${route.routePricingId}-${truckType.truckTypeId}`;
+          initialDropdownValues[key] = truckType.typePricingId || "";
+        });
+      });
+      setDropdownValues(initialDropdownValues);
+      setOpenStates(initialOpenStates);
+    }
+  }, [data]);
 
   // Check if form has any values
   useEffect(() => {
@@ -59,8 +77,14 @@ const NonRuteKhusus = ({ onFormChange }) => {
   const handleSimpanClick = (e) => {
     e.stopPropagation();
 
-    // Validate dropdowns
-    const requiredFields = vehicleTypes.map((vehicle) => vehicle.key);
+    // Validate dropdowns - create required fields based on routes and truck types
+    const requiredFields = [];
+    routesData.forEach((route) => {
+      route.truckTypes.forEach((truckType) => {
+        requiredFields.push(`${route.routePricingId}-${truckType.truckTypeId}`);
+      });
+    });
+
     const validationErrors = validateRequiredDropdowns(
       dropdownValues,
       requiredFields
@@ -92,17 +116,17 @@ const NonRuteKhusus = ({ onFormChange }) => {
     setIsSuccessModalOpen(false);
   };
 
-  const handleDropdownChange = (vehicleKey, value) => {
+  const handleDropdownChange = (key, value) => {
     setDropdownValues((prev) => ({
       ...prev,
-      [vehicleKey]: value,
+      [key]: value,
     }));
 
     // Clear error for this field when user selects a value
-    if (errors[vehicleKey]) {
+    if (errors[key]) {
       setErrors((prev) => {
         const newErrors = { ...prev };
-        delete newErrors[vehicleKey];
+        delete newErrors[key];
         return newErrors;
       });
     }
@@ -137,93 +161,92 @@ const NonRuteKhusus = ({ onFormChange }) => {
     setIsNavigationModalOpen(false);
   };
 
+  // Toggle all collapsibles open/closed
+  const handleToggleAll = () => {
+    const newShowAll = !showAll;
+    setShowAll(newShowAll);
+
+    const newOpenStates = {};
+    routesData.forEach((route) => {
+      newOpenStates[route.routePricingId] = newShowAll;
+    });
+
+    setOpenStates(newOpenStates);
+  };
+
+  // Toggle individual collapsible
+  const handleToggleCollapsible = (routePricingId) => {
+    setOpenStates((prev) => ({
+      ...prev,
+      [routePricingId]: !prev[routePricingId],
+    }));
+
+    // If we're closing one while in "show all" mode, exit show all mode
+    if (showAll && openStates[routePricingId]) {
+      setShowAll(false);
+    }
+    // If we're opening the last closed one while all others are open, enter show all mode
+    else if (!showAll && !openStates[routePricingId]) {
+      const allOthersOpen = routesData
+        .filter((route) => route.routePricingId !== routePricingId)
+        .every((route) => openStates[route.routePricingId]);
+      if (allOthersOpen) {
+        setShowAll(true);
+      }
+    }
+  };
+
   const hasErrors = Object.keys(errors).length > 0;
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error loading data: {error.message}</div>;
+  }
 
   return (
     <form className="flex flex-col gap-y-5">
       <div className="flex justify-end">
         <button
           type="button"
+          onClick={handleToggleAll}
           className="rounded-md border border-gray-100 p-2 text-xs font-semibold shadow-sm"
-          onClick={() => handleNavigationAttempt("/master-pricing")}
         >
           Tampilkan Semua
         </button>
       </div>
-      {/* Collapsible Section */}
 
-      <Collapsible>
-        <CollapsibleTrigger
-          className={
-            hasErrors
-              ? "flex w-full items-center justify-between rounded-t-lg !border-[#F71717] bg-[#FEEEEE] p-4 text-[#F71717]"
-              : "flex w-full items-center justify-between rounded-t-lg !border-[#176CF7] bg-blue-100 p-4 text-blue-900"
-          }
-        >
-          {({ open }) => (
-            <>
-              <span className="font-medium">Jawa - Jawa</span>
-              <svg
-                className={`h-4 w-4 transition-transform duration-200 ${
-                  open ? "rotate-180" : ""
-                }`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </>
-          )}
-        </CollapsibleTrigger>
-        <CollapsibleContent className="flex flex-col">
-          <div className="flex flex-col gap-y-4">
-            {/* Header Row */}
-            <div className="flex items-center gap-x-6">
-              <span className="w-56 text-base font-bold">Jenis Truck</span>
-              <span className="text-base font-bold">Tipe Pricing Default</span>
-            </div>
-
-            {vehicleTypes.map((vehicle) => (
-              <div key={vehicle.key} className="flex items-start gap-x-6">
-                {/* Column 1: Vehicle Label */}
-                <span className="w-56 flex-shrink-0 pt-2 text-sm font-medium">
-                  {vehicle.label}
-                </span>
-
-                {/* Column 2: Dropdown Input */}
-                <div className="max-w-72 flex-1">
-                  <Dropdown
-                    placeholder="Pilih Tipe Pricing"
-                    options={pricingOptions}
-                    value={dropdownValues[vehicle.key]}
-                    onChange={(value) =>
-                      handleDropdownChange(vehicle.key, value)
-                    }
-                    isError={!!errors[vehicle.key]}
-                  />
-                  {errors[vehicle.key] && (
-                    <p className="mt-1 text-sm text-[#F71717]">
-                      {errors[vehicle.key]}
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </CollapsibleContent>
-      </Collapsible>
+      {/* Collapsible Sections */}
+      {routesData.length > 0 ? (
+        routesData.map((route) => (
+          <RoutePricingSection
+            key={route.routePricingId}
+            route={route}
+            dropdownValues={dropdownValues}
+            errors={errors}
+            openStates={openStates}
+            handleDropdownChange={handleDropdownChange}
+            handleToggleCollapsible={handleToggleCollapsible}
+          />
+        ))
+      ) : (
+        <div className="mt-3 flex items-center justify-center gap-2">
+          <IconComponent src="/icons/search.svg" />
+          <span className="text-sm font-semibold text-[#868686]">
+            {" "}
+            Belum ada data rute pricing
+          </span>
+        </div>
+      )}
 
       <div className="flex justify-center">
         <Button
           variant="muatparts-primary"
           onClick={handleSimpanClick}
           type="button"
+          disabled={routesData.length === 0}
         >
           Simpan
         </Button>
