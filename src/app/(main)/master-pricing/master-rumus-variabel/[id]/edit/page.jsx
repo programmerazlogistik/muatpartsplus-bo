@@ -1,59 +1,36 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import MasterRumusVariabelForm from "@/container/MasterRumusVariabel/MasterRumusVariableForm";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import ConfirmationModal from "@/components/Modal/ConfirmationModal";
+import { useGetFormulaDetailForForm } from "@/services/masterpricing/masterformulavariable/getFormulaDetail";
+import { putUpdateFormulaWithValidation } from "@/services/masterpricing/masterformulavariable/putUpdateFormula";
 
 export default function MasterRumusVariabelEditPage() {
   const router = useRouter();
   const params = useParams();
   const [loading, setLoading] = useState(false);
-  const [initialData, setInitialData] = useState(null);
-  const [pageLoading, setPageLoading] = useState(true);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSaveConfirmModal, setShowSaveConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [pendingFormData, setPendingFormData] = useState(null);
 
-  // Simulate fetching data for edit
-  useEffect(() => {
-    const fetchData = async () => {
-      setPageLoading(true);
-      
-      try {
-        // Simulate API call to get rumus variabel data
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Mock data - in real app, fetch from API using params.id
-        const mockData = {
-          id: params.id,
-          formulaName: "4PL",
-          isActive: true,
-          variables: [
-            { id: 1, name: "a" },
-            { id: 2, name: "b" },
-            { id: 3, name: "c" },
-            { id: 4, name: "d" },
-          ]
-        };
-        
-        setInitialData(mockData);
-        
-      } catch (error) {
-        console.error("Error fetching rumus variabel data:", error);
-        alert("Gagal memuat data. Silakan coba lagi.");
-        router.push("/master-pricing/master-rumus-variabel");
-      } finally {
-        setPageLoading(false);
-      }
-    };
+  // Use API hook to fetch formula detail for edit
+  const { data: apiData, error, isLoading: pageLoading } = useGetFormulaDetailForForm(params.id);
 
-    if (params.id) {
-      fetchData();
-    }
-  }, [params.id, router]);
+  // Transform API data for form compatibility with useMemo to prevent unnecessary re-renders
+  const initialData = useMemo(() => {
+    if (!apiData) return null;
+    
+    return {
+      id: apiData.id,
+      formulaName: apiData.name, // Map name to formulaName for form compatibility
+      isActive: apiData.isActive,
+      variables: apiData.variables || [],
+    };
+  }, [apiData]);
 
   const handleBack = () => {
     if (hasUnsavedChanges) {
@@ -74,20 +51,25 @@ export default function MasterRumusVariabelEditPage() {
     setLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Call API to update formula using putUpdateFormulaWithValidation
+      const updateData = {
+        name: pendingFormData.formulaName, // Map formulaName to name for API
+        isActive: pendingFormData.isActive,
+        // Variables are not updated in edit mode, only name and isActive
+      };
       
-      console.log("Updating rumus variabel:", { id: params.id, ...pendingFormData });
+      console.log("Updating formula:", { id: params.id, updateData });
       
-      // In real app, call API here
-      // await updateRumusVariabel(params.id, pendingFormData);
+      const response = await putUpdateFormulaWithValidation(params.id, updateData);
+      
+      console.log("Formula updated successfully:", response);
       
       setHasUnsavedChanges(false);
       setShowSuccessModal(true);
       
     } catch (error) {
-      console.error("Error updating rumus variabel:", error);
-      alert("Gagal menyimpan data. Silakan coba lagi.");
+      console.error("Error updating formula:", error);
+      alert(`Gagal menyimpan data: ${error.message}`);
     } finally {
       setLoading(false);
     }
@@ -123,11 +105,27 @@ export default function MasterRumusVariabelEditPage() {
     );
   }
 
+  if (error || !initialData) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <p className="text-gray-600">Data tidak ditemukan</p>
+          <button
+            onClick={() => router.push("/master-pricing/master-rumus-variabel")}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Kembali
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="space-y-6">
         <PageTitle showBackButton={true} onBackClick={handleBack}>
-          Edit Nama Rumus & Variabel
+          Ubah Nama Rumus & Variabel
         </PageTitle>
         <MasterRumusVariabelForm 
           mode="edit"

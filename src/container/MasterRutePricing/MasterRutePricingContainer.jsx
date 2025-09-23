@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/Button/Button";
 import MasterRutePricingTable from "./MasterRutePricingTable";
 import { useGetRouteList, transformRouteListToTableData } from "@/services/masterpricing/masterrute/getRouteList";
+import { patchStatusRoute } from "@/services/masterpricing/masterrute/patchStatusRoute";
 
 export default function MasterRutePricingContainer() {
   const router = useRouter();
@@ -48,22 +49,24 @@ export default function MasterRutePricingContainer() {
   }, []);
 
   const handleStatusChange = useCallback(async (routeId, newStatus) => {
+    console.log(`Starting status update for route ${routeId} to ${newStatus}`);
     setUpdatingRoutes(prev => new Set(prev).add(routeId));
 
     try {
-      // TODO: Implement actual API call for status update
-      // await patchStatusRoute(routeId, newStatus);
+      // Call API to update route status using patchStatusRoute
+      const statusData = { isActive: newStatus };
+      console.log('Calling patchStatusRoute with:', { routeId, statusData });
       
-      // Simulate API call for now
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await patchStatusRoute(routeId, statusData);
       
-      // console.log(`Updating route ${routeId} status to ${newStatus}`);
+      console.log(`Route ${routeId} status updated to ${newStatus}:`, response);
       
       // Revalidate data after successful update
       mutate();
       
     } catch (error) {
       console.error('Error updating route status:', error);
+      alert(`Gagal mengupdate status: ${error.message}`);
     } finally {
       setUpdatingRoutes(prev => {
         const newSet = new Set(prev);

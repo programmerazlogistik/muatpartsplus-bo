@@ -116,7 +116,7 @@ export const transformPostCreateFormulaRequest = (formData) => {
     isActive: isActive,
     variables: variables.map(variable => ({
       variableName: variable.variableName || variable.name,
-      isFromShipper: Boolean(variable.isFromShipper),
+      // isFromShipper is not included in the payload
     })),
   };
 };
@@ -162,9 +162,7 @@ export const validateFormulaCreationData = (data) => {
         }
       }
 
-      if (typeof variable.isFromShipper !== 'boolean') {
-        errors[`variables.${index}.isFromShipper`] = "Source variabel harus berupa boolean";
-      }
+      // isFromShipper validation removed - not required in payload
     });
 
     // Check for duplicate variable names
@@ -236,7 +234,6 @@ export const postCreateFormulaMock = async (data) => {
   const mockVariables = (data.variables || []).map(variable => ({
     id: `var-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
     variableName: variable.variableName || variable.name,
-    isFromShipper: Boolean(variable.isFromShipper),
     isActive: true,
     createdAt: new Date().toISOString()
   }));
@@ -429,9 +426,7 @@ export const validateVariableData = (variable, index = 0) => {
     errors[`variables.${index}.name`] = "Nama variabel maksimal 50 karakter";
   }
 
-  if (typeof variable.isFromShipper !== 'boolean') {
-    errors[`variables.${index}.isFromShipper`] = "Source variabel harus berupa boolean";
-  }
+  // isFromShipper validation removed - not required in payload
 
   return {
     isValid: Object.keys(errors).length === 0,
@@ -537,7 +532,7 @@ export const transformFormToAPI = (formData) => {
     isActive: Boolean(formData.isActive),
     variables: (formData.variables || []).map(variable => ({
       variableName: (variable.variableName || variable.name || '').trim(),
-      isFromShipper: Boolean(variable.isFromShipper),
+      // isFromShipper is not included in the payload
     }))
   };
 };
@@ -553,7 +548,7 @@ export const transformAPIToForm = (apiData) => {
     isActive: Boolean(apiData.isActive),
     variables: (apiData.variables || []).map(variable => ({
       variableName: variable.variableName || variable.name || "",
-      isFromShipper: Boolean(variable.isFromShipper),
+      // isFromShipper is not included in the payload
     }))
   };
 };

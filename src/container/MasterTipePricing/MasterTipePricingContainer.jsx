@@ -10,6 +10,7 @@ import {
   transformTypeListToTableData,
   transformPaginationData 
 } from "@/services/masterpricing/mastertype/getTypeList";
+import { patchTypeStatusWithValidation } from "@/services/masterpricing/mastertype/patchTypeStatus";
 
 export default function MasterTipePricingContainer() {
   const router = useRouter();
@@ -52,20 +53,24 @@ export default function MasterTipePricingContainer() {
   }, []);
 
   const handleStatusChange = useCallback(async (typeId, newStatus) => {
+    console.log(`Starting status update for type ${typeId} to ${newStatus}`);
     setUpdatingTypes(prev => new Set(prev).add(typeId));
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Call API to update type status using patchTypeStatusWithValidation
+      const statusData = { isActive: newStatus };
+      console.log('Calling patchTypeStatusWithValidation with:', { typeId, statusData });
       
-      // Update the data (in real app, this would be an API call)
-      console.log(`Updating type ${typeId} status to ${newStatus}`);
+      const response = await patchTypeStatusWithValidation(typeId, statusData);
       
-      // Revalidate data after status change
+      console.log(`Type ${typeId} status updated to ${newStatus}:`, response);
+      
+      // Revalidate data after successful update
       mutate();
       
     } catch (error) {
       console.error('Error updating type status:', error);
+      alert(`Gagal mengupdate status: ${error.message}`);
     } finally {
       setUpdatingTypes(prev => {
         const newSet = new Set(prev);

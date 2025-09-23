@@ -253,8 +253,10 @@ export const mockAPIResult = {
  * @param {string} url - The API endpoint URL
  * @returns {Promise} - Axios response promise
  */
-export const getRouteHistory = async (url) => {
+export const getRouteHistory = async (routeId, params = {}) => {
   const fetcher = useFetcherMuatrans ? fetcherMuatrans : fetcherMuatransCS;
+  const queryString = buildRouteHistoryQuery(params);
+  const url = `/v1/bo/pricing/master/route/${routeId}/history${queryString ? `?${queryString}` : ""}`;
   return fetcher.get(url);
 };
 
@@ -347,6 +349,7 @@ export const buildRouteHistoryQuery = ({
 
 /**
  * SWR hook for fetching route history
+ * @param {string} routeId - Route ID for the history
  * @param {Object} params - Query parameters
  * @param {string} params.search - Search term
  * @param {number} params.page - Page number
@@ -355,13 +358,13 @@ export const buildRouteHistoryQuery = ({
  * @param {Object} options - SWR options
  * @returns {Object} - SWR response object { data, error, isLoading, mutate }
  */
-export const useGetRouteHistory = (params = {}, options = {}) => {
+export const useGetRouteHistory = (routeId, params = {}, options = {}) => {
   const { search = "", page = 1, limit = 10, action = "" } = params;
   
   const queryString = buildRouteHistoryQuery({ search, page, limit, action });
-  const cacheKey = `/v1/bo/pricing/master/route/history${queryString ? `?${queryString}` : ""}`;
+  const cacheKey = `/v1/bo/pricing/master/route/${routeId}/history${queryString ? `?${queryString}` : ""}`;
 
-  return useSWR(cacheKey, getRouteHistory, {
+  return useSWR(cacheKey, () => getRouteHistory(routeId, params), {
     // Default SWR options
     revalidateOnFocus: false,
     revalidateOnReconnect: true,

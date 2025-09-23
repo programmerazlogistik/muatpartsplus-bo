@@ -73,7 +73,7 @@ const MasterRutePricingTable = ({
               onClick={(newValue) => {
                 if (onStatusChange) {
                   onStatusChange(row.id, newValue);
-                }
+                } 
               }}
               type="primary"
               disabled={updatingRoutes.has(row.id)}

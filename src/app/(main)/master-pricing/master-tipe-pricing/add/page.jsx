@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import MasterTipePricingForm from "@/container/MasterTipePricing/MasterTipePricingForm";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import ConfirmationModal from "@/components/Modal/ConfirmationModal";
+import { postCreateTypeWithValidation } from "@/services/masterpricing/mastertype/postCreateType";
 
 export default function MasterTipePricingAddPage() {
   const router = useRouter();
@@ -33,20 +34,21 @@ export default function MasterTipePricingAddPage() {
     setLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Transform form data to API format
+      const apiData = {
+        name: pendingFormData.typeName,
+        isActive: pendingFormData.isActive,
+      };
       
-      console.log("Creating new tipe pricing:", pendingFormData);
-      
-      // In real app, call API here
-      // await createTipePricing(pendingFormData);
+      // Call API to create new type
+      await postCreateTypeWithValidation(apiData);
       
       setHasUnsavedChanges(false);
       setShowSuccessModal(true);
       
     } catch (error) {
       console.error("Error creating tipe pricing:", error);
-      alert("Gagal menyimpan data. Silakan coba lagi.");
+      alert(`Gagal menyimpan data: ${error.message}`);
     } finally {
       setLoading(false);
     }

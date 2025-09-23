@@ -75,8 +75,10 @@ export const mockAPIResult = {
  * @param {string} url - The API endpoint URL
  * @returns {Promise} - Axios response promise
  */
-export const getTypeHistory = async (url) => {
+export const getTypeHistory = async (typeId, params = {}) => {
   const fetcher = useFetcherMuatrans ? fetcherMuatrans : fetcherMuatransCS;
+  const queryString = buildTypeHistoryQuery(params);
+  const url = `/v1/bo/pricing/master/type/${typeId}/history${queryString ? `?${queryString}` : ""}`;
   return fetcher.get(url);
 };
 
@@ -165,6 +167,7 @@ export const buildTypeHistoryQuery = ({
 
 /**
  * SWR hook for fetching type history
+ * @param {string} typeId - Type ID for the history
  * @param {Object} params - Query parameters
  * @param {string} params.search - Search term
  * @param {number} params.page - Page number
@@ -173,13 +176,13 @@ export const buildTypeHistoryQuery = ({
  * @param {Object} options - SWR options
  * @returns {Object} - SWR response object { data, error, isLoading, mutate }
  */
-export const useGetTypeHistory = (params = {}, options = {}) => {
+export const useGetTypeHistory = (typeId, params = {}, options = {}) => {
   const { search = "", page = 1, limit = 10, action = "" } = params;
   
   const queryString = buildTypeHistoryQuery({ search, page, limit, action });
-  const cacheKey = `/v1/bo/pricing/master/type/history${queryString ? `?${queryString}` : ""}`;
+  const cacheKey = `/v1/bo/pricing/master/type/${typeId}/history${queryString ? `?${queryString}` : ""}`;
 
-  return useSWR(cacheKey, getTypeHistory, {
+  return useSWR(cacheKey, () => getTypeHistory(typeId, params), {
     // Default SWR options
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
