@@ -1,94 +1,59 @@
 "use client";
 
-import { useState } from "react";
-
 import DataTableBO from "@/components/DataTableBO/DataTableBO";
 
-export default function MasterRumusVariabelTableHistory() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  // Mock data for history
-  const historyData = [
-    {
-      id: 1,
-      updateTime: "08/07/2023 11:50 WIB",
-      activity: "Update",
-      user: "John",
-      formulaName: "Rumus Jarak x Berat",
-      variables: "jarak, berat, harga_per_km",
-      status: "Aktif",
-    },
-    {
-      id: 2,
-      updateTime: "07/07/2023 14:30 WIB",
-      activity: "Create",
-      user: "Jane",
-      formulaName: "Rumus Volume x Density",
-      variables: "volume, density, multiplier",
-      status: "Aktif",
-    },
-  ];
-
-  // Filter data based on search query
-  const filteredData = historyData.filter(
-    (item) =>
-      item.formulaName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.activity.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // Pagination
-  const totalData = filteredData.length;
-  const totalPages = Math.ceil(totalData / perPage);
-  const startIndex = (currentPage - 1) * perPage;
-  const endIndex = startIndex + perPage;
-  const paginatedData = filteredData.slice(startIndex, endIndex);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const handlePerPageChange = (newPerPage) => {
-    setPerPage(newPerPage);
-    setCurrentPage(1);
-  };
-
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    setCurrentPage(1);
-  };
-
+export default function MasterRumusVariabelTableHistory({
+  data = [],
+  loading = false,
+  pagination = null,
+  onSearch,
+  onPageChange,
+  onActionFilter,
+  searchTerm = "",
+  actionFilter = ""
+}) {
   const columns = [
     {
-      key: "updateTime",
+      key: "createdAt",
       header: "Waktu Update",
       sortable: false,
       render: (row) => (
-        <div className="text-sm text-gray-900">{row.updateTime}</div>
+        <div className="text-xs font-semibold">
+          {row.createdAt ? new Date(row.createdAt).toLocaleString("id-ID", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }) : ""}
+        </div>
       ),
     },
     {
-      key: "activity",
+      key: "action",
       header: "Aktivitas",
       sortable: false,
       render: (row) => (
-        <div className="text-sm text-gray-900">{row.activity}</div>
+        <div className="text-xs font-semibold">
+          {row.action === "CREATE" ? "Create" : 
+           row.action === "UPDATE" ? "Update" : 
+           row.action === "DELETE" ? "Delete" : 
+           row.action}
+        </div>
       ),
     },
     {
-      key: "user",
+      key: "createdBy",
       header: "User",
       sortable: false,
-      render: (row) => <div className="text-sm text-gray-900">{row.user}</div>,
+      render: (row) => <div className="text-xs font-semibold">{row.createdBy}</div>,
     },
     {
-      key: "formulaName",
+      key: "name",
       header: "Nama Rumus",
       sortable: false,
       render: (row) => (
-        <div className="text-sm text-gray-900">{row.formulaName}</div>
+        <div className="text-xs font-semibold">{row.name}</div>
       ),
     },
     {
@@ -96,41 +61,49 @@ export default function MasterRumusVariabelTableHistory() {
       header: "Variabel",
       sortable: false,
       render: (row) => (
-        <div className="max-w-xs text-sm text-gray-900">
-          <ul className="list-inside list-disc space-y-1">
-            {row.variables.split(", ").map((variable, index) => (
-              <li key={index} className="text-xs">
-                {variable.trim()}
-              </li>
-            ))}
-          </ul>
+        <div className="max-w-xs text-xs font-semibold">
+          {row.variables && row.variables.length > 0 ? (
+            <ul className="list-inside list-disc space-y-1">
+              {row.variables.map((variable, index) => (
+                <li key={index} className="text-xs">
+                  {variable.variableName}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <span className="text-gray-400 text-xs font-semibold">Tidak ada variabel</span>
+          )}
         </div>
       ),
     },
     {
-      key: "status",
+      key: "isActive",
       header: "Status",
       sortable: false,
-      render: (row) => <span>{row.status}</span>,
+      render: (row) => (
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold`}>
+          {row.isActive ? "Aktif" : "Tidak Aktif"}
+        </span>
+      ),
     },
   ];
-
+  
   return (
     <div className="space-y-4">
       <DataTableBO
-        data={paginatedData}
+        data={data}
         columns={columns}
-        currentPage={currentPage}
-        perPage={perPage}
-        totalData={totalData}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-        onPerPageChange={handlePerPageChange}
-        onSearch={handleSearch}
+        currentPage={pagination?.currentPage || 1}
+        perPage={pagination?.recordsPerPage || 10}
+        totalItems={pagination?.totalRecords || 0}
+        totalPages={pagination?.totalPages || 1}
+        onPageChange={onPageChange}
+        onSearch={onSearch}
         searchPlaceholder="Cari berdasarkan nama rumus, user, atau aktivitas..."
         showSearch={false}
         showPagination={true}
-        loading={false}
+        loading={loading}
+        searchTerm={searchTerm}
       />
     </div>
   );

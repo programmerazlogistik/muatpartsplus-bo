@@ -3,74 +3,18 @@ import { useState } from "react";
 import DataTableBO from "@/components/DataTableBO/DataTableBO";
 import Button from "@/components/Button/Button";
 
-export default function MasterRutePricingTableHistory() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-  const [searchQuery, setSearchQuery] = useState("");
+export default function MasterRutePricingTableHistory({
+  data = [],
+  loading = false,
+  pagination = null,
+  onSearch,
+  onPageChange,
+  onActionFilter,
+  searchTerm = "",
+  actionFilter = ""
+}) {
   const [showSpecialRouteModal, setShowSpecialRouteModal] = useState(false);
   const [selectedSpecialRoutes, setSelectedSpecialRoutes] = useState([]);
-
-  // Mock data for history
-  const historyData = [
-    {
-      id: 1,
-      updateTime: "08/07/2023 11:50 WIB",
-      activity: "Update",
-      user: "John",
-      alias: "Jawa - Jawa",
-      origin: "Daerah Istimewa Yogyakarta, DKI Jakarta, Jawa Barat, Jawa Tengah, Jawa Timur",
-      destination: "Daerah Istimewa Yogyakarta, DKI Jakarta, Jawa Barat, Jawa Tengah, Jawa Timur",
-      specialRoute: "Lihat Detail Rute Khusus",
-      specialRoutes: [
-        "Kota Surabaya - Kota Malang",
-        "Kota Surabaya - Kab. Malang", 
-        "Kota Surabaya - Kota Yogyakarta",
-        "Kota Surabaya - Kota Jakarta Barat",
-        "Kota Surabaya - Kota Jakarta Pusat"
-      ],
-      status: "Aktif"
-    },
-    {
-      id: 2,
-      updateTime: "07/07/2023 14:30 WIB",
-      activity: "Create",
-      user: "Jane",
-      alias: "Sumatera - Jawa",
-      origin: "Sumatera Utara, Sumatera Selatan, Lampung",
-      destination: "DKI Jakarta, Jawa Barat, Jawa Tengah",
-      specialRoute: "=",
-      specialRoutes: [],
-      status: "Aktif"
-    }
-  ];
-
-  // Filter data based on search query
-  const filteredData = historyData.filter(item =>
-    item.alias.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.user.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    item.activity.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // Pagination
-  const totalData = filteredData.length;
-  const totalPages = Math.ceil(totalData / perPage);
-  const startIndex = (currentPage - 1) * perPage;
-  const endIndex = startIndex + perPage;
-  const paginatedData = filteredData.slice(startIndex, endIndex);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const handlePerPageChange = (newPerPage) => {
-    setPerPage(newPerPage);
-    setCurrentPage(1);
-  };
-
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    setCurrentPage(1);
-  };
 
   const handleViewSpecialRoutes = (specialRoutes) => {
     setSelectedSpecialRoutes(specialRoutes);
@@ -82,115 +26,117 @@ export default function MasterRutePricingTableHistory() {
     setSelectedSpecialRoutes([]);
   };
 
+  
   const columns = [
     {
-      key: "updateTime",
+      key: "createdAt",
       header: "Waktu Update",
       sortable: false,
       render: (row) => (
-        <div className="text-sm text-gray-900">
-          {row.updateTime}
+        <div className="text-xs font-semibold">
+          {row.createdAt ? new Date(row.createdAt).toLocaleString("id-ID", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }) : ""}
         </div>
-      )
+      ),
     },
     {
-      key: "activity",
+      key: "action",
       header: "Aktivitas",
       sortable: false,
       render: (row) => (
-        <div className="text-sm text-gray-900">
-          {row.activity}
+        <div className="text-xs font-semibold">
+          {row.action === "CREATE" ? "Create" : 
+           row.action === "UPDATE" ? "Update" : 
+           row.action === "DELETE" ? "Delete" : 
+           row.action}
         </div>
-      )
+      ),
     },
     {
-      key: "user",
+      key: "createdBy",
       header: "User",
       sortable: false,
-      render: (row) => (
-        <div className="text-sm text-gray-900">
-          {row.user}
-        </div>
-      )
+      render: (row) => <div className="text-xs font-semibold">{row.createdBy}</div>,
     },
     {
       key: "alias",
       header: "Alias",
       sortable: false,
       render: (row) => (
-        <div className="text-sm text-gray-900">
-          {row.alias}
-        </div>
-      )
+        <div className="text-xs font-semibold">{row.alias}</div>
+      ),
     },
     {
-      key: "origin",
+      key: "originProvinces",
       header: "Asal",
       sortable: false,
       render: (row) => (
-        <div className="text-sm text-gray-900 max-w-xs">
-          {row.origin}
+        <div className="text-xs font-semibold max-w-xs">
+          {row.originProvinces ? row.originProvinces.map(p => p.name).join(", ") : ""}
         </div>
-      )
+      ),
     },
     {
-      key: "destination",
+      key: "destinationProvinces",
       header: "Tujuan",
       sortable: false,
       render: (row) => (
-        <div className="text-sm text-gray-900 max-w-xs">
-          {row.destination}
+        <div className="text-xs font-semibold max-w-xs">
+          {row.destinationProvinces ? row.destinationProvinces.map(p => p.name).join(", ") : ""}
         </div>
-      )
+      ),
     },
     {
-      key: "specialRoute",
+      key: "specialRoutes",
       header: "Rute Khusus",
       sortable: false,
       render: (row) => (
-        <div className="text-sm">
-          {row.specialRoute === "=" ? (
+        <div className="text-xs">
+          {!row.specialRoutes || row.specialRoutes.length === 0 ? (
             <span className="text-gray-400">=</span>
           ) : (
             <button
-              className="text-blue-600 underline hover:text-blue-800 cursor-pointer"
+              className="text-blue-600 underline hover:text-blue-800 cursor-pointer font-semibold"
               onClick={() => handleViewSpecialRoutes(row.specialRoutes)}
             >
-              {row.specialRoute}
+              Lihat Detail Rute Khusus
             </button>
           )}
         </div>
-      )
+      ),
     },
     {
-      key: "status",
+      key: "isActive",
       header: "Status",
       sortable: false,
       render: (row) => (
-        <span
-        >
-          {row.status}
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold`}>
+          {row.isActive ? "Aktif" : "Tidak Aktif"}
         </span>
-      )
-    }
+      ),
+    },
   ];
 
   return (
     <div className="space-y-4">
       <DataTableBO
-        data={paginatedData}
+        data={data}
         columns={columns}
-        currentPage={currentPage}
-        perPage={perPage}
-        totalData={totalData}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-        onPerPageChange={handlePerPageChange}
-        onSearch={handleSearch}
+        currentPage={pagination?.currentPage || 1}
+        perPage={pagination?.recordsPerPage || 10}
+        totalItems={pagination?.totalRecords || 0}
+        totalPages={pagination?.totalPages || 1}
+        onPageChange={onPageChange}
+        onSearch={onSearch}
         searchPlaceholder="Cari berdasarkan alias, user, atau aktivitas..."
         showSearch={false}
         showPagination={true}
-        loading={false}
+        loading={loading}
       />
 
       {/* Special Route Modal */}
@@ -213,7 +159,7 @@ export default function MasterRutePricingTableHistory() {
               <ol className="list-decimal list-inside space-y-2">
                 {selectedSpecialRoutes.map((route, index) => (
                   <li key={index} className="text-sm text-gray-700">
-                    {route}
+                    {route.name}
                   </li>
                 ))}
               </ol>

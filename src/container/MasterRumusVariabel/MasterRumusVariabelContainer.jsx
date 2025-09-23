@@ -10,6 +10,7 @@ import {
   transformFormulaListToTableData,
   transformPaginationData 
 } from "@/services/masterpricing/masterformulavariable/getFormulaList";
+import { patchFormulaStatusWithValidation } from "@/services/masterpricing/masterformulavariable/patchFormulaStatus";
 
 export default function MasterRumusVariabelContainer() {
   const router = useRouter();
@@ -52,20 +53,24 @@ export default function MasterRumusVariabelContainer() {
   }, []);
 
   const handleStatusChange = useCallback(async (formulaId, newStatus) => {
+    console.log(`Starting status update for formula ${formulaId} to ${newStatus}`);
     setUpdatingFormulas(prev => new Set(prev).add(formulaId));
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Call API to update formula status using patchFormulaStatusWithValidation
+      const statusData = { isActive: newStatus };
+      console.log('Calling patchFormulaStatusWithValidation with:', { formulaId, statusData });
       
-      // Update the data (in real app, this would be an API call)
-      console.log(`Updating formula ${formulaId} status to ${newStatus}`);
+      const response = await patchFormulaStatusWithValidation(formulaId, statusData);
       
-      // Revalidate data after status change
+      console.log(`Formula ${formulaId} status updated to ${newStatus}:`, response);
+      
+      // Revalidate data after successful update
       mutate();
       
     } catch (error) {
       console.error('Error updating formula status:', error);
+      alert(`Gagal mengupdate status: ${error.message}`);
     } finally {
       setUpdatingFormulas(prev => {
         const newSet = new Set(prev);

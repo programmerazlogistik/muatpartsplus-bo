@@ -11,6 +11,8 @@ import Toggle from "@/components/Toggle/Toggle";
 
 import { useTranslation } from "@/hooks/use-translation";
 import MultiSelectDropdown from "@/components/MultiSelectDropdown/MultiSelectDropdown";
+import { useGetOriginProvinces, useGetDestinationProvinces, transformProvinceDataToMultiSelect } from "@/services/masterpricing/masterrute/getProvinceRoute";
+import { useGetCitiesAsFlatList, transformCitiesToDropdownFormat } from "@/services/masterpricing/masterrute/getCityByProvince";
 
 const MasterRutePricingForm = ({ 
   mode = "add", // "add", "edit", or "detail"
@@ -24,6 +26,15 @@ const MasterRutePricingForm = ({
 }) => {
   const { t = (key, _, fallback) => fallback || key } = useTranslation() || {};
   const router = useRouter();
+  
+  // API hooks for provinces
+  const { data: originProvincesData, error: originError, isLoading: originLoading } = useGetOriginProvinces();
+  const { data: destinationProvincesData, error: destinationError, isLoading: destinationLoading } = useGetDestinationProvinces();
+  
+  // Transform API data to dropdown format
+  const originProvinceOptions = transformProvinceDataToMultiSelect(originProvincesData?.data?.Data || []);
+  const destinationProvinceOptions = transformProvinceDataToMultiSelect(destinationProvincesData?.data?.Data || []);
+  
   
   // Form state
   const [formData, setFormData] = useState({
@@ -43,64 +54,29 @@ const MasterRutePricingForm = ({
     }
   ]);
 
-  // Province options (dummy data - in real app, this would come from API)
-  const provinceOptions = [
-    { value: "aceh", label: "Aceh" },
-    { value: "sumatera-utara", label: "Sumatera Utara" },
-    { value: "sumatera-barat", label: "Sumatera Barat" },
-    { value: "riau", label: "Riau" },
-    { value: "kepulauan-riau", label: "Kepulauan Riau" },
-    { value: "jambi", label: "Jambi" },
-    { value: "sumatera-selatan", label: "Sumatera Selatan" },
-    { value: "bangka-belitung", label: "Bangka Belitung" },
-    { value: "lampung", label: "Lampung" },
-    { value: "banten", label: "Banten" },
-    { value: "dki-jakarta", label: "DKI Jakarta" },
-    { value: "jawa-barat", label: "Jawa Barat" },
-    { value: "jawa-tengah", label: "Jawa Tengah" },
-    { value: "diy-yogyakarta", label: "Daerah Istimewa Yogyakarta" },
-    { value: "jawa-timur", label: "Jawa Timur" },
-    { value: "bali", label: "Bali" },
-    { value: "nusa-tenggara-barat", label: "Nusa Tenggara Barat" },
-    { value: "nusa-tenggara-timur", label: "Nusa Tenggara Timur" },
-    { value: "kalimantan-barat", label: "Kalimantan Barat" },
-    { value: "kalimantan-tengah", label: "Kalimantan Tengah" },
-    { value: "kalimantan-selatan", label: "Kalimantan Selatan" },
-    { value: "kalimantan-timur", label: "Kalimantan Timur" },
-    { value: "kalimantan-utara", label: "Kalimantan Utara" },
-    { value: "sulawesi-utara", label: "Sulawesi Utara" },
-    { value: "gorontalo", label: "Gorontalo" },
-    { value: "sulawesi-tengah", label: "Sulawesi Tengah" },
-    { value: "sulawesi-selatan", label: "Sulawesi Selatan" },
-    { value: "sulawesi-tenggara", label: "Sulawesi Tenggara" },
-    { value: "sulawesi-barat", label: "Sulawesi Barat" },
-    { value: "maluku", label: "Maluku" },
-    { value: "maluku-utara", label: "Maluku Utara" },
-    { value: "papua", label: "Papua" },
-    { value: "papua-barat", label: "Papua Barat" },
-    { value: "papua-selatan", label: "Papua Selatan" },
-    { value: "papua-tengah", label: "Papua Tengah" },
-    { value: "papua-pegunungan", label: "Papua Pegunungan" },
-  ];
-
-  // City/Regency options (dummy data - in real app, this would come from API)
-  const cityOptions = [
-    { value: "kota-surabaya", label: "Kota Surabaya" },
-    { value: "kota-malang", label: "Kota Malang" },
-    { value: "kab-malang", label: "Kab. Malang" },
-    { value: "kota-yogyakarta", label: "Kota Yogyakarta" },
-    { value: "kota-jakarta-barat", label: "Kota Jakarta Barat" },
-    { value: "kota-jakarta-pusat", label: "Kota Jakarta Pusat" },
-    { value: "kota-jakarta-selatan", label: "Kota Jakarta Selatan" },
-    { value: "kota-jakarta-timur", label: "Kota Jakarta Timur" },
-    { value: "kota-jakarta-utara", label: "Kota Jakarta Utara" },
-    { value: "kota-semarang", label: "Kota Semarang" },
-    { value: "kota-bandung", label: "Kota Bandung" },
-    { value: "kota-bogor", label: "Kota Bogor" },
-    { value: "kota-depok", label: "Kota Depok" },
-    { value: "kota-tangerang", label: "Kota Tangerang" },
-    { value: "kota-bekasi", label: "Kota Bekasi" },
-  ];
+  // Get selected province IDs
+  const selectedOriginProvinceIds = formData.loadingProvince.map(province => province.id || province.value);
+  const selectedDestinationProvinceIds = formData.unloadingProvince.map(province => province.id || province.value);
+  
+  // API hooks for cities based on selected provinces
+  const { data: originCitiesData, error: originCitiesError, isLoading: originCitiesLoading } = useGetCitiesAsFlatList(
+    selectedOriginProvinceIds,
+    { 
+      revalidateOnFocus: false,
+      // Only fetch if we have province IDs
+      shouldRetryOnError: false
+    }
+  );
+  const { data: destinationCitiesData, error: destinationCitiesError, isLoading: destinationCitiesLoading } = useGetCitiesAsFlatList(
+    selectedDestinationProvinceIds,
+    { 
+      revalidateOnFocus: false,
+      // Only fetch if we have province IDs
+      shouldRetryOnError: false
+    }
+  );
+    
+ 
 
   // Load initial data for edit/detail mode
   useEffect(() => {
@@ -119,6 +95,39 @@ const MasterRutePricingForm = ({
       }
     }
   }, [mode, initialData]);
+
+  // Smart city management based on province changes
+  useEffect(() => {
+    if (mode !== "detail") {
+      setSpecialRoutes(prev => prev.map(route => {
+        const updatedRoute = { ...route };
+        
+        // Check origin location - only reset if its province is no longer selected
+        if (route.originLocation && route.originLocation.provinceId) {
+          const isOriginProvinceStillSelected = formData.loadingProvince.some(
+            province => province.id === route.originLocation.provinceId
+          );
+          
+          if (!isOriginProvinceStillSelected) {
+            updatedRoute.originLocation = "";
+          }
+        }
+        
+        // Check destination location - only reset if its province is no longer selected
+        if (route.destinationLocation && route.destinationLocation.provinceId) {
+          const isDestinationProvinceStillSelected = formData.unloadingProvince.some(
+            province => province.id === route.destinationLocation.provinceId
+          );
+          
+          if (!isDestinationProvinceStillSelected) {
+            updatedRoute.destinationLocation = "";
+          }
+        }
+        
+        return updatedRoute;
+      }));
+    }
+  }, [formData.loadingProvince, formData.unloadingProvince, mode]);
 
   // Handle form input changes
   const handleInputChange = (field, value) => {
@@ -139,13 +148,14 @@ const MasterRutePricingForm = ({
   const handleSpecialRouteChange = (routeId, field, value) => {
     if (disabled) return; // Don't allow changes in detail mode
     
-    setSpecialRoutes(prev => 
-      prev.map(route => 
+    setSpecialRoutes(prev => {
+      const updated = prev.map(route => 
         route.id === routeId 
           ? { ...route, [field]: value }
           : route
-      )
-    );
+      );
+      return updated;
+    });
     
     // Notify parent component about data changes
     if (onDataChange) {
@@ -171,6 +181,37 @@ const MasterRutePricingForm = ({
     if (onDataChange) {
       onDataChange(true);
     }
+  };
+
+  // Filter city options based on selected provinces
+  const getFilteredCityOptions = (citiesData, selectedProvinces) => {
+    if (!citiesData || !selectedProvinces.length) return [];
+    
+    const selectedProvinceIds = selectedProvinces.map(province => province.id);
+    return citiesData.filter(city => selectedProvinceIds.includes(city.provinceId));
+  };
+
+   // Get cities data for dropdown options
+  // Filter cities based on selected provinces and transform to dropdown format
+  const filteredOriginCities = getFilteredCityOptions(originCitiesData, formData.loadingProvince);
+  const filteredDestinationCities = getFilteredCityOptions(destinationCitiesData, formData.unloadingProvince);
+  
+  const originCityOptions = filteredOriginCities ? transformCitiesToDropdownFormat(filteredOriginCities) : [];
+  const destinationCityOptions = filteredDestinationCities ? transformCitiesToDropdownFormat(filteredDestinationCities) : [];
+
+  // Get all available city options (including currently selected ones)
+  const getAllCityOptions = (citiesData, selectedProvinces, currentSelection) => {
+    const filteredCities = getFilteredCityOptions(citiesData, selectedProvinces);
+    
+    // If there's a current selection that's not in the filtered list, add it back
+    if (currentSelection && currentSelection.provinceId) {
+      const isCurrentSelectionInFiltered = filteredCities.some(city => city.id === currentSelection.id);
+      if (!isCurrentSelectionInFiltered) {
+        filteredCities.push(currentSelection);
+      }
+    }
+    
+    return filteredCities;
   };
 
   // Remove special route
@@ -254,26 +295,28 @@ const MasterRutePricingForm = ({
             <FormContainer>
               <FormLabel required={!disabled}>Provinsi Muat</FormLabel>
               <MultiSelectDropdown
-                placeholder="Pilih Provinsi Muat"
+                maxVisible={5}
+                placeholder={originLoading ? "Memuat provinsi..." : "Pilih Provinsi Muat"}
                 selectedItems={formData.loadingProvince}
                 onSelectionChange={(value) => handleInputChange("loadingProvince", value)}
-                options={provinceOptions}
+                options={originProvinceOptions}
                 titleModal="Provinsi Muat"
                 required={!disabled}
-                disabled={disabled}
+                disabled={disabled || originLoading}
               />
             </FormContainer>
 
             <FormContainer>
               <FormLabel required={!disabled}>Provinsi Bongkar</FormLabel>
               <MultiSelectDropdown
-                placeholder="Pilih Provinsi Bongkar"
+                placeholder={destinationLoading ? "Memuat provinsi..." : "Pilih Provinsi Bongkar"}
                 selectedItems={formData.unloadingProvince}
                 onSelectionChange={(value) => handleInputChange("unloadingProvince", value)}
-                options={provinceOptions}
+                options={destinationProvinceOptions}
                 titleModal="Provinsi Bongkar"
+                maxVisible={5}
                 required={!disabled}
-                disabled={disabled}
+                disabled={disabled || destinationLoading}
               />
             </FormContainer>
 
@@ -340,11 +383,17 @@ const MasterRutePricingForm = ({
                   </div>
                   <div className="col-span-4">
                     <Select
-                      placeholder="Pilih Kota/Kabupaten"
-                      value={route.originLocation}
-                      onChange={(value) => handleSpecialRouteChange(route.id, "originLocation", value)}
-                      options={cityOptions}
+                      placeholder={originCitiesLoading ? "Memuat kota..." : "Pilih Kota/Kabupaten"}
+                      value={route.originLocation?.value || route.originLocation}
+                      onChange={(value) => {
+                        const selectedOption = originCityOptions.find(option => option.value === value);
+                        if (selectedOption) {
+                          handleSpecialRouteChange(route.id, "originLocation", selectedOption);
+                        }
+                      }}
+                      options={originCityOptions}
                       required
+                      disabled={originCitiesLoading || disabled}
                     />
                   </div>
                   <div className="col-span-1 p-0 text-center">
@@ -352,11 +401,17 @@ const MasterRutePricingForm = ({
                   </div>
                   <div className="col-span-4">
                     <Select
-                      placeholder="Pilih Kota/Kabupaten"
-                      value={route.destinationLocation}
-                      onChange={(value) => handleSpecialRouteChange(route.id, "destinationLocation", value)}
-                      options={cityOptions}
+                      placeholder={destinationCitiesLoading ? "Memuat kota..." : "Pilih Kota/Kabupaten"}
+                      value={route.destinationLocation?.value || route.destinationLocation}
+                      onChange={(value) => {
+                        const selectedOption = destinationCityOptions.find(option => option.value === value);
+                        if (selectedOption) {
+                          handleSpecialRouteChange(route.id, "destinationLocation", selectedOption);
+                        }
+                      }}
+                      options={destinationCityOptions}
                       required
+                      disabled={destinationCitiesLoading || disabled}
                     />
                   </div>
                   <div className="col-span-1 flex gap-2">

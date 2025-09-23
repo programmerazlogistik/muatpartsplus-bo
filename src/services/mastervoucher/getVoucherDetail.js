@@ -265,7 +265,7 @@ export const transformVoucherDetailToFormValues = (apiData) => {
     kodeVoucher: apiData.voucherCode || "",
     syaratDanKetentuan: apiData.termsAndConditions || "",
     caraPemakaian: apiData.usageInstructions || "",
-    jenisPotongan: apiData.discountType === "percentage" ? "x %" : "Rp",
+    jenisPotongan: apiData.discountType === "percentage" ? "x %" : "Rp x",
     nominal: apiData.discountValue || "",
     maksimalPotonganRp: apiData.maxDiscountAmount
       ? apiData.maxDiscountAmount.toString()

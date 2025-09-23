@@ -37,7 +37,8 @@ const MasterTipePricingForm = ({
         isActive: initialData.isActive || false,
       });
     }
-  }, [mode, initialData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, initialData?.id]);
 
   // Handle form input changes
   const handleInputChange = (field, value) => {

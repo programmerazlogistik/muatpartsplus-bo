@@ -12,320 +12,128 @@ export const mockAPIResult = {
     Code: 200,
     Text: "OK"
   },
-  Data: {
-    data: [
-      {
-        id: "21368ef0-7c38-4b51-a0ee-a495230b1642",
-        formulaId: "39100e8e-f4c9-4dd2-a025-85df7a4a3f89",
-        action: "UPDATE",
-        name: "4PL",
-        isActive: true,
-        variables: [
-          {
-            id: "5441c5e3-fc52-4e0f-a12f-306cdc6c792d",
-            isActive: true,
-            variableName: "a",
-            isFromShipper: false
-          },
-          {
-            id: "d33da90c-233d-48b9-bf0f-36fc44e173f5",
-            isActive: true,
-            variableName: "b",
-            isFromShipper: false
-          },
-          {
-            id: "0d305d28-2752-4585-a331-1b2bea3e232e",
-            isActive: true,
-            variableName: "c",
-            isFromShipper: false
-          },
-          {
-            id: "e3464bad-f832-403f-9443-5cd3e321a941",
-            isActive: true,
-            variableName: "d",
-            isFromShipper: false
-          },
-          {
-            id: "e6e0fd5b-7734-4aad-8ad9-769d4deedeb9",
-            isActive: true,
-            variableName: "jarak",
-            isFromShipper: true
-          },
-          {
-            id: "4ec224a0-bd77-42fa-9a85-2ab07115c266",
-            isActive: true,
-            variableName: "tonase",
-            isFromShipper: true
-          }
-        ],
-        createdAt: "2025-09-20T02:55:26.455Z",
-        createdBy: "Backend BO GM"
-      },
-      {
-        id: "a330a0c8-371b-4db2-a52e-5f5b6df53db1",
-        formulaId: "f655e5c3-35a4-4703-a3c7-4f321652f9c2",
-        action: "CREATE",
-        name: "6PL",
-        isActive: true,
-        variables: [
-          {
-            id: "2ccb11f1-2265-4361-b769-55d773928760",
-            isActive: true,
-            createdAt: "2025-09-20T02:27:44.773Z",
-            createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
-            deletedAt: null,
-            formulaId: "f655e5c3-35a4-4703-a3c7-4f321652f9c2",
-            updatedAt: "2025-09-20T02:27:44.773Z",
-            variableName: "jarak",
-            isFromShipper: true
-          },
-          {
-            id: "070e3ff1-bdd1-4e2a-a46b-d1c2044327e2",
-            isActive: true,
-            createdAt: "2025-09-20T02:27:44.773Z",
-            createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
-            deletedAt: null,
-            formulaId: "f655e5c3-35a4-4703-a3c7-4f321652f9c2",
-            updatedAt: "2025-09-20T02:27:44.773Z",
-            variableName: "tonase",
-            isFromShipper: true
-          },
-          {
-            id: "34b44f3d-d265-4c2b-a284-565bc94f11d2",
-            isActive: true,
-            createdAt: "2025-09-20T02:27:44.773Z",
-            createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
-            deletedAt: null,
-            formulaId: "f655e5c3-35a4-4703-a3c7-4f321652f9c2",
-            updatedAt: "2025-09-20T02:27:44.773Z",
-            variableName: "enam",
-            isFromShipper: false
-          },
-          {
-            id: "f979e389-2930-4bf0-b790-badb7bb21d70",
-            isActive: true,
-            createdAt: "2025-09-20T02:27:44.773Z",
-            createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
-            deletedAt: null,
-            formulaId: "f655e5c3-35a4-4703-a3c7-4f321652f9c2",
-            updatedAt: "2025-09-20T02:27:44.773Z",
-            variableName: "PL",
-            isFromShipper: false
-          }
-        ],
-        createdAt: "2025-09-20T02:27:44.817Z",
-        createdBy: "Backend BO GM"
-      },
-      {
-        id: "df9c6870-92db-4ce6-9b97-559626005b92",
-        formulaId: "d9a845d1-8a88-453e-9485-ab813e43194c",
-        action: "CREATE",
-        name: "5PL",
-        isActive: true,
-        variables: [
-          {
-            id: "780db686-63d4-4845-95f4-2edadb7eed29",
-            isActive: true,
-            createdAt: "2025-09-20T02:27:23.384Z",
-            createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
-            deletedAt: null,
-            formulaId: "d9a845d1-8a88-453e-9485-ab813e43194c",
-            updatedAt: "2025-09-20T02:27:23.384Z",
-            variableName: "jarak",
-            isFromShipper: true
-          },
-          {
-            id: "c0b52080-8616-42c3-8596-fa2e85fb611a",
-            isActive: true,
-            createdAt: "2025-09-20T02:27:23.384Z",
-            createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
-            deletedAt: null,
-            formulaId: "d9a845d1-8a88-453e-9485-ab813e43194c",
-            updatedAt: "2025-09-20T02:27:23.384Z",
-            variableName: "tonase",
-            isFromShipper: true
-          },
-          {
-            id: "837ad4e1-9dd0-441e-93e3-fde2c485864a",
-            isActive: true,
-            createdAt: "2025-09-20T02:27:23.384Z",
-            createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
-            deletedAt: null,
-            formulaId: "d9a845d1-8a88-453e-9485-ab813e43194c",
-            updatedAt: "2025-09-20T02:27:23.384Z",
-            variableName: "lima",
-            isFromShipper: false
-          },
-          {
-            id: "6ce984db-2956-4004-8cfc-19043ccbaef3",
-            isActive: true,
-            createdAt: "2025-09-20T02:27:23.384Z",
-            createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
-            deletedAt: null,
-            formulaId: "d9a845d1-8a88-453e-9485-ab813e43194c",
-            updatedAt: "2025-09-20T02:27:23.384Z",
-            variableName: "L",
-            isFromShipper: false
-          }
-        ],
-        createdAt: "2025-09-20T02:27:23.435Z",
-        createdBy: "Backend BO GM"
-      },
-      {
-        id: "21368ef0-7c38-4b51-a0ee-a495230b1641",
-        formulaId: "39100e8e-f4c9-4dd2-a025-85df7a4a3f89",
-        action: "UPDATE",
-        name: "4PL",
-        isActive: false,
-        variables: [
-          {
-            id: "5441c5e3-fc52-4e0f-a12f-306cdc6c792d",
-            isActive: true,
-            variableName: "a",
-            isFromShipper: false
-          },
-          {
-            id: "d33da90c-233d-48b9-bf0f-36fc44e173f5",
-            isActive: true,
-            variableName: "b",
-            isFromShipper: false
-          },
-          {
-            id: "0d305d28-2752-4585-a331-1b2bea3e232e",
-            isActive: true,
-            variableName: "c",
-            isFromShipper: false
-          },
-          {
-            id: "e3464bad-f832-403f-9443-5cd3e321a941",
-            isActive: true,
-            variableName: "d",
-            isFromShipper: false
-          },
-          {
-            id: "e6e0fd5b-7734-4aad-8ad9-769d4deedeb9",
-            isActive: true,
-            variableName: "jarak",
-            isFromShipper: true
-          },
-          {
-            id: "4ec224a0-bd77-42fa-9a85-2ab07115c266",
-            isActive: true,
-            variableName: "tonase",
-            isFromShipper: true
-          }
-        ],
-        createdAt: "2025-09-19T02:47:26.455Z",
-        createdBy: "Backend BO GM"
-      },
-      {
-        id: "c617315f-22ea-4e26-af4b-c8f810c7a239",
-        formulaId: "39100e8e-f4c9-4dd2-a025-85df7a4a3f89",
-        action: "UPDATE",
-        name: "4PL",
-        isActive: true,
-        variables: [],
-        createdAt: "2025-09-19T02:38:54.198Z",
-        createdBy: "Backend BO GM"
-      },
-      {
-        id: "0758b426-4f0f-4c9d-bc7d-ec74c690d3a2",
-        formulaId: "39100e8e-f4c9-4dd2-a025-85df7a4a3f89",
-        action: "UPDATE",
-        name: "4PL",
-        isActive: false,
-        variables: [],
-        createdAt: "2025-09-19T02:32:59.412Z",
-        createdBy: "Backend BO GM"
-      },
-      {
-        id: "f3b2f598-6c74-4fe7-ace0-3f13f30147e3",
-        formulaId: "39100e8e-f4c9-4dd2-a025-85df7a4a3f89",
-        action: "CREATE",
-        name: "4PL",
-        isActive: true,
-        variables: [
-          {
-            id: "e6e0fd5b-7734-4aad-8ad9-769d4deedeb9",
-            isActive: true,
-            createdAt: "2025-09-18T16:17:49.976Z",
-            createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
-            deletedAt: null,
-            formulaId: "39100e8e-f4c9-4dd2-a025-85df7a4a3f89",
-            updatedAt: "2025-09-18T16:17:49.976Z",
-            variableName: "jarak",
-            isFromShipper: true
-          },
-          {
-            id: "4ec224a0-bd77-42fa-9a85-2ab07115c266",
-            isActive: true,
-            createdAt: "2025-09-18T16:17:49.976Z",
-            createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
-            deletedAt: null,
-            formulaId: "39100e8e-f4c9-4dd2-a025-85df7a4a3f89",
-            updatedAt: "2025-09-18T16:17:49.976Z",
-            variableName: "tonase",
-            isFromShipper: true
-          },
-          {
-            id: "5441c5e3-fc52-4e0f-a12f-306cdc6c792d",
-            isActive: true,
-            createdAt: "2025-09-18T16:17:49.976Z",
-            createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
-            deletedAt: null,
-            formulaId: "39100e8e-f4c9-4dd2-a025-85df7a4a3f89",
-            updatedAt: "2025-09-18T16:17:49.976Z",
-            variableName: "a",
-            isFromShipper: false
-          },
-          {
-            id: "d33da90c-233d-48b9-bf0f-36fc44e173f5",
-            isActive: true,
-            createdAt: "2025-09-18T16:17:49.976Z",
-            createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
-            deletedAt: null,
-            formulaId: "39100e8e-f4c9-4dd2-a025-85df7a4a3f89",
-            updatedAt: "2025-09-18T16:17:49.976Z",
-            variableName: "b",
-            isFromShipper: false
-          },
-          {
-            id: "0d305d28-2752-4585-a331-1b2bea3e232e",
-            isActive: true,
-            createdAt: "2025-09-18T16:17:49.976Z",
-            createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
-            deletedAt: null,
-            formulaId: "39100e8e-f4c9-4dd2-a025-85df7a4a3f89",
-            updatedAt: "2025-09-18T16:17:49.976Z",
-            variableName: "c",
-            isFromShipper: false
-          },
-          {
-            id: "e3464bad-f832-403f-9443-5cd3e321a941",
-            isActive: true,
-            createdAt: "2025-09-18T16:17:49.976Z",
-            createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
-            deletedAt: null,
-            formulaId: "39100e8e-f4c9-4dd2-a025-85df7a4a3f89",
-            updatedAt: "2025-09-18T16:17:49.976Z",
-            variableName: "d",
-            isFromShipper: false
-          }
-        ],
-        createdAt: "2025-09-18T16:17:50.054Z",
-        createdBy: "Backend BO GM"
-      }
+  data: {
+    Data: [
+    {
+      id: "6c3c03ff-1fcb-4047-860e-b2633e2341c0",
+      formulaId: "3c33eeef-93ac-42d8-9c24-9e07dc48e61b",
+      action: "CREATE",
+      name: "4XXL",
+      isActive: true,
+      variables: [
+        {
+          id: "3c80eee7-e4a8-4bd3-918b-6b3c71d0ed17",
+          isActive: true,
+          createdAt: "2025-09-23T06:26:04.997Z",
+          createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
+          deletedAt: null,
+          formulaId: "3c33eeef-93ac-42d8-9c24-9e07dc48e61b",
+          updatedAt: "2025-09-23T06:26:04.997Z",
+          variableName: "jarak",
+          isFromShipper: true
+        },
+        {
+          id: "d7e47069-67aa-4d3c-9d87-d07ebde9820d",
+          isActive: true,
+          createdAt: "2025-09-23T06:26:04.997Z",
+          createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
+          deletedAt: null,
+          formulaId: "3c33eeef-93ac-42d8-9c24-9e07dc48e61b",
+          updatedAt: "2025-09-23T06:26:04.997Z",
+          variableName: "tonase",
+          isFromShipper: true
+        },
+        {
+          id: "fd259411-9a0b-451d-9302-24f717bddf61",
+          isActive: true,
+          createdAt: "2025-09-23T06:26:04.997Z",
+          createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
+          deletedAt: null,
+          formulaId: "3c33eeef-93ac-42d8-9c24-9e07dc48e61b",
+          updatedAt: "2025-09-23T06:26:04.997Z",
+          variableName: "a",
+          isFromShipper: false
+        },
+        {
+          id: "59985984-d2b4-4fcb-8a73-b0f1577644ea",
+          isActive: true,
+          createdAt: "2025-09-23T06:26:04.997Z",
+          createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
+          deletedAt: null,
+          formulaId: "3c33eeef-93ac-42d8-9c24-9e07dc48e61b",
+          updatedAt: "2025-09-23T06:26:04.997Z",
+          variableName: "b",
+          isFromShipper: false
+        },
+        {
+          id: "6c647c9a-0f83-4570-90a3-96129713b987",
+          isActive: true,
+          createdAt: "2025-09-23T06:26:04.997Z",
+          createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
+          deletedAt: null,
+          formulaId: "3c33eeef-93ac-42d8-9c24-9e07dc48e61b",
+          updatedAt: "2025-09-23T06:26:04.997Z",
+          variableName: "c",
+          isFromShipper: false
+        }
+      ],
+      createdAt: "2025-09-23T06:26:05.011Z",
+      createdBy: "Backend BO GM"
+    },
+    {
+      id: "a330a0c8-371b-4db2-a52e-5f5b6df53db1",
+      formulaId: "3c33eeef-93ac-42d8-9c24-9e07dc48e61b",
+      action: "UPDATE",
+      name: "4XXL",
+      isActive: false,
+      variables: [
+        {
+          id: "3c80eee7-e4a8-4bd3-918b-6b3c71d0ed17",
+          isActive: true,
+          createdAt: "2025-09-23T06:26:04.997Z",
+          createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
+          deletedAt: null,
+          formulaId: "3c33eeef-93ac-42d8-9c24-9e07dc48e61b",
+          updatedAt: "2025-09-23T06:26:04.997Z",
+          variableName: "jarak",
+          isFromShipper: true
+        },
+        {
+          id: "d7e47069-67aa-4d3c-9d87-d07ebde9820d",
+          isActive: true,
+          createdAt: "2025-09-23T06:26:04.997Z",
+          createdBy: "09d2f11e-ea5f-4758-b230-e8f240b2dd39",
+          deletedAt: null,
+          formulaId: "3c33eeef-93ac-42d8-9c24-9e07dc48e61b",
+          updatedAt: "2025-09-23T06:26:04.997Z",
+          variableName: "tonase",
+          isFromShipper: true
+        }
+      ],
+      createdAt: "2025-09-22T10:30:15.123Z",
+      createdBy: "Backend BO GM"
+    },
+    {
+      id: "df9c6870-92db-4ce6-9b97-559626005b92",
+      formulaId: "3c33eeef-93ac-42d8-9c24-9e07dc48e61b",
+      action: "UPDATE",
+      name: "4XXL",
+      isActive: true,
+      variables: [],
+      createdAt: "2025-09-21T15:45:30.456Z",
+      createdBy: "Backend BO GM"
+    }
     ],
-    pagination: {
+    Pagination: {
       page: 1,
       limit: 10,
-      total: 7,
+      total: 3,
       totalPages: 1,
       hasNext: false,
       hasPrev: false
     }
   },
-  Type: "/v1/bo/pricing/master/formula/history"
+  Type: "/v1/bo/pricing/master/formula/3c33eeef-93ac-42d8-9c24-9e07dc48e61b/history"
 };
 
 /**
@@ -333,8 +141,10 @@ export const mockAPIResult = {
  * @param {string} url - The API endpoint URL
  * @returns {Promise} - Axios response promise
  */
-export const getFormulaHistory = async (url) => {
+export const getFormulaHistory = async (formulaId, params = {}) => {
   const fetcher = useFetcherMuatrans ? fetcherMuatrans : fetcherMuatransCS;
+  const queryString = buildFormulaHistoryQuery(params);
+  const url = `/v1/bo/pricing/master/formula/${formulaId}/history${queryString ? `?${queryString}` : ""}`;
   return fetcher.get(url);
 };
 
@@ -403,15 +213,13 @@ export const transformPaginationData = (paginationData) => {
  * @param {number} params.page - Page number
  * @param {number} params.limit - Records per page
  * @param {string} params.action - Filter by action (CREATE, UPDATE, DELETE)
- * @param {string} params.formulaId - Filter by formula ID
  * @returns {string} - Query string
  */
 export const buildFormulaHistoryQuery = ({ 
   search = "", 
   page = 1, 
   limit = 10, 
-  action = "",
-  formulaId = ""
+  action = ""
 } = {}) => {
   const params = new URLSearchParams();
   
@@ -423,10 +231,6 @@ export const buildFormulaHistoryQuery = ({
     params.append("action", action);
   }
   
-  if (formulaId) {
-    params.append("formulaId", formulaId);
-  }
-  
   params.append("page", page.toString());
   params.append("limit", limit.toString());
   
@@ -435,22 +239,22 @@ export const buildFormulaHistoryQuery = ({
 
 /**
  * SWR hook for fetching formula history
+ * @param {string} formulaId - Formula ID for the history
  * @param {Object} params - Query parameters
  * @param {string} params.search - Search term
  * @param {number} params.page - Page number
  * @param {number} params.limit - Records per page
  * @param {string} params.action - Filter by action
- * @param {string} params.formulaId - Filter by formula ID
  * @param {Object} options - SWR options
  * @returns {Object} - SWR response object { data, error, isLoading, mutate }
  */
-export const useGetFormulaHistory = (params = {}, options = {}) => {
-  const { search = "", page = 1, limit = 10, action = "", formulaId = "" } = params;
+export const useGetFormulaHistory = (formulaId, params = {}, options = {}) => {
+  const { search = "", page = 1, limit = 10, action = "" } = params;
   
-  const queryString = buildFormulaHistoryQuery({ search, page, limit, action, formulaId });
-  const cacheKey = `/v1/bo/pricing/master/formula/history${queryString ? `?${queryString}` : ""}`;
+  const queryString = buildFormulaHistoryQuery({ search, page, limit, action });
+  const cacheKey = `/v1/bo/pricing/master/formula/${formulaId}/history${queryString ? `?${queryString}` : ""}`;
 
-  return useSWR(cacheKey, getFormulaHistory, {
+  return useSWR(cacheKey, () => getFormulaHistory(formulaId, params), {
     // Default SWR options
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
@@ -474,7 +278,7 @@ export const getFormulaHistoryMock = async (params = {}) => {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 500));
   
-  let filteredData = mockAPIResult.Data.data;
+  let filteredData = mockAPIResult.Data;
   
   // Apply search filter
   if (search) {
@@ -506,17 +310,14 @@ export const getFormulaHistoryMock = async (params = {}) => {
   
   return {
     ...mockAPIResult,
-    Data: {
-      ...mockAPIResult.Data,
-      data: paginatedData,
-      pagination: {
-        ...mockAPIResult.Data.pagination,
-        page: page,
-        total: filteredData.length,
-        totalPages: Math.ceil(filteredData.length / limit),
-        hasNext: endIndex < filteredData.length,
-        hasPrev: page > 1,
-      }
+    Data: paginatedData,
+    Pagination: {
+      ...mockAPIResult.Pagination,
+      page: page,
+      total: filteredData.length,
+      totalPages: Math.ceil(filteredData.length / limit),
+      hasNext: endIndex < filteredData.length,
+      hasPrev: page > 1,
     }
   };
 };

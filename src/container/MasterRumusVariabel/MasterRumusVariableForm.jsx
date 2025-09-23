@@ -37,6 +37,9 @@ const MasterRumusVariableForm = ({
     }
   ]);
 
+  // Error state
+  const [errors, setErrors] = useState({});
+
   // Load initial data for edit/detail mode
   useEffect(() => {
     if ((mode === "edit" || mode === "detail") && initialData) {
@@ -50,7 +53,8 @@ const MasterRumusVariableForm = ({
         setVariables(initialData.variables);
       }
     }
-  }, [mode, initialData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, initialData?.id]); // Only reload when mode changes or initialData.id changes
 
   // Handle form input changes
   const handleInputChange = (field, value) => {
@@ -87,7 +91,7 @@ const MasterRumusVariableForm = ({
 
   // Add new variable
   const addVariable = () => {
-    if (disabled) return; // Don't allow changes in detail mode
+    if (disabled || mode === "edit") return; // Don't allow changes in detail mode or edit mode
     
     const newId = Math.max(...variables.map(v => v.id), 0) + 1;
     setVariables(prev => [
@@ -106,7 +110,7 @@ const MasterRumusVariableForm = ({
 
   // Remove variable
   const removeVariable = (variableId) => {
-    if (disabled) return; // Don't allow changes in detail mode
+    if (disabled || mode === "edit") return; // Don't allow changes in detail mode or edit mode
     
     if (variables.length > 1) {
       setVariables(prev => prev.filter(variable => variable.id !== variableId));
@@ -124,16 +128,27 @@ const MasterRumusVariableForm = ({
     
     if (disabled) return; // Don't submit in detail mode
     
+    // Clear previous errors
+    setErrors({});
+    
     // Basic validation
     if (!formData.formulaName.trim()) {
-      alert("Nama Rumus harus diisi");
+      setErrors({ formulaName: "Nama Rumus harus diisi" });
       return;
     }
 
-    // Validate variables
-    for (const variable of variables) {
-      if (!variable.name.trim()) {
-        alert("Nama Variabel harus diisi untuk semua variabel");
+    // Validate variables only for add mode (not for edit mode)
+    if (mode === "add") {
+      const variableErrors = {};
+      for (let i = 0; i < variables.length; i++) {
+        const variable = variables[i];
+        if (!variable.name || !variable.name.trim()) {
+          variableErrors[`variable_${i}`] = "Nama Variabel harus diisi";
+        }
+      }
+      
+      if (Object.keys(variableErrors).length > 0) {
+        setErrors({ ...errors, ...variableErrors });
         return;
       }
     }
@@ -165,7 +180,11 @@ const MasterRumusVariableForm = ({
                 onChange={(e) => handleInputChange("formulaName", e.target.value)}
                 required={!disabled}
                 disabled={disabled}
+                className={errors.formulaName ? "border-red-500" : ""}
               />
+              {errors.formulaName && (
+                <span className="text-red-500 text-sm mt-1">{errors.formulaName}</span>
+              )}
             </FormContainer>
 
             <FormContainer className="items-center">
@@ -194,31 +213,37 @@ const MasterRumusVariableForm = ({
                           value={variable.variableName}
                           onChange={(e) => handleVariableChange(variable.id, e.target.value)}
                           required={!disabled}
-                          disabled={disabled}
+                          disabled={disabled || mode === "edit"}
+                          className={errors[`variable_${index}`] ? "border-red-500" : ""}
                         />
+                        {errors[`variable_${index}`] && (
+                          <span className="text-red-500 text-sm mt-1">{errors[`variable_${index}`]}</span>
+                        )}
                       </FormContainer>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {variables.length > 1 && (
-                        <Button
-                          type="button"
-                          onClick={() => removeVariable(variable.id)}
-                          className="!h-6 !w-6 !p-0 !text-lg !rounded-lg hover:!bg-red-400 text-red-500 hover:!text-white !border !border-red-500 bg-transparent"
-                        >
-                          −
-                        </Button>
-                      )}
-                      {index === variables.length - 1 && (
-                        <Button
-                          type="button"
-                          variant="muatparts-primary-secondary"
-                          onClick={addVariable}
-                          className="!h-6 !w-6 !p-0 !rounded-lg"
-                        >
-                          <span className="text-blue text-lg">+</span>
-                        </Button>
-                      )}
-                    </div>
+                    {mode !== "edit" && (
+                      <div className="flex items-center gap-2">
+                        {variables.length > 1 && (
+                          <Button
+                            type="button"
+                            onClick={() => removeVariable(variable.id)}
+                            className="!h-6 !w-6 !p-0 !text-lg !rounded-lg hover:!bg-red-400 text-red-500 hover:!text-white !border !border-red-500 bg-transparent"
+                          >
+                            −
+                          </Button>
+                        )}
+                        {index === variables.length - 1 && (
+                          <Button
+                            type="button"
+                            variant="muatparts-primary-secondary"
+                            onClick={addVariable}
+                            className="!h-6 !w-6 !p-0 !rounded-lg"
+                          >
+                            <span className="text-blue text-lg">+</span>
+                          </Button>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

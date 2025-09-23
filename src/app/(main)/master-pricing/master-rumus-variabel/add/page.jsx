@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import MasterRumusVariabelForm from "@/container/MasterRumusVariabel/MasterRumusVariableForm";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import ConfirmationModal from "@/components/Modal/ConfirmationModal";
+import { postCreateFormulaWithValidation } from "@/services/masterpricing/masterformulavariable/postCreateFormula";
 
 export default function MasterRumusVariabelAddPage() {
   const router = useRouter();
@@ -33,20 +34,29 @@ export default function MasterRumusVariabelAddPage() {
     setLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Transform form data to API format
+      const apiData = {
+        name: pendingFormData.formulaName, // Map formulaName to name for API
+        isActive: pendingFormData.isActive,
+        variables: (pendingFormData.variables || []).map(variable => ({
+          variableName: variable.name || variable.variableName, // Map name to variableName
+          // isFromShipper is not included in the payload
+        })),
+      };
       
-      console.log("Creating new rumus variabel:", pendingFormData);
+      console.log("Creating new formula:", apiData);
       
-      // In real app, call API here
-      // await createRumusVariabel(pendingFormData);
+      // Call API to create formula
+      const response = await postCreateFormulaWithValidation(apiData);
+      
+      console.log("Formula created successfully:", response);
       
       setHasUnsavedChanges(false);
       setShowSuccessModal(true);
       
     } catch (error) {
-      console.error("Error creating rumus variabel:", error);
-      alert("Gagal menyimpan data. Silakan coba lagi.");
+      console.error("Error creating formula:", error);
+      alert(`Gagal menyimpan data: ${error.message}`);
     } finally {
       setLoading(false);
     }

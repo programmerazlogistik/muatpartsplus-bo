@@ -191,7 +191,7 @@ const TableBO = ({
                       <td
                         key={`${rowIndex}-${column.key || columnIndex}`}
                         className={cn(
-                          "p-[10px] text-xs font-semibold",
+                          "p-[10px] text-xs font-semibold break-words",
                           rowIndex % 2 === 1 ? "bg-[#EAEAEA]" : "bg-white",
                           columnIndex === 0 && "rounded-l-md",
                           columnIndex === columns.length - 1 && "rounded-r-md",

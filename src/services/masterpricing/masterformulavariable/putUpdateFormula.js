@@ -17,23 +17,8 @@ export const mockAPIResult = {
     name: "Updated Formula Name",
     isActive: true,
     updatedAt: "2025-09-22T10:45:30.648Z",
-    updatedBy: "Backend BO GM",
-    variables: [
-      {
-        id: "0a4b6d85-2026-4852-99ba-075df566130d",
-        variableName: "jarak",
-        isFromShipper: true,
-        isActive: true,
-        updatedAt: "2025-09-22T10:45:30.655Z"
-      },
-      {
-        id: "1b5c7e96-3137-5963-0acb-186ef677241e",
-        variableName: "tonase",
-        isFromShipper: true,
-        isActive: true,
-        updatedAt: "2025-09-22T10:45:30.655Z"
-      }
-    ]
+    updatedBy: "Backend BO GM"
+    // Variables are not included in update response
   },
   Type: "/v1/bo/pricing/master/formula/39100e8e-f4c9-4dd2-a025-85df7a4a3f89"
 };
@@ -89,7 +74,6 @@ export const transformPutUpdateFormulaResponse = (apiData) => {
  * @param {Object} formData - Form data
  * @param {string} formData.name - Formula name
  * @param {boolean} formData.isActive - Active status
- * @param {Array} formData.variables - Variables array
  * @returns {Object} - Transformed request data
  */
 export const transformPutUpdateFormulaRequest = (formData) => {
@@ -97,7 +81,7 @@ export const transformPutUpdateFormulaRequest = (formData) => {
     throw new Error("Form data is required");
   }
 
-  const { name, isActive, variables = [] } = formData;
+  const { name, isActive } = formData;
 
   if (!name || typeof name !== 'string' || name.trim() === '') {
     throw new Error("Name is required and must be a non-empty string");
@@ -107,18 +91,10 @@ export const transformPutUpdateFormulaRequest = (formData) => {
     throw new Error("isActive must be a boolean value");
   }
 
-  if (!Array.isArray(variables)) {
-    throw new Error("Variables must be an array");
-  }
-
   return {
     name: name.trim(),
     isActive: isActive,
-    variables: variables.map(variable => ({
-      id: variable.id, // Include ID for existing variables
-      variableName: variable.variableName || variable.name,
-      isFromShipper: Boolean(variable.isFromShipper),
-    })),
+    // Variables are not included in update payload
   };
 };
 
@@ -127,7 +103,6 @@ export const transformPutUpdateFormulaRequest = (formData) => {
  * @param {Object} data - Data to validate
  * @param {string} data.name - Formula name
  * @param {boolean} data.isActive - Active status
- * @param {Array} data.variables - Variables array
  * @returns {Object} - Validation result
  */
 export const validateFormulaUpdateData = (data) => {
@@ -145,36 +120,7 @@ export const validateFormulaUpdateData = (data) => {
     errors.isActive = "Status harus berupa boolean";
   }
 
-  if (!Array.isArray(data.variables)) {
-    errors.variables = "Variables harus berupa array";
-  } else if (data.variables.length === 0) {
-    errors.variables = "Minimal harus ada 1 variabel";
-  } else {
-    // Validate each variable
-    data.variables.forEach((variable, index) => {
-      if (!variable.variableName && !variable.name) {
-        errors[`variables.${index}.name`] = "Nama variabel wajib diisi";
-      } else {
-        const varName = variable.variableName || variable.name;
-        if (varName.trim().length < 1) {
-          errors[`variables.${index}.name`] = "Nama variabel tidak boleh kosong";
-        } else if (varName.trim().length > 50) {
-          errors[`variables.${index}.name`] = "Nama variabel maksimal 50 karakter";
-        }
-      }
-
-      if (typeof variable.isFromShipper !== 'boolean') {
-        errors[`variables.${index}.isFromShipper`] = "Source variabel harus berupa boolean";
-      }
-    });
-
-    // Check for duplicate variable names
-    const variableNames = data.variables.map(v => (v.variableName || v.name || '').trim()).filter(name => name);
-    const uniqueNames = new Set(variableNames);
-    if (variableNames.length !== uniqueNames.size) {
-      errors.variables = "Nama variabel tidak boleh duplikat";
-    }
-  }
+  // Variables validation removed - only name and isActive are required for update
 
   // Check for special characters (optional validation)
   if (data.name && /[<>\"'&]/.test(data.name)) {
@@ -219,7 +165,6 @@ export const putUpdateFormulaWithValidation = async (formulaId, data) => {
  * @param {Object} data - Request data
  * @param {string} data.name - Formula name
  * @param {boolean} data.isActive - Active status
- * @param {Array} data.variables - Variables array
  * @returns {Promise} - Mock response promise
  */
 export const putUpdateFormulaMock = async (formulaId, data) => {
@@ -240,13 +185,6 @@ export const putUpdateFormulaMock = async (formulaId, data) => {
       id: formulaId,
       name: data.name.trim(),
       isActive: data.isActive,
-      variables: (data.variables || []).map(variable => ({
-        id: variable.id || `var-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
-        variableName: variable.variableName || variable.name,
-        isFromShipper: Boolean(variable.isFromShipper),
-        isActive: true,
-        updatedAt: new Date().toISOString()
-      })),
       updatedAt: new Date().toISOString(),
     }
   };

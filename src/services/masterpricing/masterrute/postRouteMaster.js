@@ -124,16 +124,15 @@ export const transformFormDataToAPI = (formData) => {
   return {
     alias: formData.alias || "",
     originProvinces: formData.originProvinces?.map(province => 
-      typeof province === "object" ? province.id : province
+      typeof province === "object" ? { id: province.id, name: province.name } : { id: province, name: "" }
     ) || [],
     destinationProvinces: formData.destinationProvinces?.map(province => 
-      typeof province === "object" ? province.id : province
+      typeof province === "object" ? { id: province.id, name: province.name } : { id: province, name: "" }
     ) || [],
     isActive: formData.isActive !== undefined ? formData.isActive : true,
     specialRoutes: formData.specialRoutes?.map(route => ({
       originCityId: route.originCityId,
-      destinationCityId: route.destinationCityId,
-      isActive: route.isActive !== undefined ? route.isActive : true
+      destinationCityId: route.destinationCityId
     })) || []
   };
 };
