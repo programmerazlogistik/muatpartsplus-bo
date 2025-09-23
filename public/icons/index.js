@@ -73,7 +73,7 @@ export {
   GaleriIcon,
   GiftIcon,
   HargaIcon,
-  HomeIcon,
+  // HomeIcon,
   InfoPraTenderIcon,
   InfoIcon,
   KapasitasIcon,
