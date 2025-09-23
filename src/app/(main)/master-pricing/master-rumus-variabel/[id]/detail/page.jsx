@@ -4,52 +4,22 @@ import { useRouter, useParams } from "next/navigation";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import Button from "@/components/Button/Button";
 import MasterRumusVariabelForm from "@/container/MasterRumusVariabel/MasterRumusVariableForm";
+import { useGetFormulaDetailForDetail } from "@/services/masterpricing/masterformulavariable/getFormulaDetail";
 
 export default function MasterRumusVariabelDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  
+  // Use API hook to fetch formula detail
+  const { data, error, isLoading } = useGetFormulaDetailForDetail(params.id);
 
-  // Simulate fetching data for detail
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      
-      try {
-        // Simulate API call to get rumus variabel data
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Mock data - in real app, fetch from API using params.id
-        const mockData = {
-          id: params.id,
-          formulaName: "4PL",
-          isActive: true,
-          variables: [
-            { id: 1, name: "a" },
-            { id: 2, name: "b" },
-            { id: 3, name: "c" },
-            { id: 4, name: "d" },
-          ],
-          createdAt: "2024-01-15T10:30:00Z",
-          updatedAt: "2024-01-15T10:30:00Z",
-        };
-        
-        setData(mockData);
-        
-      } catch (error) {
-        console.error("Error fetching rumus variabel data:", error);
-        alert("Gagal memuat data. Silakan coba lagi.");
-        router.push("/master-pricing/master-rumus-variabel");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (params.id) {
-      fetchData();
-    }
-  }, [params.id, router]);
+  // Transform API data for form compatibility
+  const formData = data ? {
+    id: data.id,
+    formulaName: data.name, // Map name to formulaName for form compatibility
+    isActive: data.isActive,
+    variables: data.variables || [],
+  } : null;
 
   const handleBack = () => {
     router.push("/master-pricing/master-rumus-variabel");
@@ -63,7 +33,7 @@ export default function MasterRumusVariabelDetailPage() {
     router.push(`/master-pricing/master-rumus-variabel/${params.id}/history`);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
@@ -74,7 +44,7 @@ export default function MasterRumusVariabelDetailPage() {
     );
   }
 
-  if (!data) {
+  if (error || !formData) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
@@ -107,7 +77,7 @@ export default function MasterRumusVariabelDetailPage() {
 
       <MasterRumusVariabelForm 
         mode="detail"
-        initialData={data}
+        initialData={formData}
         disabled={true}
         onEdit={handleEdit}
         onBack={handleBack}

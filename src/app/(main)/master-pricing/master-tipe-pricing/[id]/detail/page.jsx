@@ -4,46 +4,21 @@ import { useRouter, useParams } from "next/navigation";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import Button from "@/components/Button/Button";
 import MasterTipePricingForm from "@/container/MasterTipePricing/MasterTipePricingForm";
+import { useGetTypeDetailForDetail } from "@/services/masterpricing/mastertype/getTypeDetail";
 
 export default function MasterTipePricingDetailPage() {
   const router = useRouter();
   const params = useParams();
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  
+  // Use API hook to fetch type detail
+  const { data, error, isLoading } = useGetTypeDetailForDetail(params.id);
 
-  // Simulate fetching data for detail
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      
-      try {
-        // Simulate API call to get tipe pricing data
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Mock data - in real app, fetch from API using params.id
-        const mockData = {
-          id: params.id,
-          typeName: "Medium",
-          isActive: true,
-          createdAt: "2024-01-15T10:30:00Z",
-          updatedAt: "2024-01-15T10:30:00Z",
-        };
-        
-        setData(mockData);
-        
-      } catch (error) {
-        console.error("Error fetching tipe pricing data:", error);
-        alert("Gagal memuat data. Silakan coba lagi.");
-        router.push("/master-pricing/master-tipe-pricing");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (params.id) {
-      fetchData();
-    }
-  }, [params.id, router]);
+  // Transform API data for form compatibility
+  const formData = data ? {
+    id: data.id,
+    typeName: data.name, // Map name to typeName for form compatibility
+    isActive: data.isActive,
+  } : null;
 
   const handleBack = () => {
     router.push("/master-pricing/master-tipe-pricing");
@@ -57,7 +32,7 @@ export default function MasterTipePricingDetailPage() {
     router.push(`/master-pricing/master-tipe-pricing/${params.id}/history`);
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
@@ -68,7 +43,7 @@ export default function MasterTipePricingDetailPage() {
     );
   }
 
-  if (!data) {
+  if (error || !formData) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
@@ -101,7 +76,7 @@ export default function MasterTipePricingDetailPage() {
 
       <MasterTipePricingForm 
         mode="detail"
-        initialData={data}
+        initialData={formData}
         disabled={true}
         onEdit={handleEdit}
         onBack={handleBack}

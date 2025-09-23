@@ -86,6 +86,7 @@ export const transformTypeListToTableData = (apiData) => {
   return apiData.map((type) => ({
     id: type.id,
     name: type.name,
+    typeName: type.name, // Add typeName field for table compatibility
     isActive: type.isActive,
     // Formatted display values
     status: type.isActive ? "Aktif" : "Tidak Aktif",

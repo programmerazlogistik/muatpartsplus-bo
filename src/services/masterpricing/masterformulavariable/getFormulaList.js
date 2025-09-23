@@ -107,6 +107,7 @@ export const transformFormulaListToTableData = (apiData) => {
     return {
       id: formula.id,
       name: formula.name,
+      formulaName: formula.name, // Add formulaName field for table compatibility
       isActive: formula.isActive,
       createdAt: formula.createdAt,
       createdBy: formula.createdBy,

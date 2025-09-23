@@ -22,10 +22,10 @@ export default function MasterRutePricingContainer() {
     page: currentPage,
     limit: perPage
   });
-
+  
   // Transform API data for table usage
-  const tableData = apiResponse.data.Data ? transformRouteListToTableData(apiResponse.data.Data) : [];
-  const paginationData = apiResponse.data.Pagination || {};
+  const tableData = apiResponse?.data?.Data ? transformRouteListToTableData(apiResponse?.data?.Data) : [];
+  const paginationData = apiResponse?.data?.Pagination || {};
 
   // Extract pagination values
   const totalItems = paginationData.totalRecords || 0;
@@ -57,7 +57,7 @@ export default function MasterRutePricingContainer() {
       // Simulate API call for now
       await new Promise(resolve => setTimeout(resolve, 1000));
       
-      console.log(`Updating route ${routeId} status to ${newStatus}`);
+      // console.log(`Updating route ${routeId} status to ${newStatus}`);
       
       // Revalidate data after successful update
       mutate();

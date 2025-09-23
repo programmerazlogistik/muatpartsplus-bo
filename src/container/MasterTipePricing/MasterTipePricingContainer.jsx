@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 
 import Button from "@/components/Button/Button";
 import MasterTipePricingTable from "./MasterTipePricingTable";
+import { 
+  useGetTypeList, 
+  transformTypeListToTableData,
+  transformPaginationData 
+} from "@/services/masterpricing/mastertype/getTypeList";
 
 export default function MasterTipePricingContainer() {
   const router = useRouter();
@@ -14,63 +19,22 @@ export default function MasterTipePricingContainer() {
   const [perPage, setPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [updatingTypes, setUpdatingTypes] = useState(new Set());
-  const [loading, setLoading] = useState(false);
 
-  // Dummy data for the table
-  const dummyData = [
-    {
-      id: 1,
-      typeName: "Medium",
-      isActive: true,
-    },
-    {
-      id: 2,
-      typeName: "Low",
-      isActive: true,
-    },
-    {
-      id: 3,
-      typeName: "High",
-      isActive: false,
-    },
-    {
-      id: 4,
-      typeName: "Premium",
-      isActive: true,
-    },
-    {
-      id: 5,
-      typeName: "Standard",
-      isActive: false,
-    },
-    {
-      id: 6,
-      typeName: "Economy",
-      isActive: true,
-    },
-    {
-      id: 7,
-      typeName: "Express",
-      isActive: false,
-    },
-    {
-      id: 8,
-      typeName: "Regular",
-      isActive: true,
-    },
-  ];
+  // Use API hook to fetch type list
+  const { data, error, isLoading, mutate } = useGetTypeList({
+    search: searchQuery,
+    page: currentPage,
+    limit: perPage
+  });
 
-  // Filter data based on search query
-  const filteredData = dummyData.filter((item) =>
-    item.typeName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // Calculate pagination
-  const totalItems = filteredData.length;
-  const totalPages = Math.ceil(totalItems / perPage);
-  const startIndex = (currentPage - 1) * perPage;
-  const endIndex = startIndex + perPage;
-  const paginatedData = filteredData.slice(startIndex, endIndex);
+  // Transform API data for table
+  const tableData = data?.data.Data ? transformTypeListToTableData(data.data.Data) : [];
+  const paginationData = data?.data.Pagination ? transformPaginationData(data.data.Pagination) : {};
+  
+  // Extract pagination values
+  const totalItems = paginationData.totalRecords || 0;
+  const totalPages = paginationData.totalPages || 1;
+  const loading = isLoading;
 
   // Event handlers
   const handleSearch = useCallback((query) => {
@@ -89,7 +53,6 @@ export default function MasterTipePricingContainer() {
 
   const handleStatusChange = useCallback(async (typeId, newStatus) => {
     setUpdatingTypes(prev => new Set(prev).add(typeId));
-    setLoading(true);
 
     try {
       // Simulate API call
@@ -97,6 +60,9 @@ export default function MasterTipePricingContainer() {
       
       // Update the data (in real app, this would be an API call)
       console.log(`Updating type ${typeId} status to ${newStatus}`);
+      
+      // Revalidate data after status change
+      mutate();
       
     } catch (error) {
       console.error('Error updating type status:', error);
@@ -106,9 +72,8 @@ export default function MasterTipePricingContainer() {
         newSet.delete(typeId);
         return newSet;
       });
-      setLoading(false);
     }
-  }, []);
+  }, [mutate]);
 
   const handleSort = useCallback((sortField, sortOrder) => {
     console.log(`Sorting by ${sortField} in ${sortOrder} order`);
@@ -130,7 +95,7 @@ export default function MasterTipePricingContainer() {
       </div>
 
       <MasterTipePricingTable
-        data={paginatedData}
+        data={tableData}
         loading={loading}
         updatingTypes={updatingTypes}
         onSearch={handleSearch}

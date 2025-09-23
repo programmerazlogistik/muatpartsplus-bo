@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 
 import Button from "@/components/Button/Button";
 import MasterRumusVariabelTable from "./MasterRumusVariabelTable";
+import { 
+  useGetFormulaList, 
+  transformFormulaListToTableData,
+  transformPaginationData 
+} from "@/services/masterpricing/masterformulavariable/getFormulaList";
 
 export default function MasterRumusVariabelContainer() {
   const router = useRouter();
@@ -14,73 +19,22 @@ export default function MasterRumusVariabelContainer() {
   const [perPage, setPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [updatingFormulas, setUpdatingFormulas] = useState(new Set());
-  const [loading, setLoading] = useState(false);
 
-  // Dummy data for the table
-  const dummyData = [
-    {
-      id: 1,
-      formulaName: "5PL",
-      isActive: true,
-    },
-    {
-      id: 2,
-      formulaName: "4PL",
-      isActive: true,
-    },
-    {
-      id: 3,
-      formulaName: "3PL",
-      isActive: false,
-    },
-    {
-      id: 4,
-      formulaName: "2PL",
-      isActive: true,
-    },
-    {
-      id: 5,
-      formulaName: "1PL",
-      isActive: false,
-    },
-    {
-      id: 6,
-      formulaName: "Express",
-      isActive: true,
-    },
-    {
-      id: 7,
-      formulaName: "Standard",
-      isActive: false,
-    },
-    {
-      id: 8,
-      formulaName: "Economy",
-      isActive: true,
-    },
-    {
-      id: 9,
-      formulaName: "Premium",
-      isActive: false,
-    },
-    {
-      id: 10,
-      formulaName: "Regular",
-      isActive: true,
-    },
-  ];
+  // Use API hook to fetch formula list
+  const { data, error, isLoading, mutate } = useGetFormulaList({
+    search: searchQuery,
+    page: currentPage,
+    limit: perPage
+  });
 
-  // Filter data based on search query
-  const filteredData = dummyData.filter((item) =>
-    item.formulaName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // Calculate pagination
-  const totalItems = filteredData.length;
-  const totalPages = Math.ceil(totalItems / perPage);
-  const startIndex = (currentPage - 1) * perPage;
-  const endIndex = startIndex + perPage;
-  const paginatedData = filteredData.slice(startIndex, endIndex);
+  // Transform API data for table
+  const tableData = data?.data?.Data.data ? transformFormulaListToTableData(data.data.Data.data) : [];
+  const paginationData = data?.data?.Data.pagination ? transformPaginationData(data.data.Data.pagination) : {};
+  
+  // Extract pagination values
+  const totalItems = paginationData.totalRecords || 0;
+  const totalPages = paginationData.totalPages || 1;
+  const loading = isLoading;
 
   // Event handlers
   const handleSearch = useCallback((query) => {
@@ -99,7 +53,6 @@ export default function MasterRumusVariabelContainer() {
 
   const handleStatusChange = useCallback(async (formulaId, newStatus) => {
     setUpdatingFormulas(prev => new Set(prev).add(formulaId));
-    setLoading(true);
 
     try {
       // Simulate API call
@@ -107,6 +60,9 @@ export default function MasterRumusVariabelContainer() {
       
       // Update the data (in real app, this would be an API call)
       console.log(`Updating formula ${formulaId} status to ${newStatus}`);
+      
+      // Revalidate data after status change
+      mutate();
       
     } catch (error) {
       console.error('Error updating formula status:', error);
@@ -116,9 +72,8 @@ export default function MasterRumusVariabelContainer() {
         newSet.delete(formulaId);
         return newSet;
       });
-      setLoading(false);
     }
-  }, []);
+  }, [mutate]);
 
   const handleSort = useCallback((sortField, sortOrder) => {
     console.log(`Sorting by ${sortField} in ${sortOrder} order`);
@@ -140,7 +95,7 @@ export default function MasterRumusVariabelContainer() {
       </div>
 
       <MasterRumusVariabelTable
-        data={paginatedData}
+        data={tableData}
         loading={loading}
         updatingFormulas={updatingFormulas}
         onSearch={handleSearch}

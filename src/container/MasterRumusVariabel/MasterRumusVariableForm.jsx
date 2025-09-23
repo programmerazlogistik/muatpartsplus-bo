@@ -191,7 +191,7 @@ const MasterRumusVariableForm = ({
                         <FormLabel required>Nama Variabel</FormLabel>
                         <Input
                           placeholder="Masukkan Nama Variabel"
-                          value={variable.name}
+                          value={variable.variableName}
                           onChange={(e) => handleVariableChange(variable.id, e.target.value)}
                           required={!disabled}
                           disabled={disabled}
