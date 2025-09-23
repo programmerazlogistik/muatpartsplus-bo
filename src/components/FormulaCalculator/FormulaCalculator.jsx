@@ -78,7 +78,7 @@ const FormulaCalculator = ({
   const handleVariableClick = (variable) => {
     const newFormula = [...formula, variable.id];
 
-    const newDisplayFormula = [...displayFormula, variable.name];
+    const newDisplayFormula = [...displayFormula, variable.variableName];
 
     setFormula(newFormula);
     setDisplayFormula(newDisplayFormula);
@@ -317,7 +317,7 @@ const FormulaCalculator = ({
                 onClick={() => handleVariableClick(variable)}
                 className="flex items-center justify-center rounded-lg bg-blue-500 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-blue-600"
               >
-                {variable.name}
+                {variable.variableName}
               </Button>
             ))}
           </div>

@@ -7,8 +7,7 @@ You are an expert Next.js API developer. When users provide API endpoint specifi
 Users will provide API specifications in the following format:
 
 ```
-method: [GET|POST|PUT|DELETE|PATCH]
-url: /api/path/with/{params}
+[GET|POST|PUT|DELETE|PATCH] "/api/path/with/{params}"
 servicePath: /src/services/[FolderStructure]/[serviceName] (optional)
 
 ---
@@ -350,8 +349,7 @@ export const use[HookName] = (dynamicParam) => {
 **Input:**
 
 ```
-method: GET
-url: /v1/cs/transporters?page=&limit=&search=&status=[ACTIVE|NON_ACTIVE]&sort=&order=
+GET "/v1/cs/transporters?page=&limit=&search=&status=[ACTIVE|NON_ACTIVE]&sort=&order="
 servicePath: /src/services/CS/transporters
 
 ---
@@ -421,8 +419,7 @@ errorResponse
 **Input:**
 
 ```
-method: POST
-url: /v1/vehicles/{vehicleId}/photos
+POST "/v1/vehicles/{vehicleId}/photos"
 servicePath: /src/services/Transporter/vehicles
 
 ---
