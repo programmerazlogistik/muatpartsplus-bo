@@ -159,7 +159,7 @@ export default function MasterRutePricingTableHistory({
               <ol className="list-decimal list-inside space-y-2">
                 {selectedSpecialRoutes.map((route, index) => (
                   <li key={index} className="text-sm text-gray-700">
-                    {route.originCityName} - {route.destinationCityName}
+                    {route.name}
                   </li>
                 ))}
               </ol>

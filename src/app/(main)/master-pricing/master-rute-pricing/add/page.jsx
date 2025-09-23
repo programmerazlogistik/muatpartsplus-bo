@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import MasterRutePricingForm from "@/container/MasterRutePricing/MasterRutePricingForm";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import ConfirmationModal from "@/components/Modal/ConfirmationModal";
+import { createRouteWithValidation } from "@/services/masterpricing/masterrute/postRouteMaster";
 
 export default function MasterRutePricingAddPage() {
   const router = useRouter();
@@ -33,20 +34,47 @@ export default function MasterRutePricingAddPage() {
     setLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
       console.log("Creating new route pricing:", pendingFormData);
       
-      // In real app, call API here
-      // await createRoutePricing(pendingFormData);
+      // Transform form data to match API payload format
+      const apiPayload = {
+        alias: pendingFormData.alias,
+        originProvinces: pendingFormData.loadingProvince?.map(province => ({
+          id: province.id,
+          name: province.name
+        })) || [],
+        destinationProvinces: pendingFormData.unloadingProvince?.map(province => ({
+          id: province.id,
+          name: province.name
+        })) || [],
+        isActive: pendingFormData.isActive || false,
+        specialRoutes: pendingFormData.specialRoutes?.map(route => ({
+          originCityId: route.originLocation?.id || route.originLocation,
+          destinationCityId: route.destinationLocation?.id || route.destinationLocation
+        })).filter(route => route.originCityId && route.destinationCityId) || []
+      };
       
-      setHasUnsavedChanges(false);
-      setShowSuccessModal(true);
+      console.log("API Payload:", apiPayload);
+      
+      // Call API with validation
+      const result = await createRouteWithValidation(apiPayload, { useMock: false });
+      
+      if (result.success) {
+        console.log("Route created successfully:", result.data);
+        setHasUnsavedChanges(false);
+        setShowSuccessModal(true);
+      } else {
+        console.error("API Error:", result.error);
+        if (result.validationErrors) {
+          console.log(`Validasi gagal: ${result.validationErrors.join(", ")}`);
+        } else {
+          console.log(`Gagal menyimpan data: ${result.error}`);
+        }
+      }
       
     } catch (error) {
       console.error("Error creating route pricing:", error);
-      alert("Gagal menyimpan data. Silakan coba lagi.");
+      console.log("Gagal menyimpan data. Silakan coba lagi.");
     } finally {
       setLoading(false);
     }

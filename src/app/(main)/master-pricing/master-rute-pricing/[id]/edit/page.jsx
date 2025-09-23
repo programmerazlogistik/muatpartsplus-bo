@@ -1,62 +1,64 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import MasterRutePricingForm from "@/container/MasterRutePricing/MasterRutePricingForm";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import ConfirmationModal from "@/components/Modal/ConfirmationModal";
 
+import { useGetRouteDetailForForm } from "@/services/masterpricing/masterrute/getRouteDetail";
+import { updateRouteWithValidation, transformFormDataToUpdateAPI } from "@/services/masterpricing/masterrute/putRouteUpdate";
 export default function MasterRutePricingEditPage() {
   const router = useRouter();
   const params = useParams();
   const [loading, setLoading] = useState(false);
-  const [initialData, setInitialData] = useState(null);
-  const [pageLoading, setPageLoading] = useState(true);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [showSaveConfirmModal, setShowSaveConfirmModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [pendingFormData, setPendingFormData] = useState(null);
 
-  // Simulate fetching data for edit
-  useEffect(() => {
-    const fetchData = async () => {
-      setPageLoading(true);
-      
-      try {
-        // Simulate API call to get route pricing data
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Mock data - in real app, fetch from API using params.id
-        const mockData = {
-          id: params.id,
-          alias: "Jawa - Sumatera",
-          loadingProvince: [
-            { value: "jawa-barat", label: "Jawa Barat" },
-            { value: "dki-jakarta", label: "DKI Jakarta" }
-          ],
-          unloadingProvince: [
-            { value: "sumatera-utara", label: "Sumatera Utara" },
-            { value: "sumatera-selatan", label: "Sumatera Selatan" }
-          ],
-          isActive: true,
-          createSpecialPriceRoute: false,
-        };
-        
-        setInitialData(mockData);
-        
-      } catch (error) {
-        console.error("Error fetching route pricing data:", error);
-        alert("Gagal memuat data. Silakan coba lagi.");
-        router.push("/master-pricing/master-rute-pricing");
-      } finally {
-        setPageLoading(false);
-      }
-    };
+  // Get route detail data using API
+  const { data: apiData, error, isLoading } = useGetRouteDetailForForm(params.id, {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: true,
+  });
 
-    if (params.id) {
-      fetchData();
-    }
-  }, [params.id, router]);
+  // Transform API data for form compatibility
+  const initialData = useMemo(() => {
+    if (!apiData) return null;
+
+    return {
+      id: apiData.id,
+      alias: apiData.alias,
+      loadingProvince: apiData.originProvinces?.map(province => ({
+        value: province.id,
+        label: province.name,
+        id: province.id,
+        name: province.name
+      })) || [],
+      unloadingProvince: apiData.destinationProvinces?.map(province => ({
+        value: province.id,
+        label: province.name,
+        id: province.id,
+        name: province.name
+      })) || [],
+      isActive: apiData.isActive,
+      createSpecialPriceRoute: apiData.specialRoutes && apiData.specialRoutes.length > 0,
+      specialRoutes: apiData.specialRoutes?.map(route => ({
+        id: route.id,
+        originLocation: {
+          id: route.originCityId,
+          name: route.originCityName,
+          value: route.originCityId
+        },
+        destinationLocation: {
+          id: route.destinationCityId,
+          name: route.destinationCityName,
+          value: route.destinationCityId
+        }
+      })) || []
+    };
+  }, [apiData]);
 
   const handleBack = () => {
     if (hasUnsavedChanges) {
@@ -77,20 +79,38 @@ export default function MasterRutePricingEditPage() {
     setLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      console.log("Updating route pricing:", { id: params.id, ...pendingFormData });
-      
-      // In real app, call API here
-      // await updateRoutePricing(params.id, pendingFormData);
-      
-      setHasUnsavedChanges(false);
-      setShowSuccessModal(true);
+      // Transform form data to match API payload format (same as POST)
+      const formDataForAPI = {
+        alias: pendingFormData.alias,
+        originProvinces: pendingFormData.loadingProvince || [],
+        destinationProvinces: pendingFormData.unloadingProvince || [],
+        isActive: pendingFormData.isActive || false,
+        specialRoutes: pendingFormData.specialRoutes?.map(route => ({
+          id: route.id,
+          originCityId: route.originLocation?.id || route.originLocation,
+          destinationCityId: route.destinationLocation?.id || route.destinationLocation
+        })).filter(route => route.originCityId && route.destinationCityId) || []
+      };
+
+      const apiPayload = transformFormDataToUpdateAPI(formDataForAPI);
+
+      // Call API with validation
+      const result = await updateRouteWithValidation(params.id, apiPayload, { useMock: false });
+
+      if (result.success) {
+        setHasUnsavedChanges(false);
+        setShowSuccessModal(true);
+      } else {
+        if (result.validationErrors) {
+          console.log(`Validasi gagal: ${result.validationErrors.join(", ")}`);
+        } else {
+          console.log(`Gagal menyimpan data: ${result.error}`);
+        }
+      }
       
     } catch (error) {
       console.error("Error updating route pricing:", error);
-      alert("Gagal menyimpan data. Silakan coba lagi.");
+      console.log("Gagal menyimpan data. Silakan coba lagi.");
     } finally {
       setLoading(false);
     }
@@ -115,12 +135,44 @@ export default function MasterRutePricingEditPage() {
     setShowConfirmModal(false);
   };
 
-  if (pageLoading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Memuat data...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <p className="text-red-600">Gagal memuat data: {error.message}</p>
+          <button
+            onClick={() => router.push("/master-pricing/master-rute-pricing")}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Kembali
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!initialData) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <p className="text-gray-600">Data tidak ditemukan</p>
+          <button
+            onClick={() => router.push("/master-pricing/master-rute-pricing")}
+            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          >
+            Kembali
+          </button>
         </div>
       </div>
     );

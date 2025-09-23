@@ -338,16 +338,7 @@ export const transformCitiesToGroupedFormat = (apiData) => {
 export const transformCitiesToDropdownFormat = (apiData) => {
   if (!apiData || !Array.isArray(apiData)) return [];
 
-  return apiData.flatMap(province => 
-    province.cities?.map(city => ({
-      value: city.id,
-      label: `${city.name} - ${province.provinceName}`,
-      id: city.id,
-      name: city.name,
-      provinceId: province.provinceId,
-      provinceName: province.provinceName,
-    })) || []
-  );
+  return apiData;
 };
 
 /**

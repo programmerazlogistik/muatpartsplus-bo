@@ -174,8 +174,8 @@ export const transformRouteDetailToDetailPage = (apiData) => {
   return {
     id: apiData.id,
     alias: apiData.alias || "",
-    originProvinces: apiData.originProvinces?.map(province => province.name).join(", ") || "",
-    destinationProvinces: apiData.destinationProvinces?.map(province => province.name).join(", ") || "",
+    originProvinces: apiData.originProvinces || [],
+    destinationProvinces: apiData.destinationProvinces || [],
     isActive: apiData.isActive || false,
     specialRoutes: apiData.specialRoutes || [],
     createdAt: createdDate.toISOString(),
