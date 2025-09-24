@@ -1,9 +1,21 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import Button from "@/components/Button/Button";
+// Import the route list service
+import {
+  transformRouteListToTableData,
+  useGetRouteList,
+} from "@/services/masterpricing/masterrute/getRouteList";
+// Import the variable pricing service
+import { useGetVariablePricing } from "@/services/masterpricing/settingnilaivariable/getVariablePricing";
+
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/Collapsible/Collapsible";
 import PageTitle from "@/components/PageTitle/PageTitle";
 
 import { IconComponent } from "@/components";
@@ -19,131 +31,153 @@ export default function SettingNilaiVariabelContainer() {
   const [searchQuery, setSearchQuery] = useState("");
   const [updatingVariables, setUpdatingVariables] = useState(new Set());
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [expandedRouteId, setExpandedRouteId] = useState(null);
+  const [openStates, setOpenStates] = useState({});
+  const [routeSearchQueries, setRouteSearchQueries] = useState({});
 
-  // Dummy data for the table
-  const dummyData = [
-    {
-      id: 1,
-      truckType: "Engkel",
-      formula: "Jarak * Tarif Dasar",
-      isActive: true,
-    },
-    {
-      id: 2,
-      truckType: "Double",
-      formula: null,
-      isActive: true,
-    },
-    {
-      id: 3,
-      truckType: "Tronton",
-      formula: null,
-      isActive: false,
-    },
-    {
-      id: 4,
-      truckType: "Engkel",
-      formula: "Waktu * Tarif Dasar",
-      isActive: true,
-    },
-    {
-      id: 5,
-      truckType: "Double",
-      formula: "Handling + Biaya Tambahan",
-      isActive: false,
-    },
-  ];
+  // Fetch route data using SWR
+  const {
+    data: routeData,
+    error: routeError,
+    isLoading: routeLoading,
+    mutate,
+  } = useGetRouteList({
+    search: searchQuery,
+    page: currentPage,
+    limit: perPage,
+  });
 
-  // Filter data based on search query
-  const filteredData = dummyData.filter((item) =>
-    item.truckType.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Fetch variable pricing data when a route is expanded
+  const {
+    data: variablePricingData,
+    error: variablePricingError,
+    isLoading: variablePricingLoading,
+  } = useGetVariablePricing(expandedRouteId, {
+    search: expandedRouteId ? routeSearchQueries[expandedRouteId] || "" : ""
+  });
+
+  // Transform route data to table format and then map to the format expected by the nilai variabel table
+  const transformedData = routeData?.data?.Data
+    ? transformRouteListToTableData(routeData.data.Data)
+    : [];
+
+  console.log("route data", routeData?.data?.Data);
+
+  const mappedData = transformedData.map((route) => ({
+    id: route.id,
+    alias: route.alias, // Using route alias as the truck type identifier
+    formula: null, // Placeholder: replace with actual formula data when available
+    isActive: route.isActive,
+    routeData: route,
+  }));
 
   // Calculate pagination
-  const totalItems = filteredData.length;
-  const totalPages = Math.ceil(totalItems / perPage);
-  const startIndex = (currentPage - 1) * perPage;
-  const endIndex = startIndex + perPage;
-  const paginatedData = filteredData.slice(startIndex, endIndex);
-
-  // Event handlers
-  const handleSearch = useCallback((query) => {
-    setSearchQuery(query);
-    setCurrentPage(1); // Reset to first page when searching
-  }, []);
-
-  const handlePageChange = useCallback((page) => {
-    setCurrentPage(page);
-  }, []);
-
-  const handlePerPageChange = useCallback((newPerPage) => {
-    setPerPage(newPerPage);
-    setCurrentPage(1); // Reset to first page when changing per page
-  }, []);
-
-  const handleStatusChange = useCallback(async (variableId, newStatus) => {
-    setUpdatingVariables((prev) => new Set(prev).add(variableId));
-    setLoading(true);
-
-    try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Update the data (in real app, this would be an API call)
-      console.log(`Updating variable ${variableId} status to ${newStatus}`);
-    } catch (error) {
-      console.error("Error updating variable status:", error);
-    } finally {
-      setUpdatingVariables((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(variableId);
-        return newSet;
-      });
-      setLoading(false);
-    }
-  }, []);
-
-  const handleSort = useCallback((sortField, sortOrder) => {
-    console.log(`Sorting by ${sortField} in ${sortOrder} order`);
-    // In a real app, this would trigger an API call with sort parameters
-  }, []);
-
-  const handleFilter = useCallback((filters) => {
-    console.log("Applied filters:", filters);
-    // In a real app, this would trigger an API call with filter parameters
-  }, []);
+  const totalItems = routeData?.data?.Pagination?.totalRecords ?? 0;
 
   // Show no data state when there's no data
-  const showNoData = totalItems === 0 && !loading;
+  const showNoData = totalItems === 0 && !loading && !routeLoading;
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex flex-col gap-5">
+        <PageTitle withBack={false} className="mb-0">
+          Setting Nilai Variabel
+        </PageTitle>
+        <div className="flex items-center justify-center gap-2">
+          <IconComponent src="/icons/error.svg" />
+          <span className="text-sm font-semibold text-red-500">
+            Error loading data: {error?.message ?? "Unknown error"}
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      <PageTitle withBack={false}>Setting Nilai Variabel</PageTitle>
+    <div className="flex flex-col gap-5">
+      <PageTitle withBack={false} className="mb-0">
+        Setting Nilai Variabel
+      </PageTitle>
 
       {showNoData ? (
-        <div className="mt-3 flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-2">
           <IconComponent src="/icons/search.svg" />
           <span className="text-sm font-semibold text-[#868686]">
             Belum ada data rute pricing
           </span>
         </div>
       ) : (
-        <SettingNilaiVariabelTable
-          data={paginatedData}
-          loading={loading}
-          updatingVariables={updatingVariables}
-          onSearch={handleSearch}
-          onFilter={handleFilter}
-          onSort={handleSort}
-          onPageChange={handlePageChange}
-          onPerPageChange={handlePerPageChange}
-          onStatusChange={handleStatusChange}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={totalItems}
-          perPage={perPage}
-        />
+        <div className="flex flex-col gap-4">
+          {mappedData.map((route) => (
+            <Collapsible
+              key={route.id}
+              open={openStates[route.id] || false}
+              onOpenChange={(open) => {
+                setOpenStates((prev) => ({
+                  ...prev,
+                  [route.id]: open,
+                }));
+
+                if (open) {
+                  setExpandedRouteId(route.id);
+                  // Initialize search query for this route if it doesn't exist
+                  if (!routeSearchQueries[route.id]) {
+                    setRouteSearchQueries(prev => ({
+                      ...prev,
+                      [route.id]: ""
+                    }));
+                  }
+                } else {
+                  setExpandedRouteId(null);
+                }
+              }}
+            >
+              <CollapsibleTrigger className="flex w-full items-center justify-between rounded-t-lg !border-[#176CF7] bg-blue-100 p-4 text-blue-900">
+                {({ open }) => (
+                  <>
+                    <span className="font-medium">{route.alias}</span>
+                    <svg
+                      className={`h-4 w-4 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </>
+                )}
+              </CollapsibleTrigger>
+
+              <CollapsibleContent className="mt-5">
+                {openStates[route.id] && (
+                  <SettingNilaiVariabelTable
+                    variablePricingData={variablePricingData?.data?.Data || []}
+                    loading={variablePricingLoading}
+                    error={variablePricingError}
+                    updatingVariables={updatingVariables}
+                    currentPage={currentPage}
+                    totalItems={variablePricingData?.data?.Data?.length || 0}
+                    perPage={perPage}
+                    onSearch={(searchQuery) => {
+                      setRouteSearchQueries(prev => ({
+                        ...prev,
+                        [route.id]: searchQuery
+                      }));
+                    }}
+                  />
+                )}
+              </CollapsibleContent>
+            </Collapsible>
+          ))}
+        </div>
       )}
-    </>
+    </div>
   );
 }

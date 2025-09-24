@@ -53,10 +53,10 @@ const RoutePricingSection = ({
           </>
         )}
       </CollapsibleTrigger>
-      <CollapsibleContent className="flex flex-col">
+      <CollapsibleContent className="flex flex-col rounded-b-lg border border-t-0 border-[#176CF7]">
         <div className="flex flex-col gap-y-4 py-5">
           {/* Header Row */}
-          <div className="flex items-center gap-x-6">
+          <div className="flex items-center gap-x-6 px-4">
             <span className="w-56 text-base font-bold">Jenis Truck</span>
             <span className="text-base font-bold">Tipe Pricing Default</span>
           </div>
@@ -64,7 +64,10 @@ const RoutePricingSection = ({
             route.truckTypes.map((truckType) => {
               const dropdownKey = `${route.routePricingId}-${truckType.truckTypeId}`;
               return (
-                <div key={dropdownKey} className="flex items-start gap-x-6">
+                <div
+                  key={dropdownKey}
+                  className="flex items-start gap-x-6 px-4"
+                >
                   {/* Column 1: Vehicle Label */}
                   <span className="w-56 flex-shrink-0 pt-2 text-sm font-medium">
                     {truckType.truckTypeName}
