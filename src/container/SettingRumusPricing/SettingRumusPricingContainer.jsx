@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { useGetMasterPricingSettingFormulaPricing } from "@/services/masterpricing/setting-formula-pricing/getMasterPricingSettingFormulaPricing";
+import { usePostSettingFormulaPricing } from "@/services/masterpricing/setting-formula-pricing/postSettingFormulaPricing";
 
 import Button from "@/components/Button/Button";
 import FormulaCalculator from "@/components/FormulaCalculator/FormulaCalculator";
@@ -27,6 +28,13 @@ export default function SettingRumusPricingContainer() {
   } = useGetMasterPricingSettingFormulaPricing(
     "v1/bo/pricing/setting/formula-pricing"
   );
+
+  // Post formula pricing data using SWR Mutation
+  const {
+    trigger: saveFormulaPricing,
+    isMutating: isSaving,
+    error: saveError,
+  } = usePostSettingFormulaPricing();
 
   // React Hook Form setup
   const {
@@ -235,17 +243,40 @@ export default function SettingRumusPricingContainer() {
     setIsSubmitting(true);
 
     try {
-      // TODO: Replace with actual API call
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call
+      // Transform form data to match API payload structure
+      const payload = {
+        formulas: data.rumus.map((rumus) => ({
+          formulaId: rumus.id,
+          expression: Array.isArray(rumus.formula)
+            ? rumus.formula.join(" ")
+            : rumus.formula,
+        })),
+      };
 
-      console.log("Rumus data saved:", data);
+      console.log("Sending payload to API:", payload);
+
+      // Call the API using SWR mutation
+      const result = await saveFormulaPricing(payload);
+
+      console.log("API Response:", result);
       alert("Rumus berhasil disimpan!");
 
-      // Optionally reset form dirty state
-      // reset(data);
+      // Optionally reset form dirty state to reflect saved state
+      reset(data);
     } catch (error) {
       console.error("Error saving rumus:", error);
-      alert("Terjadi kesalahan saat menyimpan rumus. Silakan coba lagi.");
+
+      // Handle different types of errors
+      let errorMessage =
+        "Terjadi kesalahan saat menyimpan rumus. Silakan coba lagi.";
+
+      if (error?.response?.data?.Message?.Text) {
+        errorMessage = error.response.data.Message.Text;
+      } else if (error?.message) {
+        errorMessage = error.message;
+      }
+
+      alert(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -280,6 +311,26 @@ export default function SettingRumusPricingContainer() {
               </h3>
               <div className="mt-2 text-sm text-red-700">
                 <p>Gagal memuat data formula pricing. Silakan coba lagi.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Save Error State */}
+      {saveError && (
+        <div className="mb-6 rounded-md border border-red-200 bg-red-50 p-4">
+          <div className="flex">
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">
+                Gagal Menyimpan Formula
+              </h3>
+              <div className="mt-2 text-sm text-red-700">
+                <p>
+                  {saveError?.response?.data?.Message?.Text ||
+                    saveError?.message ||
+                    "Terjadi kesalahan saat menyimpan formula. Silakan coba lagi."}
+                </p>
               </div>
             </div>
           </div>
@@ -395,10 +446,10 @@ export default function SettingRumusPricingContainer() {
           <div className="flex items-center justify-center gap-4">
             <Button
               type="submit"
-              disabled={formIsSubmitting || !isValid}
+              disabled={isSubmitting || isSaving || !isValid}
               className="mx-auto"
             >
-              {formIsSubmitting ? "Menyimpan..." : "Simpan"}
+              {isSubmitting || isSaving ? "Menyimpan..." : "Simpan"}
             </Button>
 
             {isDirty && (
@@ -406,7 +457,7 @@ export default function SettingRumusPricingContainer() {
                 type="button"
                 variant="outline"
                 onClick={() => reset()}
-                disabled={formIsSubmitting}
+                disabled={isSubmitting || isSaving}
               >
                 Reset
               </Button>
@@ -422,6 +473,7 @@ export default function SettingRumusPricingContainer() {
         onCalculate={handleCalculate}
         formula={selectedRumus?.formula ?? []}
         variables={selectedRumus?.variables} // Pass variables to modal
+        formulaId={selectedRumus?.id || " "} // Pass formula ID to modal
       />
     </div>
   );

@@ -10,7 +10,7 @@ const useFetcherMuatrans = true;
 export const mockAPIResult = {
   Message: {
     Code: 200,
-    Text: "OK"
+    Text: "OK",
   },
   Data: [
     {
@@ -20,15 +20,15 @@ export const mockAPIResult = {
       originProvinces: [
         {
           id: 75,
-          name: "GORONTALO"
-        }
+          name: "GORONTALO",
+        },
       ],
       destinationProvinces: [
         {
           id: 18,
-          name: "LAMPUNG"
-        }
-      ]
+          name: "LAMPUNG",
+        },
+      ],
     },
     {
       id: "731df77a-a9df-43df-9564-fba370e1d38c",
@@ -37,23 +37,23 @@ export const mockAPIResult = {
       originProvinces: [
         {
           id: 11,
-          name: "ACEH"
+          name: "ACEH",
         },
         {
           id: 14,
-          name: "RIAU"
-        }
+          name: "RIAU",
+        },
       ],
       destinationProvinces: [
         {
           id: 15,
-          name: "JAMBI"
+          name: "JAMBI",
         },
         {
           id: 11,
-          name: "ACEH"
-        }
-      ]
+          name: "ACEH",
+        },
+      ],
     },
     {
       id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
@@ -62,15 +62,15 @@ export const mockAPIResult = {
       originProvinces: [
         {
           id: 31,
-          name: "DKI JAKARTA"
-        }
+          name: "DKI JAKARTA",
+        },
       ],
       destinationProvinces: [
         {
           id: 32,
-          name: "JAWA BARAT"
-        }
-      ]
+          name: "JAWA BARAT",
+        },
+      ],
     },
     {
       id: "b2c3d4e5-f6g7-8901-bcde-f23456789012",
@@ -79,24 +79,24 @@ export const mockAPIResult = {
       originProvinces: [
         {
           id: 73,
-          name: "SULAWESI SELATAN"
+          name: "SULAWESI SELATAN",
         },
         {
           id: 72,
-          name: "SULAWESI TENGAH"
-        }
+          name: "SULAWESI TENGAH",
+        },
       ],
       destinationProvinces: [
         {
           id: 62,
-          name: "KALIMANTAN SELATAN"
+          name: "KALIMANTAN SELATAN",
         },
         {
           id: 63,
-          name: "KALIMANTAN TIMUR"
-        }
-      ]
-    }
+          name: "KALIMANTAN TIMUR",
+        },
+      ],
+    },
   ],
   Pagination: {
     currentPage: 1,
@@ -104,9 +104,9 @@ export const mockAPIResult = {
     totalRecords: 4,
     recordsPerPage: 10,
     hasNext: false,
-    hasPrev: false
+    hasPrev: false,
   },
-  Type: "/v1/bo/pricing/master/route"
+  Type: "/v1/bo/pricing/master/route",
 };
 
 /**
@@ -131,8 +131,11 @@ export const transformRouteListToTableData = (apiData) => {
     id: route.id,
     isActive: route.status, // Map status to isActive for table compatibility
     alias: route.alias,
-    originProvince: route.originProvinces?.map(province => province.name).join(", ") || "",
-    destinationProvince: route.destinationProvinces?.map(province => province.name).join(", ") || "",
+    originProvince:
+      route.originProvinces?.map((province) => province.name).join(", ") || "",
+    destinationProvince:
+      route.destinationProvinces?.map((province) => province.name).join(", ") ||
+      "",
     // Keep original data for other uses
     originProvincesData: route.originProvinces || [],
     destinationProvincesData: route.destinationProvinces || [],
@@ -165,16 +168,20 @@ export const transformPaginationData = (paginationData) => {
  * @param {number} params.limit - Records per page
  * @returns {string} - Query string
  */
-export const buildRouteListQuery = ({ search = "", page = 1, limit = 10 } = {}) => {
+export const buildRouteListQuery = ({
+  search = "",
+  page = 1,
+  limit = 10,
+} = {}) => {
   const params = new URLSearchParams();
-  
+
   if (search) {
     params.append("search", search);
   }
-  
+
   params.append("page", page.toString());
   params.append("limit", limit.toString());
-  
+
   return params.toString();
 };
 
@@ -188,10 +195,12 @@ export const buildRouteListQuery = ({ search = "", page = 1, limit = 10 } = {}) 
  * @returns {Object} - SWR response object { data, error, isLoading, mutate }
  */
 export const useGetRouteList = (params = {}, options = {}) => {
+  console.log("HELLO");
   const { search = "", page = 1, limit = 10 } = params;
-  
+
   const queryString = buildRouteListQuery({ search, page, limit });
   const cacheKey = `/v1/bo/pricing/master/route${queryString ? `?${queryString}` : ""}`;
+  console.log("Cache Key:", cacheKey);
 
   return useSWR(cacheKey, getRouteList, {
     // Default SWR options
@@ -211,30 +220,31 @@ export const useGetRouteList = (params = {}, options = {}) => {
  */
 export const getRouteListMock = async (params = {}) => {
   const { search = "", page = 1, limit = 10 } = params;
-  
+
   // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
+  await new Promise((resolve) => setTimeout(resolve, 500));
+
   let filteredData = mockAPIResult.Data;
-  
+
   // Apply search filter
   if (search) {
-    filteredData = filteredData.filter(route => 
-      route.alias.toLowerCase().includes(search.toLowerCase()) ||
-      route.originProvinces.some(province => 
-        province.name.toLowerCase().includes(search.toLowerCase())
-      ) ||
-      route.destinationProvinces.some(province => 
-        province.name.toLowerCase().includes(search.toLowerCase())
-      )
+    filteredData = filteredData.filter(
+      (route) =>
+        route.alias.toLowerCase().includes(search.toLowerCase()) ||
+        route.originProvinces.some((province) =>
+          province.name.toLowerCase().includes(search.toLowerCase())
+        ) ||
+        route.destinationProvinces.some((province) =>
+          province.name.toLowerCase().includes(search.toLowerCase())
+        )
     );
   }
-  
+
   // Apply pagination
   const startIndex = (page - 1) * limit;
   const endIndex = startIndex + limit;
   const paginatedData = filteredData.slice(startIndex, endIndex);
-  
+
   return {
     ...mockAPIResult,
     Data: paginatedData,
@@ -245,6 +255,6 @@ export const getRouteListMock = async (params = {}) => {
       totalPages: Math.ceil(filteredData.length / limit),
       hasNext: endIndex < filteredData.length,
       hasPrev: page > 1,
-    }
+    },
   };
 };

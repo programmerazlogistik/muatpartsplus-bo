@@ -4,11 +4,17 @@ import { useEffect, useState } from "react";
 
 import PropTypes from "prop-types";
 
+import { useGetRouteList } from "@/services/masterpricing/masterrute/getRouteList";
+import { useGetCarrierTypeCalculation } from "@/services/masterpricing/setting-formula-pricing/getCarrierTypeCalculation";
+import { useGetTruckTypeCalculation } from "@/services/masterpricing/setting-formula-pricing/getTruckTypeCalculation";
+
 import Button from "@/components/Button/Button";
-import { Select } from "@/components/Form/Select";
 import IconComponent from "@/components/IconComponent/IconComponent";
 import Input from "@/components/Input/Input";
 import { Modal, ModalContent, ModalTitle } from "@/components/Modal/Modal";
+import Select from "@/components/Select";
+
+import { getJarakMinimum } from "./utils";
 
 /**
  * SimulationModal - Modal for inputting simulation data for 4PL formula
@@ -26,6 +32,7 @@ const SimulationModal = ({
   onCalculate,
   formula = [],
   variables = [],
+  formulaId = " ", // Added formulaId prop
 }) => {
   const [formData, setFormData] = useState({
     jarak: "",
@@ -40,32 +47,104 @@ const SimulationModal = ({
   const [variableValues, setVariableValues] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
 
-  // Sample data - in real app, these would come from API
-  const ruteOptions = [
-    { value: "jawa-jawa", label: "Jawa - Jawa" },
-    { value: "jakarta-surabaya", label: "Jakarta - Surabaya" },
-    { value: "jakarta-bandung", label: "Jakarta - Bandung" },
-    { value: "surabaya-malang", label: "Surabaya - Malang" },
-  ];
+  const {
+    data: ruteOptions,
+    mutate: refetchRouteList,
+    isLoading: isLoadingRoutes,
+    error: routeError,
+  } = useGetRouteList();
 
-  const trukOptions = [
-    { value: "colt-diesel-engkel", label: "Colt Diesel Engkel" },
-    { value: "cdd", label: "CDD" },
-    { value: "cde", label: "CDE" },
-    { value: "tronton", label: "Tronton" },
-  ];
+  // Hook to get truck types based on selected route and formula
+  const {
+    data: truckTypeData,
+    isLoading: isLoadingTruckTypes,
+    error: truckTypeError,
+    mutate: refetchTruckTypes,
+  } = useGetTruckTypeCalculation(formulaId, formData.rute);
 
-  const carrierOptions = [
-    { value: "box", label: "Box" },
-    { value: "internal", label: "Internal" },
-    { value: "external", label: "External" },
-    { value: "partner", label: "Partner" },
-  ];
+  // Hook to get carrier types based on selected truck type
+  const {
+    data: carrierTypeData,
+    isLoading: isLoadingCarrierTypes,
+    error: carrierTypeError,
+    mutate: refetchCarrierTypes,
+  } = useGetCarrierTypeCalculation(formData.jenisTruk);
+
+  const [routeOptions, setRouteOptions] = useState([]);
+  const [truckOptions, setTruckOptions] = useState([]);
+  const [carrierOptions, setCarrierOptions] = useState([]);
+
+  useEffect(() => {
+    console.log("routeOptions", ruteOptions);
+    if (ruteOptions?.data) {
+      setRouteOptions(
+        ruteOptions.data.Data.map((rute) => ({
+          id: rute.id,
+          alias: rute.alias,
+          value: rute.id,
+          label: rute.alias,
+        }))
+      );
+      console.log("routeOptions", ruteOptions);
+    }
+  }, [ruteOptions]);
+
+  // Update truck options when truck type data changes
+  useEffect(() => {
+    console.log("truckTypeData", truckTypeData);
+    if (truckTypeData?.Data) {
+      setTruckOptions(
+        truckTypeData.Data.map((truck) => ({
+          value: truck.truckTypeId,
+          label: truck.truckTypeName,
+        }))
+      );
+    } else {
+      // Fallback to default truck options when no data
+      setTruckOptions([
+        { value: "pickup", label: "Pickup" },
+        { value: "cdd", label: "CDD" },
+        { value: "cde", label: "CDE" },
+        { value: "truck", label: "Truck" },
+        { value: "tronton", label: "Tronton" },
+        { value: "trailer", label: "Trailer" },
+      ]);
+    }
+  }, [truckTypeData]);
+
+  // Update carrier options when carrier type data changes
+  useEffect(() => {
+    console.log("carrierTypeData", carrierTypeData);
+    if (carrierTypeData?.Data) {
+      setCarrierOptions(
+        carrierTypeData.Data.map((carrier) => ({
+          value: carrier.carrierId,
+          label: carrier.carrierName,
+          maxWeightTon: carrier.maxWeightTon,
+        }))
+      );
+    } else {
+      // Fallback to default carrier options when no data
+      setCarrierOptions([
+        { value: "bak-terbuka", label: "Bak Terbuka" },
+        { value: "engkel", label: "Engkel Box" },
+        { value: "cdd-box", label: "CDD Box" },
+        { value: "cde-box", label: "CDE Box" },
+        { value: "truck-box", label: "Truck Box" },
+        { value: "container", label: "Container" },
+        { value: "tanki", label: "Tanki" },
+      ]);
+    }
+  }, [carrierTypeData]);
 
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
+      // Reset jenisTruk when rute changes to force reselection
+      ...(field === "rute" && { jenisTruk: "", jenisCarrier: "" }),
+      // Reset jenisCarrier when jenisTruk changes to force reselection
+      ...(field === "jenisTruk" && { jenisCarrier: "" }),
     }));
 
     // Clear validation error for this field when user starts typing
@@ -83,93 +162,219 @@ const SimulationModal = ({
     // Simulate API call
     return new Promise((resolve) => {
       setTimeout(() => {
-        // Create dynamic variable values based on the variables from props
-        const dynamicVariables = {};
-
-        variables.forEach((variable) => {
-          let value;
-
-          // Set different values based on variable type
-          if (variable.symbol === "jarak") {
-            value = parseFloat(formData.jarak) || 0;
-          } else if (
-            variable.symbol === "tonase" ||
-            variable.symbol === "berat"
-          ) {
-            value = parseFloat(formData.tonase) || 1;
-          } else if (variable.symbol === "volume") {
-            value = 50; // Mock value
-          } else {
-            // Generate mock values dynamically based on the variable symbol and route/truck type
-            const baseValue = variable.symbol.charCodeAt(0) * 10; // Base value from ASCII code
-            const routeModifier =
-              rute === "jawa-jawa" ? 50 : rute === "jakarta-surabaya" ? 30 : 0;
-            const trukModifier =
-              jenisTruk === "colt-diesel-engkel"
-                ? 20
-                : jenisTruk === "tronton"
-                  ? 40
-                  : 0;
-
-            value = baseValue + routeModifier + trukModifier;
-          }
-
-          // Store by both symbol and ID for flexible access
-          dynamicVariables[variable.symbol] = value;
-          dynamicVariables[variable.id] = value;
-        });
-
-        resolve({
-          variables: dynamicVariables,
+        // Mock backend response structure
+        const mockResponse = {
           jarakMinimum: 100,
-        });
+          basePrice: [
+            {
+              typePricingId: "749d58ea-eb6a-45b4-a19f-9da61aeead67",
+              typePricingName: "Medium",
+              variables: {
+                enam: {
+                  id: "34b44f3d-d265-4c2b-a284-565bc94f11d2",
+                  value: 1000,
+                  isFromShipper: false,
+                },
+                jarak: {
+                  id: "2ccb11f1-2265-4361-b769-55d773928760",
+                  value: null,
+                  isFromShipper: true,
+                },
+                PL: {
+                  id: "f979e389-2930-4bf0-b790-badb7bb21d70",
+                  value: 5200,
+                  isFromShipper: false,
+                },
+                tonase: {
+                  id: "070e3ff1-bdd1-4e2a-a46b-d1c2044327e2",
+                  value: null,
+                  isFromShipper: true,
+                },
+              },
+            },
+            {
+              typePricingId: "bef711a6-7a1c-4625-a129-ed933f38ce9e",
+              typePricingName: "High",
+              variables: {
+                enam: {
+                  id: "34b44f3d-d265-4c2b-a284-565bc94f11d2",
+                  value: 6000,
+                  isFromShipper: false,
+                },
+                jarak: {
+                  id: "2ccb11f1-2265-4361-b769-55d773928760",
+                  value: null,
+                  isFromShipper: true,
+                },
+                PL: {
+                  id: "f979e389-2930-4bf0-b790-badb7bb21d70",
+                  value: 1500,
+                  isFromShipper: false,
+                },
+                tonase: {
+                  id: "070e3ff1-bdd1-4e2a-a46b-d1c2044327e2",
+                  value: null,
+                  isFromShipper: true,
+                },
+              },
+            },
+            {
+              typePricingId: "67ff9e7e-d3cb-48fe-8a1e-3b492915ce54",
+              typePricingName: "Low edit",
+              variables: {
+                enam: {
+                  id: "34b44f3d-d265-4c2b-a284-565bc94f11d2",
+                  value: 4000,
+                  isFromShipper: false,
+                },
+                jarak: {
+                  id: "2ccb11f1-2265-4361-b769-55d773928760",
+                  value: null,
+                  isFromShipper: true,
+                },
+                PL: {
+                  id: "f979e389-2930-4bf0-b790-badb7bb21d70",
+                  value: 800,
+                  isFromShipper: false,
+                },
+                tonase: {
+                  id: "070e3ff1-bdd1-4e2a-a46b-d1c2044327e2",
+                  value: null,
+                  isFromShipper: true,
+                },
+              },
+            },
+            {
+              typePricingId: "1346450a-ea1d-4f7f-8604-3a9d4f7605fe",
+              typePricingName: "Higaah",
+              variables: {
+                enam: {
+                  id: "34b44f3d-d265-4c2b-a284-565bc94f11d2",
+                  value: 7000,
+                  isFromShipper: false,
+                },
+                jarak: {
+                  id: "2ccb11f1-2265-4361-b769-55d773928760",
+                  value: null,
+                  isFromShipper: true,
+                },
+                PL: {
+                  id: "f979e389-2930-4bf0-b790-badb7bb21d70",
+                  value: 2000,
+                  isFromShipper: false,
+                },
+                tonase: {
+                  id: "070e3ff1-bdd1-4e2a-a46b-d1c2044327e2",
+                  value: null,
+                  isFromShipper: true,
+                },
+              },
+            },
+          ],
+        };
+
+        resolve(mockResponse);
       }, 1000);
     });
   };
 
-  // Calculate formula result using the actual displayFormula
-  const calculateFormula = (variableValues, formula) => {
-    console.log("Calculating with variables:", variableValues);
-    console.log("Using formula:", formula);
-
+  // Calculate formula result for each pricing type
+  const calculateFormula = (
+    basePriceData,
+    formula,
+    finalJarak,
+    finalTonase
+  ) => {
     if (!formula || formula.length === 0) {
       console.warn("No formula provided, using fallback calculation");
-      return getFallbackCalculation(variableValues);
+      return getFallbackCalculation({});
     }
 
+    const results = {};
+
     try {
-      // Convert the formula array to a mathematical expression
-      const formulaExpression = convertFormulaToExpression(
-        formula,
-        variableValues
-      );
-      console.log("Formula expression:", formulaExpression);
+      // Calculate for each pricing type
+      basePriceData.forEach((priceType) => {
+        console.log(`Calculating for ${priceType.typePricingName}:`, priceType);
 
-      // Evaluate the formula
-      const baseResult = evaluateFormula(formulaExpression);
-      console.log("Base calculation result:", baseResult);
+        // Create variable values for this pricing type
+        const variableValues = {};
 
-      if (isNaN(baseResult) || baseResult <= 0) {
-        console.warn("Invalid calculation result, using fallback");
-        return getFallbackCalculation(variableValues);
-      }
+        Object.entries(priceType.variables).forEach(([varName, varData]) => {
+          if (varData.isFromShipper) {
+            // Use form data for shipper variables
+            if (varName === "jarak") {
+              variableValues[varData.id] = finalJarak;
+            } else if (varName === "tonase") {
+              variableValues[varData.id] = finalTonase;
+            }
+          } else {
+            // Use backend value for non-shipper variables
+            variableValues[varData.id] = varData.value;
+          }
+        });
 
-      // Return different pricing tiers based on the calculated result
-      return {
-        low: Math.round(baseResult * 0.9),
-        medium: Math.round(baseResult),
-        high: Math.round(baseResult * 1.25),
-        lowSpecial: Math.round(baseResult * 0.8),
+        console.log(
+          `Variables for ${priceType.typePricingName}:`,
+          variableValues
+        );
+
+        // Convert the formula array to a mathematical expression
+        const formulaExpression = convertFormulaToExpression(
+          formula,
+          variableValues
+        );
+        console.log(
+          `Formula expression for ${priceType.typePricingName}:`,
+          formulaExpression
+        );
+
+        // Evaluate the formula
+        const calculatedResult = evaluateFormula(formulaExpression);
+        console.log(
+          `Result for ${priceType.typePricingName}:`,
+          calculatedResult
+        );
+
+        if (!isNaN(calculatedResult) && calculatedResult > 0) {
+          // Map pricing type names to result keys
+          const pricingTypeMap = {
+            Low: "low",
+            "Low edit": "low", // Handle variations in naming
+            Medium: "medium",
+            High: "high",
+            Higaah: "high", // Handle variations in naming
+          };
+
+          const resultKey =
+            pricingTypeMap[priceType.typePricingName] ||
+            priceType.typePricingName.toLowerCase();
+
+          results[resultKey] = Math.round(calculatedResult);
+        }
+      });
+
+      // Ensure we have all required pricing tiers with fallbacks
+      const finalResults = {
+        low: results.low || results["low edit"] || 0,
+        medium: results.medium || 0,
+        high: results.high || results.higaah || 0,
+        lowSpecial: results.low ? Math.round(results.low * 0.8) : 0,
       };
+
+      console.log("Final calculated results:", finalResults);
+      return finalResults;
     } catch (error) {
       console.error("Error calculating formula:", error);
       console.warn("Using fallback calculation due to error");
-      return getFallbackCalculation(variableValues);
+      return getFallbackCalculation({});
     }
   };
 
   // Convert formula array to mathematical expression string
   const convertFormulaToExpression = (formula, variableValues) => {
+    console.log("formula", formula);
+    console.log("variableValues", variableValues);
     return formula
       .map((item) => {
         // Check if the item is a variable ID that exists in our variableValues
@@ -252,6 +457,37 @@ const SimulationModal = ({
       errors.tonase = "Tonase wajib diisi";
     }
 
+    // Check if routes are still loading
+    if (isLoadingRoutes) {
+      errors.rute = "Menunggu data rute dimuat...";
+    }
+
+    // Check if there was an error loading routes
+    if (routeError) {
+      errors.rute = "Gagal memuat data rute. Silakan refresh halaman.";
+    }
+
+    // Check if truck types are still loading
+    if (isLoadingTruckTypes && formData.rute) {
+      errors.jenisTruk = "Menunggu data jenis truk dimuat...";
+    }
+
+    // Check if there was an error loading truck types
+    if (truckTypeError) {
+      errors.jenisTruk = "Gagal memuat jenis truk. Silakan refresh halaman.";
+    }
+
+    // Check if carrier types are still loading
+    if (isLoadingCarrierTypes && formData.jenisTruk) {
+      errors.jenisCarrier = "Menunggu data jenis carrier dimuat...";
+    }
+
+    // Check if there was an error loading carrier types
+    if (carrierTypeError) {
+      errors.jenisCarrier =
+        "Gagal memuat jenis carrier. Silakan refresh halaman.";
+    }
+
     // If there are validation errors, set them and return
     if (Object.keys(errors).length > 0) {
       setValidationErrors(errors);
@@ -267,22 +503,51 @@ const SimulationModal = ({
         formData.jenisTruk
       );
 
+      console.log("Step 1", apiResponse);
+
       // Step 2: Apply jarak minimum logic
-      const finalJarak = Math.max(
-        parseFloat(formData.jarak),
+      const finalJarak = getJarakMinimum(
+        formData.jarak,
         apiResponse.jarakMinimum
       );
 
-      // Step 3: Update variables with final values
-      const finalVariables = {
-        ...apiResponse.variables,
-        jarak: finalJarak,
-      };
+      console.log("Step 2", finalJarak);
 
-      // Step 4: Calculate using formula
-      const results = calculateFormula(finalVariables, formula);
+      // Step 3: Get final tonase
+      const finalTonase = parseFloat(formData.tonase);
 
-      setVariableValues(finalVariables);
+      console.log("Step 3", finalTonase);
+
+      // Step 4: Calculate using formula with base price data
+      const results = calculateFormula(
+        apiResponse.basePrice,
+        formula,
+        finalJarak,
+        finalTonase
+      );
+
+      // Step 5: Create variable values for display (using first pricing type as reference)
+      const displayVariables = {};
+      if (apiResponse.basePrice && apiResponse.basePrice.length > 0) {
+        const firstPriceType = apiResponse.basePrice[0];
+        Object.entries(firstPriceType.variables).forEach(
+          ([varName, varData]) => {
+            if (varData.isFromShipper) {
+              if (varName === "jarak") {
+                displayVariables[varName] = finalJarak;
+              } else if (varName === "tonase") {
+                displayVariables[varName] = finalTonase;
+              }
+            } else {
+              displayVariables[varName] = varData.value;
+            }
+          }
+        );
+      }
+
+      console.log("Step 5", displayVariables);
+
+      setVariableValues(displayVariables);
       setCalculationResults(results);
 
       // Call parent callback if provided
@@ -339,13 +604,21 @@ const SimulationModal = ({
         // Check if the item is a variable ID
         const variable = variables.find((v) => v.id === item);
         if (variable) {
-          return variable.name;
+          return variable.variableName;
         }
         // Return the item as-is for operators and numbers
         return item;
       })
       .join(" ");
   };
+
+  // Refetch route list when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      refetchRouteList();
+    }
+  }, [isOpen, refetchRouteList]);
+
   useEffect(() => {
     console.log("formula", formula);
   }, [formula]);
@@ -404,21 +677,64 @@ const SimulationModal = ({
                 Rute*
               </label>
               <div className="flex-1">
-                <Select
-                  placeholder="Pilih Rute"
+                <Select.Root
                   value={formData.rute}
                   onValueChange={(value) => handleInputChange("rute", value)}
-                  className={validationErrors.rute ? "border-red-500" : ""}
-                  options={[
-                    { value: "jakarta-bandung", label: "Jakarta - Bandung" },
-                    { value: "jakarta-surabaya", label: "Jakarta - Surabaya" },
-                    { value: "jakarta-medan", label: "Jakarta - Medan" },
-                    { value: "surabaya-bandung", label: "Surabaya - Bandung" },
-                  ]}
-                />
+                  disabled={isLoadingRoutes || !!routeError}
+                >
+                  <Select.Trigger
+                    placeholder={
+                      isLoadingRoutes
+                        ? "Memuat rute..."
+                        : routeError
+                          ? "Error memuat rute"
+                          : "Pilih Rute"
+                    }
+                    className={validationErrors.rute ? "border-red-500" : ""}
+                  >
+                    <Select.Value
+                      placeholder={
+                        isLoadingRoutes
+                          ? "Memuat rute..."
+                          : routeError
+                            ? "Error memuat rute"
+                            : "Pilih Rute"
+                      }
+                    >
+                      {formData.rute
+                        ? routeOptions.find(
+                            (option) => option.id === formData.rute
+                          )?.alias || formData.rute
+                        : null}
+                    </Select.Value>
+                  </Select.Trigger>
+                  <Select.Content searchable>
+                    {routeOptions && routeOptions.length > 0 ? (
+                      routeOptions.map((rute) => (
+                        <Select.Item
+                          key={rute.id}
+                          value={rute.id}
+                          textValue={rute.alias}
+                          className="px-3 py-3"
+                        >
+                          <span className="truncate text-xs font-medium text-neutral-900">
+                            {rute.alias}
+                          </span>
+                        </Select.Item>
+                      ))
+                    ) : (
+                      <Select.Empty>No routes available.</Select.Empty>
+                    )}
+                  </Select.Content>
+                </Select.Root>
                 {validationErrors.rute && (
                   <div className="mt-1 text-sm text-red-600">
                     {validationErrors.rute}
+                  </div>
+                )}
+                {routeError && (
+                  <div className="mt-1 text-sm text-red-600">
+                    Gagal memuat data rute. Silakan coba lagi.
                   </div>
                 )}
               </div>
@@ -430,25 +746,76 @@ const SimulationModal = ({
                 Jenis Truk*
               </label>
               <div className="flex-1">
-                <Select
-                  placeholder="Pilih Jenis Truk"
+                <Select.Root
                   value={formData.jenisTruk}
                   onValueChange={(value) =>
                     handleInputChange("jenisTruk", value)
                   }
-                  className={validationErrors.jenisTruk ? "border-red-500" : ""}
-                  options={[
-                    { value: "pickup", label: "Pickup" },
-                    { value: "cdd", label: "CDD" },
-                    { value: "cde", label: "CDE" },
-                    { value: "truck", label: "Truck" },
-                    { value: "tronton", label: "Tronton" },
-                    { value: "trailer", label: "Trailer" },
-                  ]}
-                />
+                  disabled={!formData.rute || isLoadingTruckTypes}
+                >
+                  <Select.Trigger
+                    placeholder={
+                      !formData.rute
+                        ? "Pilih rute terlebih dahulu"
+                        : isLoadingTruckTypes
+                          ? "Memuat jenis truk..."
+                          : truckTypeError
+                            ? "Error memuat jenis truk"
+                            : "Pilih Jenis Truk"
+                    }
+                    className={
+                      validationErrors.jenisTruk ? "border-red-500" : ""
+                    }
+                  >
+                    <Select.Value
+                      placeholder={
+                        !formData.rute
+                          ? "Pilih rute terlebih dahulu"
+                          : isLoadingTruckTypes
+                            ? "Memuat jenis truk..."
+                            : truckTypeError
+                              ? "Error memuat jenis truk"
+                              : "Pilih Jenis Truk"
+                      }
+                    >
+                      {formData.jenisTruk
+                        ? truckOptions.find(
+                            (option) => option.value === formData.jenisTruk
+                          )?.label || formData.jenisTruk
+                        : null}
+                    </Select.Value>
+                  </Select.Trigger>
+                  <Select.Content searchable>
+                    {truckOptions && truckOptions.length > 0 ? (
+                      truckOptions.map((truck) => (
+                        <Select.Item
+                          key={truck.value}
+                          value={truck.value}
+                          textValue={truck.label}
+                          className="px-3 py-3"
+                        >
+                          <span className="truncate text-xs font-medium text-neutral-900">
+                            {truck.label}
+                          </span>
+                        </Select.Item>
+                      ))
+                    ) : (
+                      <Select.Empty>
+                        {!formData.rute
+                          ? "Pilih rute terlebih dahulu"
+                          : "Tidak ada jenis truk tersedia"}
+                      </Select.Empty>
+                    )}
+                  </Select.Content>
+                </Select.Root>
                 {validationErrors.jenisTruk && (
                   <div className="mt-1 text-sm text-red-600">
                     {validationErrors.jenisTruk}
+                  </div>
+                )}
+                {truckTypeError && (
+                  <div className="mt-1 text-sm text-red-600">
+                    Gagal memuat jenis truk. Silakan coba lagi.
                   </div>
                 )}
               </div>
@@ -460,28 +827,81 @@ const SimulationModal = ({
                 Jenis Carrier*
               </label>
               <div className="flex-1">
-                <Select
-                  placeholder="Pilih Jenis Carrier"
+                <Select.Root
                   value={formData.jenisCarrier}
-                  onValueChange={(value) =>
-                    handleInputChange("jenisCarrier", value)
-                  }
-                  className={
-                    validationErrors.jenisCarrier ? "border-red-500" : ""
-                  }
-                  options={[
-                    { value: "bak-terbuka", label: "Bak Terbuka" },
-                    { value: "engkel", label: "Engkel Box" },
-                    { value: "cdd-box", label: "CDD Box" },
-                    { value: "cde-box", label: "CDE Box" },
-                    { value: "truck-box", label: "Truck Box" },
-                    { value: "container", label: "Container" },
-                    { value: "tanki", label: "Tanki" },
-                  ]}
-                />
+                  onValueChange={(value) => {
+                    handleInputChange("jenisCarrier", value);
+                    handleInputChange(
+                      "tonase",
+                      carrierOptions.find((option) => option.value === value)
+                        ?.maxWeightTon
+                    );
+                  }}
+                  disabled={!formData.jenisTruk || isLoadingCarrierTypes}
+                >
+                  <Select.Trigger
+                    placeholder={
+                      !formData.jenisTruk
+                        ? "Pilih jenis truk terlebih dahulu"
+                        : isLoadingCarrierTypes
+                          ? "Memuat jenis carrier..."
+                          : carrierTypeError
+                            ? "Error memuat jenis carrier"
+                            : "Pilih Jenis Carrier"
+                    }
+                    className={
+                      validationErrors.jenisCarrier ? "border-red-500" : ""
+                    }
+                  >
+                    <Select.Value
+                      placeholder={
+                        !formData.jenisTruk
+                          ? "Pilih jenis truk terlebih dahulu"
+                          : isLoadingCarrierTypes
+                            ? "Memuat jenis carrier..."
+                            : carrierTypeError
+                              ? "Error memuat jenis carrier"
+                              : "Pilih Jenis Carrier"
+                      }
+                    >
+                      {formData.jenisCarrier
+                        ? carrierOptions.find(
+                            (option) => option.value === formData.jenisCarrier
+                          )?.label || formData.jenisCarrier
+                        : null}
+                    </Select.Value>
+                  </Select.Trigger>
+                  <Select.Content searchable>
+                    {carrierOptions && carrierOptions.length > 0 ? (
+                      carrierOptions.map((carrier) => (
+                        <Select.Item
+                          key={carrier.value}
+                          value={carrier.value}
+                          textValue={carrier.label}
+                          className="px-3 py-3"
+                        >
+                          <span className="truncate text-xs font-medium text-neutral-900">
+                            {carrier.label}
+                          </span>
+                        </Select.Item>
+                      ))
+                    ) : (
+                      <Select.Empty>
+                        {!formData.jenisTruk
+                          ? "Pilih jenis truk terlebih dahulu"
+                          : "Tidak ada jenis carrier tersedia"}
+                      </Select.Empty>
+                    )}
+                  </Select.Content>
+                </Select.Root>
                 {validationErrors.jenisCarrier && (
                   <div className="mt-1 text-sm text-red-600">
                     {validationErrors.jenisCarrier}
+                  </div>
+                )}
+                {carrierTypeError && (
+                  <div className="mt-1 text-sm text-red-600">
+                    Gagal memuat jenis carrier. Silakan coba lagi.
                   </div>
                 )}
               </div>
@@ -521,14 +941,25 @@ const SimulationModal = ({
             <Button
               variant="muatparts-primary"
               onClick={handleCalculate}
-              disabled={isCalculating}
+              disabled={
+                isCalculating ||
+                isLoadingRoutes ||
+                isLoadingTruckTypes ||
+                isLoadingCarrierTypes
+              }
               className="w-[135px] rounded-[20px] px-6 py-2"
             >
               {isCalculating
                 ? "Menghitung..."
-                : calculationResults
-                  ? "Hitung Ulang"
-                  : "Hitung Harga"}
+                : isLoadingRoutes
+                  ? "Memuat..."
+                  : isLoadingTruckTypes && formData.rute
+                    ? "Memuat..."
+                    : isLoadingCarrierTypes && formData.jenisTruk
+                      ? "Memuat..."
+                      : calculationResults
+                        ? "Hitung Ulang"
+                        : "Hitung Harga"}
             </Button>
           </div>
 
@@ -562,7 +993,7 @@ const SimulationModal = ({
                       {Object.entries(variableValues)
                         .filter(([key]) =>
                           variables.some(
-                            (v) => v.symbol === key || v.id === key
+                            (v) => v.variableName === key || v.id === key
                           )
                         )
                         .slice(0, 6) // Show first 6 to avoid clutter
@@ -626,11 +1057,11 @@ SimulationModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   onCalculate: PropTypes.func,
   formula: PropTypes.array,
+  formulaId: PropTypes.string,
   variables: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-      name: PropTypes.string.isRequired,
-      symbol: PropTypes.string.isRequired,
+      variableName: PropTypes.string.isRequired,
       description: PropTypes.string,
     })
   ),
