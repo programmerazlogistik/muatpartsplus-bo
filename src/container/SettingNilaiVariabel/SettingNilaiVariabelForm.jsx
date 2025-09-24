@@ -7,6 +7,12 @@ import { ChevronDownIcon } from "public/icons";
 // Import Valibot for validation
 import * as v from "valibot";
 
+// Import formula variables service
+import {
+  transformFormulaVariablesToDropdownData,
+  useGetFormulaVariables,
+} from "@/services/masterpricing/settingnilaivariable/getFormulaVariables";
+
 import Button from "@/components/Button/Button";
 import DatePicker from "@/components/DatePicker/DatePicker";
 import { FormContainer, FormLabel } from "@/components/Form/Form";
@@ -16,9 +22,6 @@ import Select from "@/components/Select/Select";
 import VariablePricing from "@/container/SettingNilaiVariabel/VariablePricing";
 
 import { useTranslation } from "@/hooks/use-translation";
-
-// Import formula options
-import { formulaOptions } from "@/lib/constants/formulaOptions";
 
 import SpecialPricePricing from "./SpecialPricePricing";
 
@@ -37,6 +40,16 @@ const SettingNilaiVariabelForm = ({
   const { t = (key, _, fallback) => fallback || key } = useTranslation() || {};
   const router = useRouter();
 
+  // Fetch formula variables using SWR hook
+  const {
+    data: formulaData,
+    error: formulaError,
+    isLoading: formulaLoading,
+  } = useGetFormulaVariables();
+  // Transform API data to dropdown format
+  const formulaOptions = formulaData?.data?.Data?.data
+    ? transformFormulaVariablesToDropdownData(formulaData.data.Data.data)
+    : [];
   // Form state
   const [formData, setFormData] = useState({
     route: routeValue || "",
@@ -225,21 +238,47 @@ const SettingNilaiVariabelForm = ({
                       ? formulaOptions.find(
                           (option) => option.value === formData.formula
                         )?.label
-                      : "Pilih Rumus"}
+                      : formulaLoading
+                        ? "Memuat..."
+                        : "Pilih Rumus"}
                   </Select.Value>
                 </Select.Trigger>
                 <Select.Content searchable searchPlaceholder="Cari Rumus">
-                  {formulaOptions.map((option) => (
-                    <Select.Item
-                      key={option.value}
-                      value={option.value}
-                      textValue={option.label}
-                    >
+                  {formulaLoading ? (
+                    <Select.Item value="loading" textValue="Memuat..." disabled>
                       <span className="h-3 truncate text-xs font-medium text-neutral-900">
-                        {option.label}
+                        Memuat...
                       </span>
                     </Select.Item>
-                  ))}
+                  ) : formulaError ? (
+                    <Select.Item value="error" textValue="Error" disabled>
+                      <span className="h-3 truncate text-xs font-medium text-red-500">
+                        Gagal memuat data
+                      </span>
+                    </Select.Item>
+                  ) : formulaOptions.length === 0 ? (
+                    <Select.Item
+                      value="empty"
+                      textValue="Tidak ada data"
+                      disabled
+                    >
+                      <span className="h-3 truncate text-xs font-medium text-neutral-500">
+                        Tidak ada data rumus
+                      </span>
+                    </Select.Item>
+                  ) : (
+                    formulaOptions.map((option) => (
+                      <Select.Item
+                        key={option.value}
+                        value={option.value}
+                        textValue={option.label}
+                      >
+                        <span className="h-3 truncate text-xs font-medium text-neutral-900">
+                          {option.label}
+                        </span>
+                      </Select.Item>
+                    ))
+                  )}
                 </Select.Content>
               </Select.Root>
             </FormContainer>
