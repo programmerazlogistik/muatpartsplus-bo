@@ -156,9 +156,7 @@ export const transformMinRateHistoryDetailToDetailData = (apiData) => {
     action: apiData.action,
     createdAt: apiData.createdAt,
     createdBy: apiData.createdBy,
-    changes: apiData.changes || {},
-    vehicleTypes: apiData.vehicleTypes || [],
-    effectiveDate: apiData.effectiveDate || {},
+    history: apiData.history || {},
     // Formatted display values
     createdAtFormatted: `${createdDate.toLocaleDateString("id-ID", {
       day: "2-digit",
@@ -171,22 +169,13 @@ export const transformMinRateHistoryDetailToDetailData = (apiData) => {
     actionText: getActionDisplayText(apiData.action),
     actionColor: getActionColorClass(apiData.action),
     actionBadge: getActionBadgeClass(apiData.action),
-    // Process vehicle types with formatted values
-    processedVehicleTypes: (apiData.vehicleTypes || []).map(vehicle => ({
-      ...vehicle,
-      fromFormatted: vehicle.from ? `${vehicle.from} km` : "-",
-      toFormatted: vehicle.to ? `${vehicle.to} km` : "-",
-      changeText: vehicle.changed ? `${vehicle.from} km → ${vehicle.to} km` : "Tidak ada perubahan",
-      changeColor: vehicle.changed ? "text-blue-600" : "text-gray-500"
-    })),
-    // Process effective date
-    effectiveDateFormatted: {
-      from: apiData.effectiveDate?.from ? new Date(apiData.effectiveDate.from).toLocaleDateString("id-ID") : "-",
-      to: apiData.effectiveDate?.to ? new Date(apiData.effectiveDate.to).toLocaleDateString("id-ID") : "-",
-      changeText: apiData.effectiveDate?.changed ? 
-        `${new Date(apiData.effectiveDate.from).toLocaleDateString("id-ID")} → ${new Date(apiData.effectiveDate.to).toLocaleDateString("id-ID")}` : 
-        "Tidak ada perubahan",
-      changeColor: apiData.effectiveDate?.changed ? "text-blue-600" : "text-gray-500"
+    // Process afterState data
+    afterState: apiData.history?.afterState || [],
+    beforeState: apiData.history?.beforeState || [],
+    // Process effective date from history changes
+    effectiveDate: {
+      validFrom: apiData.history?.changes?.validFrom || null,
+      actionType: apiData.history?.changes?.actionType || null
     }
   };
 };
@@ -481,7 +470,7 @@ export const useGetMinRateHistoryDetailForDetail = (historyId, options = {}) => 
   const { data, error, isLoading, mutate } = useGetMinRateHistoryDetail(historyId, options);
   
   return {
-    data: data ? transformMinRateHistoryDetailToDetailData(data.data.Data) : null,
+    data: data ? data.data.Data : null,
     error,
     isLoading,
     mutate,

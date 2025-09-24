@@ -8,6 +8,7 @@ export default function MasterRumusVariabelTableHistory({
   pagination = null,
   onSearch,
   onPageChange,
+  onPerPageChange,
   onActionFilter,
   searchTerm = "",
   actionFilter = ""
@@ -99,6 +100,7 @@ export default function MasterRumusVariabelTableHistory({
         totalPages={pagination?.totalPages || 1}
         onPageChange={onPageChange}
         onSearch={onSearch}
+        onPerPageChange={onPerPageChange}
         searchPlaceholder="Cari berdasarkan nama rumus, user, atau aktivitas..."
         showSearch={false}
         showPagination={true}

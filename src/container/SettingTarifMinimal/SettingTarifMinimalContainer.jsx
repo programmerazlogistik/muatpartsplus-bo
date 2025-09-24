@@ -1,13 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Button from "@/components/Button/Button";
 import ConfirmationModal from "@/components/Modal/ConfirmationModal";
 import PageTitle from "@/components/PageTitle/PageTitle";
 
 import SettingTarifMinimalForm from "./SettingTarifMinimalForm";
+import { postCreateMinRateWithValidation, postCreateMinRate } from "@/services/masterpricing/settingMinimumRate/postCreateMinRate";
 
 export default function SettingTarifMinimalContainer() {
   const router = useRouter();
@@ -17,6 +18,14 @@ export default function SettingTarifMinimalContainer() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState(null);
+  const [pendingFormData, setPendingFormData] = useState(null);
+
+  const handleDataChange = useCallback((hasChanges, formData) => {
+    setHasUnsavedChanges(hasChanges);
+    if (hasChanges && formData) {
+      setPendingFormData(formData);
+    }
+  }, []);
 
   const handleSaveClick = () => {
     setShowSaveConfirmModal(true);
@@ -27,15 +36,32 @@ export default function SettingTarifMinimalContainer() {
     setIsSubmitting(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Transform form data to API payload format
+      const apiPayload = {
+        rates: Object.entries(pendingFormData)
+          .filter(([key, value]) => key !== 'effectiveDate' && value && value > 0)
+          .map(([truckTypeId, minDistance]) => ({
+            truckTypeId,
+            minDistance: Number(minDistance)
+          })),
+        validFrom: pendingFormData.effectiveDate ? 
+          (pendingFormData.effectiveDate instanceof Date ? 
+            pendingFormData.effectiveDate.toISOString() : 
+            pendingFormData.effectiveDate) : 
+          new Date().toISOString()
+      };
 
-      console.log("Data berhasil disimpan!");
+      console.log("API Payload:", apiPayload);
+
+      // Call API directly with the correct payload format
+      const response = await postCreateMinRate("/v1/bo/pricing/setting/min-rates", apiPayload);
+
+      console.log("Data berhasil disimpan:", response.data);
       setHasUnsavedChanges(false); // Reset unsaved changes after successful save
       setShowSuccessModal(true);
     } catch (error) {
       console.error("Error saving data:", error);
-      alert("Gagal menyimpan data. Silakan coba lagi.");
+      alert(`Gagal menyimpan data: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -51,10 +77,10 @@ export default function SettingTarifMinimalContainer() {
 
   const handleViewHistory = () => {
     if (hasUnsavedChanges) {
-      setPendingNavigation("/master-pricing/setting-tarif-minimal/1/history");
+      setPendingNavigation("/master-pricing/setting-tarif-minimal/history");
       setShowBackConfirmModal(true);
     } else {
-      router.push("/master-pricing/setting-tarif-minimal/1/history");
+      router.push("/master-pricing/setting-tarif-minimal/history");
     }
   };
 
@@ -80,9 +106,6 @@ export default function SettingTarifMinimalContainer() {
     setPendingNavigation(null);
   };
 
-  const handleDataChange = (hasChanges) => {
-    setHasUnsavedChanges(hasChanges);
-  };
 
   // Handle browser back button
   useEffect(() => {
@@ -144,6 +167,7 @@ export default function SettingTarifMinimalContainer() {
         isOpen={showSuccessModal}
         setIsOpen={setShowSuccessModal}
         title={{ text: "Pemberitahuan" }}
+        withCancel={false}
         description={{
           text: "Data berhasil disimpan!",
         }}

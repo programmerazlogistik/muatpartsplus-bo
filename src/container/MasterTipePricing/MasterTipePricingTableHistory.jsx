@@ -7,6 +7,7 @@ export default function MasterTipePricingTableHistory({
   pagination = null,
   onSearch,
   onPageChange,
+  onPerPageChange,
   onActionFilter,
   searchTerm = "",
   actionFilter = ""
@@ -78,6 +79,7 @@ export default function MasterTipePricingTableHistory({
         totalPages={pagination?.totalPages || 1}
         onPageChange={onPageChange}
         onSearch={onSearch}
+        onPerPageChange={onPerPageChange}
         searchPlaceholder="Cari berdasarkan nama tipe, user, atau aktivitas..."
         showSearch={false}
         showPagination={true}

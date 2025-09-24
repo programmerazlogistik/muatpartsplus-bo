@@ -11,12 +11,12 @@ export default function HistoryMasterRutePricingPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [actionFilter, setActionFilter] = useState("");
-
+  const [perPage, setPerPage] = useState(10);
   // Use API hook to fetch route history
   const { data: apiData, error, isLoading } = useGetRouteHistory(params.id, {
     search: searchTerm,
     page: currentPage,
-    limit: 10,
+    limit: perPage,
     action: actionFilter
   });
 
@@ -50,6 +50,11 @@ export default function HistoryMasterRutePricingPage() {
     setCurrentPage(1); // Reset to first page when filtering
   };
 
+  const handlePerPageChange = (newPerPage) => {
+    setPerPage(newPerPage);
+    setCurrentPage(1);
+  };
+
   if (error) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -78,6 +83,7 @@ export default function HistoryMasterRutePricingPage() {
         pagination={paginationData}
         onSearch={handleSearch}
         onPageChange={handlePageChange}
+        onPerPageChange={handlePerPageChange}
         onActionFilter={handleActionFilter}
         searchTerm={searchTerm}
         actionFilter={actionFilter}

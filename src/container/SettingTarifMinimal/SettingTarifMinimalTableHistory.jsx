@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import DataTableBO from "@/components/DataTableBO/DataTableBO";
+import { useGetMinRatesHistory, transformMinRatesHistoryToTableData, transformPaginationData } from "@/services/masterpricing/settingMinimumRate/getMinRatesHistory";
 
 export default function SettingTarifMinimalTableHistory() {
   const router = useRouter();
@@ -10,45 +11,22 @@ export default function SettingTarifMinimalTableHistory() {
   const [perPage, setPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Mock data for history
-  const historyData = [
-    {
-      id: 1,
-      updateTime: "08/07/2023",
-      updateTimeDetail: "10:50 WIB",
-      activity: "Update",
-      user: "John",
-      action: "Lihat Detail Perubahan"
-    },
-    {
-      id: 2,
-      updateTime: "07/07/2023",
-      updateTimeDetail: "14:30 WIB",
-      activity: "Create",
-      user: "Jane",
-      action: "Lihat Detail Perubahan"
-    },
-    {
-      id: 3,
-      updateTime: "06/07/2023",
-      updateTimeDetail: "09:15 WIB",
-      activity: "Update",
-      user: "Bob",
-      action: "Lihat Detail Perubahan"
-    }
-  ];
+  // Get history data from API
+  const { data: apiResponse, error, isLoading } = useGetMinRatesHistory({
+    search: searchTerm,
+    page: currentPage,
+    limit: perPage
+  });
 
-  // Filter data based on search term
-  const filteredData = historyData.filter(item =>
-    item.activity.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.updateTime.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Transform API data for table
+  const historyData = apiResponse?.data?.Data?.data ? 
+    transformMinRatesHistoryToTableData(apiResponse.data.Data.data) : [];
+  
+  const pagination = apiResponse?.data?.Data?.pagination ? 
+    transformPaginationData(apiResponse.data.Data.pagination) : {};
 
-  // Paginate data
-  const startIndex = (currentPage - 1) * perPage;
-  const endIndex = startIndex + perPage;
-  const paginatedData = filteredData.slice(startIndex, endIndex);
+  // Use API data directly (search and pagination handled by API)
+  const filteredData = historyData;
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -79,8 +57,7 @@ export default function SettingTarifMinimalTableHistory() {
       sortable: false,
       render: (row) => (
         <div className="text-center">
-          <div className="font-xs font-semibold">{row.updateTime}</div>
-          <div className="text-xs font-semibold">{row.updateTimeDetail}</div>
+          <div className="font-xs font-semibold">{row.createdAtFormatted}</div>
         </div>
       )
     },
@@ -89,8 +66,11 @@ export default function SettingTarifMinimalTableHistory() {
       header: "Aktivitas",
       sortable: false,
       render: (row) => (
-        <span className="text-xs font-medium p-0">
-          {row.activity}
+        <span className={`px-2 py-1 rounded-full text-xs font-medium`}>
+          {row.action === "CREATE" ? "Create" : 
+           row.action === "UPDATE" ? "Update" : 
+           row.action === "DELETE" ? "Delete" : 
+           row.action}
         </span>
       )
     },
@@ -99,7 +79,7 @@ export default function SettingTarifMinimalTableHistory() {
       header: "User",
       sortable: false,
       render: (row) => (
-        <span className="font-medium">{row.user}</span>
+        <span className="font-medium">{row.createdBy || row.updatedBy || 'Unknown'}</span>
       )
     },
     {
@@ -111,7 +91,7 @@ export default function SettingTarifMinimalTableHistory() {
           onClick={() => (router.push(`/master-pricing/setting-tarif-minimal/${row.id}/detail`))}
           className="text-blue-600 hover:text-blue-800 underline text-xs font-semibold"
         >
-          {row.action}
+          Lihat Detail Perubahan
         </button>
       )
     }
@@ -121,17 +101,17 @@ export default function SettingTarifMinimalTableHistory() {
     <div>
       <DataTableBO
         columns={columns}
-        data={paginatedData}
-        loading={false}
+        data={filteredData}
+        loading={isLoading}
         searchPlaceholder="Cari berdasarkan aktivitas, user, atau waktu..."
         onSearch={handleSearch}
         showSearch={false}
         onFilter={null}
         onSort={null}
-        currentPage={currentPage}
-        totalPages={Math.ceil(filteredData.length / perPage)}
-        totalItems={filteredData.length}
-        perPage={perPage}
+        currentPage={pagination.currentPage || currentPage}
+        totalPages={pagination.totalPages || 1}
+        totalItems={pagination.totalRecords || 0}
+        perPage={pagination.recordsPerPage || perPage}
         onPageChange={handlePageChange}
         onPerPageChange={handlePerPageChange}
         showFilter={false}

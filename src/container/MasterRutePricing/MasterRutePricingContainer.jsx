@@ -49,24 +49,20 @@ export default function MasterRutePricingContainer() {
   }, []);
 
   const handleStatusChange = useCallback(async (routeId, newStatus) => {
-    console.log(`Starting status update for route ${routeId} to ${newStatus}`);
     setUpdatingRoutes(prev => new Set(prev).add(routeId));
 
     try {
       // Call API to update route status using patchStatusRoute
       const statusData = { isActive: newStatus };
-      console.log('Calling patchStatusRoute with:', { routeId, statusData });
       
       const response = await patchStatusRoute(routeId, statusData);
       
-      console.log(`Route ${routeId} status updated to ${newStatus}:`, response);
       
       // Revalidate data after successful update
       mutate();
       
     } catch (error) {
-      console.error('Error updating route status:', error);
-      alert(`Gagal mengupdate status: ${error.message}`);
+      console.log(`Gagal mengupdate status: ${error.message}`);
     } finally {
       setUpdatingRoutes(prev => {
         const newSet = new Set(prev);

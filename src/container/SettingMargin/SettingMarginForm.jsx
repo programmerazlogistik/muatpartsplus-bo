@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { useForm } from "react-hook-form";
 
 import Button from "@/components/Button/Button";
@@ -16,6 +16,12 @@ export default function SettingMarginForm({
   onDataChange 
 }) {
   const isDetailMode = mode === "detail";
+  
+  // Ref to prevent loading data multiple times
+  const hasLoadedInitialData = useRef(false);
+  
+  // Ref to prevent callback loops
+  const lastChangeDetection = useRef(null);
 
   const {
     register,
@@ -26,20 +32,25 @@ export default function SettingMarginForm({
   } = useForm({
     defaultValues: initialData || {
       margin: "",
-      modelMargin: "",
+      modelMargin: "added", // Default value
       effectiveDate: null
     },
     mode: isDetailMode ? "onSubmit" : "onChange" // Disable real-time validation for detail mode
   });
 
-  const watchedModelMargin = watch("modelMargin");
-
-  // Load initial data for edit/detail mode
+  // Load initial data for edit/detail mode (only once)
   useEffect(() => {
-    if (initialData && (mode === "edit" || mode === "detail")) {
+    if (initialData && (mode === "edit" || mode === "detail") && !hasLoadedInitialData.current) {
+      console.log("Form - Initial Data:", initialData);
+      console.log("Form - Mode:", mode);
+      
       Object.keys(initialData).forEach(key => {
+        console.log(`Setting ${key} to:`, initialData[key]);
         setValue(key, initialData[key]);
       });
+      
+      // Mark as loaded to prevent re-loading
+      hasLoadedInitialData.current = true;
     }
   }, [initialData, mode, setValue]);
 
@@ -56,17 +67,19 @@ export default function SettingMarginForm({
 
   // Watch for form changes (only for add/edit mode)
   const watchedValues = watch();
+  const watchedModelMargin = watchedValues.modelMargin;
   
-  useEffect(() => {
-    if (isDetailMode) return; // Don't watch changes in detail mode
+  // Memoize the change detection to prevent unnecessary recalculations
+  const changeDetection = useMemo(() => {
+    if (isDetailMode) return { hasChanges: false, formData: null };
     
-    // Check if any field has meaningful data
+    // Check if any field has meaningful data (not empty, not null, not undefined)
     const hasChanges = Object.entries(watchedValues).some(([key, value]) => {
       if (key === 'effectiveDate') {
         return value !== null && value !== undefined;
       }
       if (key === 'margin') {
-        return value !== "" && value !== null && value !== undefined && value > 0;
+        return value !== "" && value !== null && value !== undefined;
       }
       if (key === 'modelMargin') {
         return value !== "" && value !== null && value !== undefined;
@@ -74,10 +87,28 @@ export default function SettingMarginForm({
       return false;
     });
     
-    console.log("Form values:", watchedValues);
-    console.log("Has changes:", hasChanges);
-    onDataChange(hasChanges);
-  }, [watchedValues, onDataChange, isDetailMode]);
+    return { hasChanges, formData: hasChanges ? watchedValues : null };
+  }, [watchedValues, isDetailMode]);
+  
+  useEffect(() => {
+    if (isDetailMode) return; // Don't watch changes in detail mode
+    
+    const timeoutId = setTimeout(() => {
+      // Check if the change detection result is different from the last one
+      const currentDetection = JSON.stringify(changeDetection);
+      if (lastChangeDetection.current === currentDetection) {
+        return; // Skip if same as last detection
+      }
+      
+      lastChangeDetection.current = currentDetection;
+      
+      console.log("Form values:", watchedValues);
+      console.log("Has changes:", changeDetection.hasChanges);
+      onDataChange(changeDetection.hasChanges, changeDetection.formData);
+    }, 300); // 300ms debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [changeDetection, onDataChange, isDetailMode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div>
@@ -132,7 +163,11 @@ export default function SettingMarginForm({
                   name="modelMargin"
                   value="added"
                   checked={watchedModelMargin === "added"}
-                  onChange={(e) => !isDetailMode && setValue("modelMargin", e.target.value, { shouldValidate: true })}
+                  onChange={(e) => {
+                    if (!isDetailMode) {
+                      setValue("modelMargin", e.target.value, { shouldValidate: true });
+                    }
+                  }}
                   disabled={isDetailMode}
                   className="mr-3"
                 />
@@ -150,7 +185,11 @@ export default function SettingMarginForm({
                   name="modelMargin"
                   value="included"
                   checked={watchedModelMargin === "included"}
-                  onChange={(e) => !isDetailMode && setValue("modelMargin", e.target.value, { shouldValidate: true })}
+                  onChange={(e) => {
+                    if (!isDetailMode) {
+                      setValue("modelMargin", e.target.value, { shouldValidate: true });
+                    }
+                  }}
                   disabled={isDetailMode}
                   className="mr-3"
                 />

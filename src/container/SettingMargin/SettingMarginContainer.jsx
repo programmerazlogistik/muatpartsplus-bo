@@ -1,11 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 import Button from "@/components/Button/Button";
 import ConfirmationModal from "@/components/Modal/ConfirmationModal";
 import SettingMarginForm from "./SettingMarginForm";
+import { useGetMarginListForForm } from "@/services/masterpricing/settingMargin/getMarginList";
+import { 
+  postMarginDataWithValidation,
+  postMarginDataMock,
+  transformFormToAPI,
+  transformAPIToForm,
+  validateMarginCreationData,
+  getMarginCreationSuccessMessage,
+  getMarginCreationErrorMessage,
+  getMarginCreationConfirmationMessage
+} from "@/services/masterpricing/settingMargin/postMarginData";
 
 export default function SettingMarginContainer() {
   const router = useRouter();
@@ -15,6 +26,13 @@ export default function SettingMarginContainer() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [pendingNavigation, setPendingNavigation] = useState(null);
+  const [pendingFormData, setPendingFormData] = useState(null);
+
+  // Get existing margin data
+  const { data: existingMarginData, error: marginError, isLoading: marginLoading } = useGetMarginListForForm(
+    { search: "", page: 1, limit: 10 },
+    { revalidateOnFocus: false, revalidateOnReconnect: false }
+  );
 
   const handleSaveClick = () => {
     setShowSaveConfirmModal(true);
@@ -25,16 +43,30 @@ export default function SettingMarginContainer() {
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (!pendingFormData) {
+        throw new Error("No form data to save");
+      }
+
+      // Validate form data first
+      const validation = validateMarginCreationData(pendingFormData);
+      if (!validation.isValid) {
+        const errorMessages = Object.values(validation.errors).join(", ");
+        throw new Error(`Validation failed: ${errorMessages}`);
+      }
+
+      console.log("Form data:", pendingFormData);
+
+      // Call API with validation
+      const result = await postMarginDataWithValidation(pendingFormData);
       
-      console.log("Data berhasil disimpan!");
+      console.log("Data berhasil disimpan!", result);
       setHasUnsavedChanges(false); // Reset unsaved changes after successful save
       setShowSuccessModal(true);
       
     } catch (error) {
       console.error("Error saving data:", error);
-      alert("Gagal menyimpan data. Silakan coba lagi.");
+      const errorMessage = getMarginCreationErrorMessage(pendingFormData?.margin || 0, error);
+      alert(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -79,9 +111,26 @@ export default function SettingMarginContainer() {
     setPendingNavigation(null);
   };
 
-  const handleDataChange = (hasChanges) => {
+  const handleDataChange = useCallback((hasChanges, formData) => {
     setHasUnsavedChanges(hasChanges);
-  };
+    if (formData) {
+      setPendingFormData(formData);
+    }
+  }, []);
+
+  // Transform existing data for form
+  const initialFormData = useMemo(() => {
+    if (!existingMarginData) {
+      return {
+        margin: "",
+        modelMargin: "added",
+        effectiveDate: null
+      };
+    }
+
+    // Use transformAPIToForm for consistency
+    return transformAPIToForm(existingMarginData);
+  }, [existingMarginData]);
 
   // Handle browser back button
   useEffect(() => {
@@ -92,8 +141,8 @@ export default function SettingMarginContainer() {
       }
     };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+    // window.addEventListener("beforeunload", handleBeforeUnload);
+    // return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [hasUnsavedChanges]);
   
   return (
@@ -106,11 +155,22 @@ export default function SettingMarginContainer() {
       </div>
 
       <div>
-        <SettingMarginForm 
-          onSaveClick={handleSaveClick}
-          isSubmitting={isSubmitting}
-          onDataChange={handleDataChange}
-        />
+        {marginLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="text-gray-500">Memuat data...</div>
+          </div>
+        ) : marginError ? (
+          <div className="flex items-center justify-center py-8">
+            <div className="text-red-500">Gagal memuat data. Silakan coba lagi.</div>
+          </div>
+        ) : (
+          <SettingMarginForm 
+            initialData={initialFormData}
+            onSaveClick={handleSaveClick}
+            isSubmitting={isSubmitting}
+            onDataChange={handleDataChange}
+          />
+        )}
       </div>
 
       {/* Confirmation Modal */}
@@ -119,7 +179,9 @@ export default function SettingMarginContainer() {
         setIsOpen={setShowSaveConfirmModal}
         title={{ text: "Pemberitahuan" }}
         description={{ 
-          text: "Apakah Anda yakin ingin menyimpan data?" 
+          text: pendingFormData 
+            ? getMarginCreationConfirmationMessage(pendingFormData.margin, pendingFormData.modelMargin)
+            : "Apakah Anda yakin ingin menyimpan data?" 
         }}
         cancel={{
           text: "Tidak",
@@ -135,6 +197,7 @@ export default function SettingMarginContainer() {
       <ConfirmationModal
         isOpen={showSuccessModal}
         setIsOpen={setShowSuccessModal}
+        withCancel={false}
         title={{ text: "Pemberitahuan" }}
         description={{ 
           text: "Data berhasil disimpan!" 

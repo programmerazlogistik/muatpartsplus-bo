@@ -9,6 +9,7 @@ export default function MasterRutePricingTableHistory({
   pagination = null,
   onSearch,
   onPageChange,
+  onPerPageChange,
   onActionFilter,
   searchTerm = "",
   actionFilter = ""
@@ -133,6 +134,7 @@ export default function MasterRutePricingTableHistory({
         totalPages={pagination?.totalPages || 1}
         onPageChange={onPageChange}
         onSearch={onSearch}
+        onPerPageChange={onPerPageChange}
         searchPlaceholder="Cari berdasarkan alias, user, atau aktivitas..."
         showSearch={false}
         showPagination={true}

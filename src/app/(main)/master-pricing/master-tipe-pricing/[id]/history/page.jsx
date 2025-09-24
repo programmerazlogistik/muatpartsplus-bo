@@ -11,12 +11,12 @@ export default function HistoryMasterTipePricingPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [actionFilter, setActionFilter] = useState("");
-
+  const [perPage, setPerPage] = useState(10);
   // Use API hook to fetch type history
   const { data: apiData, error, isLoading } = useGetTypeHistory(params.id, {
     search: searchTerm,
     page: currentPage,
-    limit: 10,
+    limit: perPage,
     action: actionFilter
   });
 
@@ -26,6 +26,7 @@ export default function HistoryMasterTipePricingPage() {
     return apiData.data.Data;
   }, [apiData?.data.Data]);
 
+  
   // Transform pagination data
   const paginationData = useMemo(() => {
     if (!apiData?.data?.Pagination) return null;
@@ -43,6 +44,11 @@ export default function HistoryMasterTipePricingPage() {
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+  };
+
+  const handlePerPageChange = (newPerPage) => {
+    setPerPage(newPerPage);
+    setCurrentPage(1);
   };
 
   const handleActionFilter = (action) => {
@@ -78,6 +84,7 @@ export default function HistoryMasterTipePricingPage() {
         pagination={paginationData}
         onSearch={handleSearch}
         onPageChange={handlePageChange}
+        onPerPageChange={handlePerPageChange}
         onActionFilter={handleActionFilter}
         searchTerm={searchTerm}
         actionFilter={actionFilter}
