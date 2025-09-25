@@ -4,8 +4,8 @@ import "./globals.scss";
 import { Providers } from "./providers";
 
 export const metadata = {
-  title: "Muatrans - BO",
-  description: "Back Office for Muatrans",
+  title: "Muatparts Plus - BO",
+  description: "Back Office for Muatparts Plus",
 };
 
 export default function RootLayout({ children }) {

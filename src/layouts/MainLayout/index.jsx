@@ -48,11 +48,7 @@ const MainLayout = ({ children }) => {
             onClick={toggleSidebar}
           />
         )}
-        <div
-          className={`flex flex-1 flex-col overflow-hidden transition-all duration-300 ${
-            sidebarOpen ? "ml-64" : "ml-0"
-          }`}
-        >
+        <div className="flex flex-1 flex-col overflow-hidden">
           <Navbar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
           <main className="flex-1 overflow-y-auto bg-white p-[30px]">
             {children}

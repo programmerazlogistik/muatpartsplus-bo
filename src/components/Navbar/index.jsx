@@ -3,10 +3,11 @@
 import Link from "next/link";
 
 import IconComponent from "@/components/IconComponent/IconComponent";
+import Image from "next/image";
 
 const Navbar = ({ user = "John", toggleSidebar, sidebarOpen }) => {
   return (
-    <div className="bg-primary flex h-[58px] w-full items-center justify-between px-7 text-white">
+    <div className="bg-primary flex h-[58px] w-full items-center justify-between px-7 text-white z-30 relative">
       <div className="flex">
         <button
           onClick={toggleSidebar}
@@ -14,12 +15,27 @@ const Navbar = ({ user = "John", toggleSidebar, sidebarOpen }) => {
           aria-label="Toggle sidebar"
         >
           <IconComponent
-            src="/icons/nav/hamburger.svg"
+            src="/icons/nav/fix-button.svg"
             alt="Toggle Menu"
-            width={24}
-            height={24}
+            width={28}
+            height={28}
           />
         </button>
+        <div className="bg-primary flex h-[58px] items-center justify-center px-4">
+          <Link href="/">
+            <div className="flex flex-col items-center">
+              <Image
+                src="/svg/logo-muatmuat.svg"
+                alt="MuatMuat Logo"
+                width={120}
+                height={32}
+              />
+            </div>
+            <div className="-mt-2 text-center text-sm font-semibold text-white">
+              <p>admin muatparts +</p>
+            </div>
+          </Link>
+        </div>
       </div>
 
       {/* Icon links */}
