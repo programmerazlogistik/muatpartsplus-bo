@@ -474,6 +474,7 @@ export default function SettingRumusPricingContainer() {
         formula={selectedRumus?.formula ?? []}
         variables={selectedRumus?.variables} // Pass variables to modal
         formulaId={selectedRumus?.id || " "} // Pass formula ID to modal
+        formulaName={selectedRumus?.name || ""} // Pass formula name to modal
       />
     </div>
   );

@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import { useGetRouteList } from "@/services/masterpricing/masterrute/getRouteList";
 import { useGetCarrierTypeCalculation } from "@/services/masterpricing/setting-formula-pricing/getCarrierTypeCalculation";
 import { useGetTruckTypeCalculation } from "@/services/masterpricing/setting-formula-pricing/getTruckTypeCalculation";
+import { fetcherVariableValuesCalculation } from "@/services/masterpricing/setting-formula-pricing/getVariableValuesCalculation";
 
 import Button from "@/components/Button/Button";
 import IconComponent from "@/components/IconComponent/IconComponent";
@@ -33,6 +34,7 @@ const SimulationModal = ({
   formula = [],
   variables = [],
   formulaId = " ", // Added formulaId prop
+  formulaName = "",
 }) => {
   const [formData, setFormData] = useState({
     jarak: "",
@@ -45,6 +47,8 @@ const SimulationModal = ({
   const [isCalculating, setIsCalculating] = useState(false);
   const [calculationResults, setCalculationResults] = useState(null);
   const [variableValues, setVariableValues] = useState(null);
+  const [variablesByType, setVariablesByType] = useState(null);
+  const [basePriceData, setBasePriceData] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
 
   const {
@@ -75,7 +79,6 @@ const SimulationModal = ({
   const [carrierOptions, setCarrierOptions] = useState([]);
 
   useEffect(() => {
-    console.log("routeOptions", ruteOptions);
     if (ruteOptions?.data) {
       setRouteOptions(
         ruteOptions.data.Data.map((rute) => ({
@@ -85,13 +88,12 @@ const SimulationModal = ({
           label: rute.alias,
         }))
       );
-      console.log("routeOptions", ruteOptions);
+      // console.log("routeOptions", ruteOptions);
     }
   }, [ruteOptions]);
 
   // Update truck options when truck type data changes
   useEffect(() => {
-    console.log("truckTypeData", truckTypeData);
     if (truckTypeData?.Data) {
       setTruckOptions(
         truckTypeData.Data.map((truck) => ({
@@ -114,7 +116,6 @@ const SimulationModal = ({
 
   // Update carrier options when carrier type data changes
   useEffect(() => {
-    console.log("carrierTypeData", carrierTypeData);
     if (carrierTypeData?.Data) {
       setCarrierOptions(
         carrierTypeData.Data.map((carrier) => ({
@@ -157,125 +158,62 @@ const SimulationModal = ({
     }
   };
 
-  // Mock API call to fetch variable values
+  // API call to fetch variable values using the service
   const fetchVariableValues = async (rute, jenisTruk) => {
-    // Simulate API call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // Mock backend response structure
-        const mockResponse = {
-          jarakMinimum: 100,
-          basePrice: [
-            {
-              typePricingId: "749d58ea-eb6a-45b4-a19f-9da61aeead67",
-              typePricingName: "Medium",
-              variables: {
-                enam: {
-                  id: "34b44f3d-d265-4c2b-a284-565bc94f11d2",
-                  value: 1000,
-                  isFromShipper: false,
-                },
-                jarak: {
-                  id: "2ccb11f1-2265-4361-b769-55d773928760",
-                  value: null,
-                  isFromShipper: true,
-                },
-                PL: {
-                  id: "f979e389-2930-4bf0-b790-badb7bb21d70",
-                  value: 5200,
-                  isFromShipper: false,
-                },
-                tonase: {
-                  id: "070e3ff1-bdd1-4e2a-a46b-d1c2044327e2",
-                  value: null,
-                  isFromShipper: true,
-                },
-              },
-            },
-            {
-              typePricingId: "bef711a6-7a1c-4625-a129-ed933f38ce9e",
-              typePricingName: "High",
-              variables: {
-                enam: {
-                  id: "34b44f3d-d265-4c2b-a284-565bc94f11d2",
-                  value: 6000,
-                  isFromShipper: false,
-                },
-                jarak: {
-                  id: "2ccb11f1-2265-4361-b769-55d773928760",
-                  value: null,
-                  isFromShipper: true,
-                },
-                PL: {
-                  id: "f979e389-2930-4bf0-b790-badb7bb21d70",
-                  value: 1500,
-                  isFromShipper: false,
-                },
-                tonase: {
-                  id: "070e3ff1-bdd1-4e2a-a46b-d1c2044327e2",
-                  value: null,
-                  isFromShipper: true,
-                },
-              },
-            },
-            {
-              typePricingId: "67ff9e7e-d3cb-48fe-8a1e-3b492915ce54",
-              typePricingName: "Low edit",
-              variables: {
-                enam: {
-                  id: "34b44f3d-d265-4c2b-a284-565bc94f11d2",
-                  value: 4000,
-                  isFromShipper: false,
-                },
-                jarak: {
-                  id: "2ccb11f1-2265-4361-b769-55d773928760",
-                  value: null,
-                  isFromShipper: true,
-                },
-                PL: {
-                  id: "f979e389-2930-4bf0-b790-badb7bb21d70",
-                  value: 800,
-                  isFromShipper: false,
-                },
-                tonase: {
-                  id: "070e3ff1-bdd1-4e2a-a46b-d1c2044327e2",
-                  value: null,
-                  isFromShipper: true,
-                },
-              },
-            },
-            {
-              typePricingId: "1346450a-ea1d-4f7f-8604-3a9d4f7605fe",
-              typePricingName: "Higaah",
-              variables: {
-                enam: {
-                  id: "34b44f3d-d265-4c2b-a284-565bc94f11d2",
-                  value: 7000,
-                  isFromShipper: false,
-                },
-                jarak: {
-                  id: "2ccb11f1-2265-4361-b769-55d773928760",
-                  value: null,
-                  isFromShipper: true,
-                },
-                PL: {
-                  id: "f979e389-2930-4bf0-b790-badb7bb21d70",
-                  value: 2000,
-                  isFromShipper: false,
-                },
-                tonase: {
-                  id: "070e3ff1-bdd1-4e2a-a46b-d1c2044327e2",
-                  value: null,
-                  isFromShipper: true,
-                },
-              },
-            },
-          ],
-        };
+    try {
+      // Build query string for the API call
+      const queryParams = new URLSearchParams();
+      if (jenisTruk) queryParams.append("truckTypeId", jenisTruk);
+      if (formulaId) queryParams.append("formulaId", formulaId);
+      if (rute) queryParams.append("routePricingId", rute);
 
-        resolve(mockResponse);
-      }, 1000);
-    });
+      const queryString = queryParams.toString();
+      const url = `v1/bo/pricing/setting/formula-pricing/calculation/variable-values${queryString ? `?${queryString}` : ""}`;
+
+      // Call the API using our service fetcher
+      const response = await fetcherVariableValuesCalculation(url, {
+        arg: null,
+      });
+
+      // Transform the API response to match the expected structure
+      const transformedResponse = {
+        jarakMinimum: response.Data?.truckType?.minDistance || 100,
+        basePrice: response.Data?.basePrice || [],
+        truckType: response.Data?.truckType || null,
+      };
+
+      return transformedResponse;
+    } catch (error) {
+      console.error("Error fetching variable values:", error);
+
+      // Return fallback data in case of error
+      return {
+        jarakMinimum: 100,
+        basePrice: [
+          {
+            typePricingId: "fallback-1",
+            typePricingName: "Fallback High",
+            variables: {
+              enam: { id: "1", value: 6000, isFromShipper: false },
+              jarak: { id: "2", value: null, isFromShipper: true },
+              PL: { id: "3", value: 1500, isFromShipper: false },
+              tonase: { id: "4", value: null, isFromShipper: true },
+            },
+          },
+          {
+            typePricingId: "fallback-2",
+            typePricingName: "Fallback Low",
+            variables: {
+              enam: { id: "1", value: 4000, isFromShipper: false },
+              jarak: { id: "2", value: null, isFromShipper: true },
+              PL: { id: "3", value: 800, isFromShipper: false },
+              tonase: { id: "4", value: null, isFromShipper: true },
+            },
+          },
+        ],
+        truckType: null,
+      };
+    }
   };
 
   // Calculate formula result for each pricing type
@@ -287,20 +225,20 @@ const SimulationModal = ({
   ) => {
     if (!formula || formula.length === 0) {
       console.warn("No formula provided, using fallback calculation");
-      return getFallbackCalculation({});
+      return { results: getFallbackCalculation({}), variablesByType: {} };
     }
 
     const results = {};
+    const variablesByType = {};
 
     try {
       // Calculate for each pricing type
       basePriceData.forEach((priceType) => {
-        console.log(`Calculating for ${priceType.typePricingName}:`, priceType);
-
         // Create variable values for this pricing type
         const variableValues = {};
-
+        console.log("priceType", priceType);
         Object.entries(priceType.variables).forEach(([varName, varData]) => {
+          // console.log("varName, varData", varName, varData);
           if (varData.isFromShipper) {
             // Use form data for shipper variables
             if (varName === "jarak") {
@@ -313,11 +251,7 @@ const SimulationModal = ({
             variableValues[varData.id] = varData.value;
           }
         });
-
-        console.log(
-          `Variables for ${priceType.typePricingName}:`,
-          variableValues
-        );
+        console.log("variableValues calcForm", variableValues);
 
         // Convert the formula array to a mathematical expression
         const formulaExpression = convertFormulaToExpression(
@@ -331,54 +265,59 @@ const SimulationModal = ({
 
         // Evaluate the formula
         const calculatedResult = evaluateFormula(formulaExpression);
-        console.log(
-          `Result for ${priceType.typePricingName}:`,
-          calculatedResult
-        );
+        // console.log(
+        //   `Result for ${priceType.typePricingName}:`,
+        //   calculatedResult
+        // );
+        // console.log("variablesByType", variablesByType);
 
         if (!isNaN(calculatedResult) && calculatedResult > 0) {
-          // Map pricing type names to result keys
-          const pricingTypeMap = {
-            Low: "low",
-            "Low edit": "low", // Handle variations in naming
-            Medium: "medium",
-            High: "high",
-            Higaah: "high", // Handle variations in naming
+          // Use the actual pricing type ID and name from API
+          const resultKey = priceType.typePricingId;
+          results[resultKey] = {
+            name: priceType.typePricingName,
+            value: Math.round(calculatedResult),
           };
 
-          const resultKey =
-            pricingTypeMap[priceType.typePricingName] ||
-            priceType.typePricingName.toLowerCase();
-
-          results[resultKey] = Math.round(calculatedResult);
+          // Store the variable values for this pricing type with readable names
+          const readableVariables = {};
+          Object.entries(priceType.variables).forEach(([varName, varData]) => {
+            if (varData.isFromShipper) {
+              if (varName === "jarak") {
+                readableVariables[varName] = finalJarak;
+              } else if (varName === "tonase") {
+                readableVariables[varName] = finalTonase;
+              }
+            } else {
+              readableVariables[varName] = varData.value;
+            }
+          });
+          variablesByType[resultKey] = readableVariables;
         }
       });
 
-      // Ensure we have all required pricing tiers with fallbacks
-      const finalResults = {
-        low: results.low || results["low edit"] || 0,
-        medium: results.medium || 0,
-        high: results.high || results.higaah || 0,
-        lowSpecial: results.low ? Math.round(results.low * 0.8) : 0,
-      };
+      console.log("variablesByType final", variablesByType);
 
-      console.log("Final calculated results:", finalResults);
-      return finalResults;
+      return { results, variablesByType };
     } catch (error) {
-      console.error("Error calculating formula:", error);
-      console.warn("Using fallback calculation due to error");
-      return getFallbackCalculation({});
+      console.error("Error", error);
+      return { results: getFallbackCalculation({}), variablesByType: {} };
     }
   };
 
   // Convert formula array to mathematical expression string
   const convertFormulaToExpression = (formula, variableValues) => {
-    console.log("formula", formula);
-    console.log("variableValues", variableValues);
+    // console.log("variableValues,", variableValues);
     return formula
       .map((item) => {
         // Check if the item is a variable ID that exists in our variableValues
         if (Object.prototype.hasOwnProperty.call(variableValues, item)) {
+          if (
+            variableValues[item] === null ||
+            variableValues[item] === undefined
+          ) {
+            return 0;
+          }
           return variableValues[item];
         }
 
@@ -423,10 +362,18 @@ const SimulationModal = ({
       basePrice + jarakMultiplier * 1000 + tonaseMultiplier * 50000;
 
     return {
-      low: Math.round(calculatedBase),
-      medium: Math.round(calculatedBase),
-      high: Math.round(calculatedBase * 1.25),
-      lowSpecial: Math.round(calculatedBase * 0.8),
+      "fallback-1": {
+        name: "Fallback Low",
+        value: Math.round(calculatedBase),
+      },
+      "fallback-2": {
+        name: "Fallback Medium",
+        value: Math.round(calculatedBase),
+      },
+      "fallback-3": {
+        name: "Fallback High",
+        value: Math.round(calculatedBase * 1.25),
+      },
     };
   };
 
@@ -503,23 +450,17 @@ const SimulationModal = ({
         formData.jenisTruk
       );
 
-      console.log("Step 1", apiResponse);
-
       // Step 2: Apply jarak minimum logic
       const finalJarak = getJarakMinimum(
         formData.jarak,
         apiResponse.jarakMinimum
       );
 
-      console.log("Step 2", finalJarak);
-
       // Step 3: Get final tonase
       const finalTonase = parseFloat(formData.tonase);
 
-      console.log("Step 3", finalTonase);
-
       // Step 4: Calculate using formula with base price data
-      const results = calculateFormula(
+      const { results, variablesByType } = calculateFormula(
         apiResponse.basePrice,
         formula,
         finalJarak,
@@ -545,15 +486,14 @@ const SimulationModal = ({
         );
       }
 
-      console.log("Step 5", displayVariables);
-
       setVariableValues(displayVariables);
+      setVariablesByType(variablesByType);
       setCalculationResults(results);
+      setBasePriceData(apiResponse.basePrice);
 
       // Call parent callback if provided
       onCalculate?.(formData, formula, results);
     } catch (error) {
-      console.error("Calculation error:", error);
       alert("Error during calculation");
     } finally {
       setIsCalculating(false);
@@ -563,6 +503,8 @@ const SimulationModal = ({
   const handleReset = () => {
     setCalculationResults(null);
     setVariableValues(null);
+    setVariablesByType(null);
+    setBasePriceData(null);
     setFormData({
       jarak: "",
       rute: "",
@@ -576,6 +518,8 @@ const SimulationModal = ({
     // Clear all form data and calculation results when modal closes
     setCalculationResults(null);
     setVariableValues(null);
+    setVariablesByType(null);
+    setBasePriceData(null);
     setValidationErrors({});
     setFormData({
       jarak: "",
@@ -635,7 +579,7 @@ const SimulationModal = ({
       <ModalContent
         size="medium"
         type="muattrans"
-        className={`w-full max-w-[500px]`}
+        className={`max-h-[600px] w-full max-w-[500px] overflow-y-auto`}
         withCloseButton={true}
         closeOnOutsideClick={true}
         appearance={{
@@ -646,7 +590,7 @@ const SimulationModal = ({
         <div className={`flex w-full flex-col items-center gap-5 px-2 py-8`}>
           {/* Title */}
           <div className="flex flex-col items-center justify-center">
-            <ModalTitle>Masukkan Data Simulasi Rumus 4PL</ModalTitle>
+            <ModalTitle>Masukkan Data Simulasi Rumus {formulaName}</ModalTitle>
           </div>
 
           {/* Form Fields */}
@@ -982,67 +926,86 @@ const SimulationModal = ({
                     </p>
                   </div>
                 )}
-
-                {/* Show variable values used */}
-                {variableValues && (
-                  <div className="rounded bg-blue-50 p-2">
-                    <p className="mb-1 text-xs text-blue-600">
-                      Nilai variabel:
-                    </p>
-                    <div className="grid grid-cols-2 gap-1 text-xs text-blue-800">
-                      {Object.entries(variableValues)
-                        .filter(([key]) =>
-                          variables.some(
-                            (v) => v.variableName === key || v.id === key
-                          )
-                        )
-                        .slice(0, 6) // Show first 6 to avoid clutter
-                        .map(([key, value]) => (
-                          <span key={key}>
-                            {key}: {value}
-                          </span>
-                        ))}
-                    </div>
-                  </div>
-                )}
               </div>
 
-              <div className="flex flex-col gap-3">
-                <div className="flex items-start gap-3">
-                  <span className="w-[100px] text-base font-semibold leading-[19px] text-[#1B1B1B]">
-                    Low
-                  </span>
-                  <span className="text-base font-semibold leading-[19px] text-[#1B1B1B]">
-                    : {formatCurrency(calculationResults.low)}
-                  </span>
-                </div>
+              <div className="flex flex-col gap-4">
+                {/* Dynamic Pricing Types based on API response */}
+                {calculationResults &&
+                  Object.entries(calculationResults).map(
+                    ([typePricingId, resultData], index) => {
+                      // Get background colors based on index
+                      const bgColors = [
+                        {
+                          bg: "bg-green-50",
+                          text: "text-green-600",
+                          textSecondary: "text-green-800",
+                        },
+                        {
+                          bg: "bg-yellow-50",
+                          text: "text-yellow-600",
+                          textSecondary: "text-yellow-800",
+                        },
+                        {
+                          bg: "bg-red-50",
+                          text: "text-red-600",
+                          textSecondary: "text-red-800",
+                        },
+                        {
+                          bg: "bg-purple-50",
+                          text: "text-purple-600",
+                          textSecondary: "text-purple-800",
+                        },
+                        {
+                          bg: "bg-blue-50",
+                          text: "text-blue-600",
+                          textSecondary: "text-blue-800",
+                        },
+                        {
+                          bg: "bg-indigo-50",
+                          text: "text-indigo-600",
+                          textSecondary: "text-indigo-800",
+                        },
+                      ];
 
-                <div className="flex items-start gap-3">
-                  <span className="w-[100px] text-base font-semibold leading-[19px] text-[#1B1B1B]">
-                    Medium
-                  </span>
-                  <span className="text-base font-semibold leading-[19px] text-[#1B1B1B]">
-                    : {formatCurrency(calculationResults.medium)}
-                  </span>
-                </div>
+                      const colorScheme = bgColors[index % bgColors.length];
 
-                <div className="flex items-start gap-3">
-                  <span className="w-[100px] text-base font-semibold leading-[19px] text-[#1B1B1B]">
-                    High
-                  </span>
-                  <span className="text-base font-semibold leading-[19px] text-[#1B1B1B]">
-                    : {formatCurrency(calculationResults.high)}
-                  </span>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <span className="w-[100px] text-base font-semibold leading-[19px] text-[#1B1B1B]">
-                    Low Special
-                  </span>
-                  <span className="text-base font-semibold leading-[19px] text-[#1B1B1B]">
-                    : {formatCurrency(calculationResults.lowSpecial)}
-                  </span>
-                </div>
+                      return (
+                        <div
+                          key={typePricingId}
+                          className="flex flex-col gap-2"
+                        >
+                          <div className="flex items-start gap-3">
+                            <span className="min-w-[120px] text-base font-semibold leading-[19px] text-[#1B1B1B]">
+                              {resultData.name}
+                            </span>
+                            <span className="text-base font-semibold leading-[19px] text-[#1B1B1B]">
+                              : {formatCurrency(resultData.value)}
+                            </span>
+                          </div>
+                          {variablesByType?.[typePricingId] && (
+                            <div
+                              className={`ml-[145px] rounded ${colorScheme.bg} p-2`}
+                            >
+                              <p className={`mb-1 text-xs ${colorScheme.text}`}>
+                                Nilai variabel:
+                              </p>
+                              <div
+                                className={`grid grid-cols-2 gap-1 text-xs ${colorScheme.textSecondary}`}
+                              >
+                                {Object.entries(
+                                  variablesByType[typePricingId]
+                                ).map(([key, value]) => (
+                                  <span key={key}>
+                                    {key}: {value || 0}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    }
+                  )}
               </div>
             </div>
           )}
