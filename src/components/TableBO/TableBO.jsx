@@ -89,10 +89,10 @@ const TableBO = ({
       style={{ maxHeight: enableInfiniteScroll ? "600px" : "unset" }}
     >
       <div className="relative inline-block min-w-full">
-        <div className="absolute inset-x-0 top-0 z-0 h-[84px] bg-primary-700" />
+        <div className="absolute inset-x-0 top-0 z-0 h-[84px]" />
         <div className="relative z-10 px-[10px] pb-1">
           <table className="relative z-10 w-full table-fixed">
-            <thead className="bg-primary h-[84px] text-left text-white">
+            <thead className="h-10 text-left text-[#868686] border-b border-b-[#A8A8A8]">
               <tr>
                 {columns.map((column, index) => {
                   const isSortable =
@@ -145,6 +145,7 @@ const TableBO = ({
                                     : "/icons/desc-sort.svg"
                               }
                               height={16}
+                              className="text-[#868686]"
                             />
                           </button>
                         )}
@@ -191,8 +192,8 @@ const TableBO = ({
                       <td
                         key={`${rowIndex}-${column.key || columnIndex}`}
                         className={cn(
-                          "p-[10px] text-xs font-semibold break-words",
-                          rowIndex % 2 === 1 ? "bg-[#EAEAEA]" : "bg-white",
+                          "p-3 text-xs font-medium break-words border-b border-b-[#E5E5E5]",
+                          "bg-white",
                           columnIndex === 0 && "rounded-l-md",
                           columnIndex === columns.length - 1 && "rounded-r-md",
                           column.className

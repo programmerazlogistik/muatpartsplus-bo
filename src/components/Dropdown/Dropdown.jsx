@@ -191,7 +191,7 @@ const Dropdown = ({
                     {val?.title}
                   </span>
                 )}
-                <span className="line-clamp-2 font-[500]">{val?.name}</span>
+                <span className="line-clamp-2 font-[500]" dangerouslySetInnerHTML={{ __html: val?.name }} />
               </span>
             </div>
             {!!selected.filter((a) => a.value === val.value).length &&

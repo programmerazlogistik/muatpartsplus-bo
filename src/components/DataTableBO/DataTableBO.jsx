@@ -267,15 +267,6 @@ const DataTableBO = ({
           {headerActions && (
             <div className="flex items-center gap-2">{headerActions}</div>
           )}
-
-          {showTotalCount && (
-            <SelectTotalDataBO
-              perPage={perPage}
-              onPerPageChange={onPerPageChange}
-              labelText="Menampilkan"
-              suffixText={totalCountLabel}
-            />
-          )}
         </div>
       </div>
 
@@ -324,17 +315,19 @@ const DataTableBO = ({
         </div>
       </div>
 
-      {/* Pagination */}
+      {/* Pagination and per page selector */}
       {showPagination && (
-        <PaginationBO
-          currentPage={currentPage}
-          totalPages={totalPages}
-          perPage={perPage}
-          totalItems={totalItems}
-          onPageChange={onPageChange}
-          onPerPageChange={onPerPageChange}
-          className="pb-0"
-        />
+        <div className="flex items-center justify-between">
+          <PaginationBO
+            currentPage={currentPage}
+            totalPages={totalPages}
+            perPage={perPage}
+            totalItems={totalItems}
+            onPageChange={onPageChange}
+            onPerPageChange={onPerPageChange}
+            className="pb-0"
+          />
+        </div>
       )}
     </>
   );

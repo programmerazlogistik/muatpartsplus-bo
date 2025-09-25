@@ -8,6 +8,8 @@ import { useTranslation } from "@/hooks/use-translation";
 
 import { cn } from "@/lib/utils";
 
+import SelectTotalDataBO from "../SelectTotalDataBO";
+
 /**
  * BO-specific pagination component styled to match the back office design
  */
@@ -91,58 +93,70 @@ const PaginationBO = ({
         </p>
       )}
 
-      {/* Right side: Pagination buttons and per page selector */}
-      <div className="flex items-center gap-4">
-        {/* Pagination buttons */}
-        <div className="flex gap-1">
-          <button
-            onClick={handlePrevPage}
-            disabled={currentPage === 1 || totalPages === 0}
-            className={`flex h-8 w-8 items-center justify-center rounded-md ${
-              currentPage === 1 || totalPages === 0
-                ? "cursor-not-allowed text-gray-300"
-                : "text-[#868686] hover:bg-gray-100"
-            }`}
-            aria-label="Previous page"
-          >
-            <ChevronLeft size={24} />
-          </button>
+      <div className="flex justify-end items-center gap-4">
+        <SelectTotalDataBO
+          perPage={perPage}
+          onPerPageChange={onPerPageChange}
+          labelText="Menampilkan"
+          // suffixText={totalCountLabel}
+        />
+        <span className="text-[#868686]">|</span>
 
-          {getPageNumbers().map((pageNumber, key) => (
-            <Fragment key={key}>
-              {pageNumber === "..." ? (
-                <span className="flex h-8 w-8 items-center justify-center text-[#868686]">
-                  ...
-                </span>
-              ) : (
-                <button
-                  onClick={() => onPageChange(pageNumber)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-md text-xs ${
-                    currentPage === pageNumber
-                      ? "bg-primary font-bold text-white"
-                      : "font-medium text-[#868686] hover:bg-gray-100"
-                  }`}
-                  aria-label={`Go to page ${pageNumber}`}
-                  aria-current={currentPage === pageNumber ? "page" : undefined}
-                >
-                  {pageNumber}
-                </button>
-              )}
-            </Fragment>
-          ))}
+        {/* Right side: Pagination buttons and per page selector */}
+        <div className="flex items-center gap-4">
+          {/* Pagination buttons */}
+          <div className="flex gap-1">
+            <button
+              onClick={handlePrevPage}
+              disabled={currentPage === 1 || totalPages === 0}
+              className={`flex h-8 w-8 items-center justify-center rounded-md ${
+                currentPage === 1 || totalPages === 0
+                  ? "cursor-not-allowed text-gray-300"
+                  : "text-[#868686] hover:bg-gray-100"
+              }`}
+              aria-label="Previous page"
+            >
+              <ChevronLeft size={24} />
+            </button>
 
-          <button
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages || totalPages === 0}
-            className={`flex h-8 w-8 items-center justify-center rounded-md ${
-              currentPage === totalPages || totalPages === 0
-                ? "cursor-not-allowed text-gray-300"
-                : "text-[#868686] hover:bg-gray-100"
-            }`}
-            aria-label="Next page"
-          >
-            <ChevronRight size={24} />
-          </button>
+            {getPageNumbers().map((pageNumber, key) => (
+              <Fragment key={key}>
+                {pageNumber === "..." ? (
+                  <span className="flex h-8 w-8 items-center justify-center text-[#868686]">
+                    ...
+                  </span>
+                ) : (
+                  <button
+                    onClick={() => onPageChange(pageNumber)}
+                    className={`flex h-8 w-8 items-center justify-center rounded-md text-xs ${
+                      currentPage === pageNumber
+                        ? "bg-primary font-bold text-white"
+                        : "font-medium text-[#868686] hover:bg-gray-100"
+                    }`}
+                    aria-label={`Go to page ${pageNumber}`}
+                    aria-current={
+                      currentPage === pageNumber ? "page" : undefined
+                    }
+                  >
+                    {pageNumber}
+                  </button>
+                )}
+              </Fragment>
+            ))}
+
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages || totalPages === 0}
+              className={`flex h-8 w-8 items-center justify-center rounded-md ${
+                currentPage === totalPages || totalPages === 0
+                  ? "cursor-not-allowed text-gray-300"
+                  : "text-[#868686] hover:bg-gray-100"
+              }`}
+              aria-label="Next page"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
