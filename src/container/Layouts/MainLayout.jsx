@@ -50,7 +50,7 @@ const MainLayout = ({ children }) => {
         )}
         <div className="flex flex-1 flex-col overflow-hidden">
           <Navbar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
-          <main className="flex-1 overflow-y-auto bg-white p-[30px]">
+          <main className="flex-1 overflow-y-auto bg-white p-[18px]">
             {children}
           </main>
         </div>

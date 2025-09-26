@@ -61,7 +61,6 @@ const pathsToInclude = [
   "package.json",
   "postcss.config.js",
   "tailwind.config.mjs",
-  "tailwind.config.js",
   "public",
   "src",
 ];

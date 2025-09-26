@@ -162,7 +162,7 @@ const VendorInternationalTable = ({
 
   const headerActions = (
     <div className="flex items-center justify-end gap-[15px]">
-      <div className="rounded-md border p-1.5 shadow-md hover:cursor-pointer hover:bg-neutral-200">
+      <div className="border shadow-md p-1.5 rounded-md hover:bg-neutral-200 hover:cursor-pointer">
         <IconComponent src="/icons/bell.svg" height={16} />
       </div>
       <Button

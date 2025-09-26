@@ -1,14 +1,11 @@
 "use client";
 
-import { useTranslation } from "@/hooks/use-translation";
-
 import { useLoadingStore } from "@/store/Shared/loadingStore";
 
 export default function LoadingInteractive() {
   const isGlobalLoading = useLoadingStore((state) => state.isGlobalLoading);
-  const { isTranslationsReady } = useTranslation();
 
-  if (isGlobalLoading || !isTranslationsReady) {
+  if (isGlobalLoading) {
     return (
       <div className="fixed left-0 top-0 z-[9999] flex h-screen w-screen items-center justify-center bg-black/10 backdrop-blur-md">
         <img
