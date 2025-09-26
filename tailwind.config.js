@@ -7,7 +7,7 @@ const config = {
   presets: [preset],
   content: [
     "./src/**/**/*.{js,ts,jsx,tsx,mdx}",
-    "./packages/**/**/*.{js,ts,jsx,tsx,mdx}",
+    "./packages/ui/src/**/**/*.{js,ts,jsx,tsx,mdx}",
   ],
 };
 
