@@ -1,49 +1,47 @@
-// src/app/ubah-vendor-international/page.js
+// src/app/edit-vendor-international/components/EditVendorInternationalLegalityContainer.jsx
 "use client";
 
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 import { useGetVendorLegality } from "@/services/vendorInternasional/useGetVendorLegality";
 
-// import { useGetVendorInternationalDetail } from "@/services/useGetVendorInternationalDetail";
 import BreadCrumb from "@/components/Breadcrumb/Breadcrumb";
 import Button from "@/components/Button/Button";
 import FileUpload from "@/components/FileUpload/FileUpload";
 import IconComponent from "@/components/IconComponent/IconComponent";
+import AddBusinessEntityLegalityModal from "./components/AddBusinessEntityLegalityModal";
+// import { AddBusinessEntityLegalityModal } from "./components/AddBusinessEntityLegalityModal";
+// import AddBusinessEntityLegalityModal from "./components/AddBusinessEntityLegalityModal";
 
-import { useTranslation } from "@/hooks/use-translation";
 
-// src/app/ubah-vendor-international/page.js
+// src/app/edit-vendor-international/components/EditVendorInternationalLegalityContainer.jsx
 
-// src/app/ubah-vendor-international/page.js
-
-// A simple sub-component for file fields to reduce repetition
-const FileDisplayField = ({ label, fileName, isOptional = false }) => {
-  const { t } = useTranslation();
+const FileDisplayField = ({ label, file, isOptional = false }) => {
   return (
     <div className="flex items-center justify-start gap-[21px]">
       <label className="mb-2 block w-[230px] text-sm font-medium text-neutral-700">
         {label}
-        {isOptional && (
-          <span className="text-neutral-500">
-            {" "}
-            {t("UbahVendorInternationalPage.labelOptional", {}, "(Opsional)")}
-          </span>
-        )}
+        {isOptional && <span className="text-neutral-500"> (Opsional)</span>}
         {!isOptional && <span className="text-neutral-700">*</span>}
       </label>
       <div className="flex items-center gap-4">
-        {fileName && (
-          <span className="text-link w-[118px] text-sm font-semibold">
-            {fileName}
-          </span>
+        {file?.name && (
+          <a
+            href={file?.url || "#"}
+            className="text-link w-[118px] text-sm font-semibold underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {file.name}
+          </a>
         )}
         <Button
           variant="muatparts-primary-secondary"
           size="sm"
           className="ml-4 h-8 w-[88px] !text-sm"
         >
-          {t("UbahVendorInternationalPage.buttonUbah", {}, "Ubah")}
+          Ubah
         </Button>
       </div>
     </div>
@@ -55,7 +53,6 @@ const EditVendorInternationalLegalityContainer = ({
   onNext,
   activeStep,
 }) => {
-  const { t } = useTranslation();
   const { data: vendorData, isLoading } = useGetVendorLegality();
 
   const [directorInfo, setDirectorInfo] = useState({
@@ -64,6 +61,7 @@ const EditVendorInternationalLegalityContainer = ({
     position: "",
   });
   const [brands, setBrands] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const breadcrumbItems = [
     { name: "Informasi Akun", isActive: activeStep === 1 },
@@ -73,8 +71,8 @@ const EditVendorInternationalLegalityContainer = ({
 
   useEffect(() => {
     if (vendorData) {
-      setDirectorInfo(vendorData.directorInformation);
-      setBrands(vendorData.brands);
+      setDirectorInfo(vendorData.directorInfo);
+      setBrands(vendorData.exporterLegality?.brands || []);
     }
   }, [vendorData]);
 
@@ -91,125 +89,110 @@ const EditVendorInternationalLegalityContainer = ({
     ]);
   };
 
+  const removeBrand = (indexToRemove) => {
+    setBrands(brands.filter((_, index) => index !== indexToRemove));
+  };
+
+  const handleNextStep = (e) => {
+    e.preventDefault();
+    // Here you would validate and save the legality data
+    console.log("Legality data:", { directorInfo, brands });
+    onNext();
+  };
+
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="mx-auto bg-white p-8">
+        <div className="flex items-center justify-center py-12">
+          <div>Loading...</div>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="mx-auto bg-white p-8">
-      <div className="mb-6 flex items-center">
-        <IconComponent
-          src="/icons/arrow-left.svg"
-          alt="Back"
-          className="mr-4 cursor-pointer"
-        />
-        <h1 className="text-xl font-bold text-neutral-900">
-          {t(
-            "UbahVendorInternationalPage.title",
-            {},
-            "Ubah Vendor International"
-          )}
-        </h1>
-      </div>
-      <div className="flex items-center justify-center">
-        <BreadCrumb data={breadcrumbItems} separator="›" />
-      </div>
-
-      <form className="mt-6 space-y-8" onSubmit={(e) => e.preventDefault()}>
+      <form className="mt-6 space-y-8" onSubmit={handleNextStep}>
         {/* Business Legal Entity */}
         <section className="space-y-5">
           <h2 className="mb-4 text-lg font-semibold text-neutral-900">
-            {t(
-              "UbahVendorInternationalPage.titleBusinessLegal",
-              {},
-              "Business Legal Entity"
-            )}
+            Business Legal Entity
           </h2>
           <FileDisplayField
-            label={t(
-              "UbahVendorInternationalPage.labelBusinessLicense",
-              {},
-              "Business License (USCI / USCC)"
-            )}
-            fileName={vendorData?.businessLegalEntity?.businessLicense}
+            label="Business License (USCI / USCC)"
+            file={vendorData?.businessLegalEntity?.businessLicense}
           />
           <FileDisplayField
-            label={t(
-              "UbahVendorInternationalPage.labelCompanyRegistration",
-              {},
-              "Company Registration Certificate"
-            )}
-            fileName={vendorData?.businessLegalEntity?.companyRegistration}
+            label="Company Registration Certificate"
+            file={vendorData?.businessLegalEntity?.companyRegistration}
           />
           <FileDisplayField
-            label={t(
-              "UbahVendorInternationalPage.labelVatCertificate",
-              {},
-              "VAT Certificate"
-            )}
-            fileName={vendorData?.businessLegalEntity?.vatCertificate}
+            label="VAT Certificate"
+            file={vendorData?.businessLegalEntity?.vatCertificate}
             isOptional
           />
-          <div className="rounded-lg border border-neutral-300 p-4">
+          <button 
+          type="button"
+          className="flex items-center text-sm text-primary-600 underline" 
+          onClick={() => setIsModalOpen(true)}>
+             + Bussiness Legal Entity
+          </button>
+          <div className="w-[619px] rounded-lg border border-neutral-300 p-4">
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-neutral-300">
-                  <th className="py-2 font-semibold">
-                    {t(
-                      "UbahVendorInternationalPage.tableHeaderLastUpdate",
-                      {},
-                      "last update"
-                    )}
+                <tr className="border-b border-neutral-300 text-neutral-700">
+                  <th className="py-2 font-medium italic">last update</th>
+                  <th className="py-2 font-medium italic">
+                    Business License (USCI / USCC) *
                   </th>
-                  <th className="py-2 font-semibold">
-                    {t(
-                      "UbahVendorInternationalPage.labelBusinessLicense",
-                      {},
-                      "Business License (USCI / USCC)"
-                    )}
-                  </th>
-                  <th className="py-2 font-semibold">
-                    {t(
-                      "UbahVendorInternationalPage.labelCompanyRegistration",
-                      {},
-                      "Company Registration Certificate"
-                    )}
+                  <th className="py-2 font-medium italic">
+                    Company Registration Certificate *
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {vendorData?.businessLegalEntity?.history.map((item) => (
-                  <tr key={item.id}>
-                    <td className="py-2">{item.lastUpdate}</td>
-                    <td className="text-link py-2">
-                      {item.businessLicenseFile}
-                    </td>
-                    <td className="text-link py-2">
-                      {item.companyRegistrationFile}
-                    </td>
-                  </tr>
-                ))}
+                {vendorData?.businessLegalEntity?.history?.map(
+                  (item) => (
+                    console.log({ item }),
+                    (
+                      <tr key={item.id}>
+                        <td className="py-2">{item.date}</td>
+                        <td className="text-link p-2">
+                          <Link
+                            href={item.businessLicense.url}
+                            className="text-green-500 underline"
+                          >
+                            {item.businessLicense.name}
+                          </Link>
+                        </td>
+                        <td className="text-link p-2">
+                          <Link
+                            href={item.companyRegistration.url}
+                            className="text-green-500 underline"
+                          >
+                            {item.companyRegistration.name}
+                          </Link>
+                        </td>
+                      </tr>
+                    )
+                  )
+                )}
               </tbody>
             </table>
+          </div>
+          <div className="flex items-center justify-center">
+            
           </div>
         </section>
 
         {/* Director Information */}
         <section className="space-y-5">
           <h2 className="mb-4 text-lg font-semibold text-neutral-900">
-            {t(
-              "UbahVendorInternationalPage.titleDirectorInfo",
-              {},
-              "Director Information"
-            )}
+            Director Information
           </h2>
           <FileDisplayField
-            label={t(
-              "UbahVendorInternationalPage.labelDirectorIdCard",
-              {},
-              "Director Identity Card"
-            )}
-            fileName={vendorData?.directorInformation?.identityCardFile}
+            label="Director Identity Card"
+            file={vendorData?.directorInfo?.idCard}
           />
           <div className="flex items-center justify-start gap-[21px]">
             <label className="mb-2 block w-[230px] text-sm font-medium text-neutral-700">
@@ -254,34 +237,28 @@ const EditVendorInternationalLegalityContainer = ({
             />
           </div>
           <FileDisplayField
-            label={t(
-              "UbahVendorInternationalPage.labelDirectorStatement",
-              {},
-              "Director Statement Letter"
-            )}
-            fileName={vendorData?.directorInformation?.statementLetterFile}
+            label="Director Statement Letter"
+            file={vendorData?.directorInfo?.statementLetter}
           />
         </section>
 
         {/* Legalitas Dagang */}
         <section className="space-y-2">
           <h2 className="mb-4 text-lg font-semibold text-neutral-900">
-            {t(
-              "UbahVendorInternationalPage.titleTradingLegality",
-              {},
-              "Legalitas Dagang"
-            )}
+            Legalitas Dagang
           </h2>
           {brands.map((brand, index) => (
-            <>
-            <div className="flex justify-end items-center">
-              <button className="text-[#F71717] underline">- Hapus Merek</button>
-            </div>
-            {/* <div className="space-y-5"> */}
-              <div
-                key={brand.id}
-                className="space-y-5 rounded-lg border border-neutral-300 p-4"
-              >
+            <div key={brand.id}>
+              <div className="flex items-center justify-end">
+                <button
+                  type="button"
+                  className="text-[#F71717] underline"
+                  onClick={() => removeBrand(index)}
+                >
+                  - Hapus Merek
+                </button>
+              </div>
+              <div className="space-y-5 rounded-lg border border-neutral-300 p-4">
                 <div className="flex items-center justify-start gap-[21px]">
                   <label className="mb-2 block w-[230px] text-sm font-medium text-neutral-700">
                     Brand *
@@ -289,16 +266,17 @@ const EditVendorInternationalLegalityContainer = ({
                   <input
                     type="text"
                     value={brand.name}
+                    onChange={(e) => {
+                      const updatedBrands = [...brands];
+                      updatedBrands[index].name = e.target.value;
+                      setBrands(updatedBrands);
+                    }}
                     className="w-full rounded-md border border-neutral-300 p-2"
                   />
                 </div>
                 <FileDisplayField
-                  label={t(
-                    "UbahVendorInternationalPage.labelIPR",
-                    {},
-                    "Intellectual Property (IP) / IPR"
-                  )}
-                  fileName={brand.iprFile}
+                  label="Intellectual Property (IP) / IPR"
+                  file={brand.ipr}
                   isOptional
                 />
                 <div className="flex items-center justify-start gap-[21px]">
@@ -308,32 +286,29 @@ const EditVendorInternationalLegalityContainer = ({
                   <input
                     type="date"
                     value={brand.registrationDate}
+                    onChange={(e) => {
+                      const updatedBrands = [...brands];
+                      updatedBrands[index].registrationDate = e.target.value;
+                      setBrands(updatedBrands);
+                    }}
                     className="w-full rounded-md border border-neutral-300 p-2"
                   />
                 </div>
                 <FileDisplayField
-                  label={t(
-                    "UbahVendorInternationalPage.labelOriginCertificate",
-                    {},
-                    "Certificate of Origin"
-                  )}
-                  fileName={brand.originCertificateFile}
+                  label="Certificate of Origin"
+                  file={brand.originCertificate}
                 />
               </div>
-            {/* </div> */}
-            </>
+            </div>
           ))}
           <div className="flex items-center justify-center">
             <Button
+              type="button"
               variant="muatparts-primary-secondary"
               className="h-9"
               onClick={addBrand}
             >
-              {t(
-                "UbahVendorInternationalPage.buttonAddBrand",
-                {},
-                "+ Tambah Merek"
-              )}
+              + Tambah Merek
             </Button>
           </div>
         </section>
@@ -341,19 +316,11 @@ const EditVendorInternationalLegalityContainer = ({
         {/* Product List */}
         <section className="space-y-5">
           <h2 className="mb-4 text-lg font-semibold text-neutral-900">
-            {t(
-              "UbahVendorInternationalPage.titleProductList",
-              {},
-              "Product List"
-            )}
+            Product List
           </h2>
           <FileDisplayField
-            label={t(
-              "UbahVendorInternationalPage.labelProductCatalog",
-              {},
-              "Product Catalog"
-            )}
-            fileName={vendorData?.productCatalog}
+            label="Product Catalog"
+            file={vendorData?.productList?.productCatalog}
             isOptional
           />
         </section>
@@ -361,17 +328,23 @@ const EditVendorInternationalLegalityContainer = ({
         {/* Action Buttons */}
         <div className="flex items-center justify-center gap-4">
           <Button
+            type="button"
             variant="muatparts-primary-secondary"
             className="w-32"
             onClick={onPrevious}
           >
             Sebelumnya
           </Button>
-          <Button variant="muatparts-primary" className="w-32" onClick={onNext}>
+          <Button type="submit" variant="muatparts-primary" className="w-32">
             Selanjutnya
           </Button>
         </div>
       </form>
+
+      <AddBusinessEntityLegalityModal
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+      />
     </div>
   );
 };

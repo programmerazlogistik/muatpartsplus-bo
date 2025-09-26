@@ -2,8 +2,7 @@
 
 import React, { useState } from "react";
 
-import { useGetVendorsInternasional } from "@/services/vendorInternasional/useGetVendorsInternasional";
-
+// import { useGetVendorsInternasional } from "@/services/vendorInternasional/useGetVendorsInternasional";
 import Button from "@/components/Button/Button";
 import Dropdown from "@/components/Dropdown/Dropdown";
 import IconComponent from "@/components/IconComponent/IconComponent";
@@ -13,6 +12,7 @@ import VendorInternationalTable from "./VendorInternationalTable";
 import { useTranslation } from "@/hooks/use-translation";
 
 import { cn } from "@/lib/utils";
+import { useGetVendorsInternational } from "@/services/vendorInternasional/useGetVendorsInternasional";
 
 // Main page component
 const VendorInternationalContainer = () => {

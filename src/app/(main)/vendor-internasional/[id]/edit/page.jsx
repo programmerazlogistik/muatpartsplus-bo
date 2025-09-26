@@ -3,6 +3,7 @@
 import { useState } from "react";
 import EditVendorInternationalContainer from "@/container/VendorInternasional/EditVendorInternationalContainer";
 import EditVendorInternationalLegalityContainer from "@/container/VendorInternasional/EditVendorInternationalLegalityContainer";
+import EditVendorInternationalContractContainer from "@/container/VendorInternasional/EditVendorInternationalContractContainer";
 
 export default function page() {
   const [step, setStep] = useState(1);
@@ -14,6 +15,8 @@ export default function page() {
     return <EditVendorInternationalContainer onNext={handleNext} activeStep={step} />;
   } else if (step === 2) {
     return <EditVendorInternationalLegalityContainer onPrevious={handlePrevious} onNext={handleNext} activeStep={step} />;
+  } else if (step === 3) {
+    return <EditVendorInternationalContractContainer onPrevious={handlePrevious} onNext={handleNext} activeStep={step} />;
   }
 
   return null;
