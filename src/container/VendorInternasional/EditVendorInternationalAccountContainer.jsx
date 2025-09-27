@@ -17,8 +17,8 @@ import {
 } from "@muatmuat/ui";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import * as v from "valibot";
+import { useGetVendorInternational } from "@/services/vendorInternasional/useGetVendorInternational";
 
-import { useGetVendorsInternational } from "@/services/vendorInternasional/useGetVendorsInternasional";
 
 
 /**
@@ -145,7 +145,7 @@ const EditVendorInternationalAccountContainer = ({ onNext, activeStep }) => {
     data: vendorData,
     isLoading,
     error: isError,
-  } = useGetVendorsInternational();
+  } = useGetVendorInternational();
 
   const {
     register,

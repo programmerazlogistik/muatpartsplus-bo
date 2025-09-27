@@ -1,142 +1,136 @@
-// src/services/useGetVendorsInternational.js
 import useSWR from "swr";
+import { fetcherMuatparts } from "@/lib/axios";
 
-import { fetcher } from "@/lib/axios";
+// This flag allows for easy switching between mock and real data.
+const isMockData = true;
 
-const USE_MOCK = true;
-
-/**
- * @typedef {Object} PinPoint
- * @property {number} latitude - The latitude of the location.
- * @property {number} longitude - The longitude of the location.
- */
-
-/**
- * @typedef {Object} CompanyPhoneNumber
- * @property {number} id - The unique ID of the phone number.
- * @property {string} number - The phone number.
- */
-
-/**
- * @typedef {Object} AccountInformation
- * @property {string} email - The account email.
- * @property {string} phoneNumber - The account phone number.
- */
-
-/**
- * @typedef {Object} PicInformation
- * @property {string} name - The name of the Person in Charge.
- * @property {string} email - The email of the PIC.
- * @property {string} phoneNumber - The phone number of the PIC.
- * @property {string} position - The position of the PIC.
- */
-
-/**
- * @typedef {Object} CompanyInformation
- * @property {string} name - The company name.
- * @property {string} type - The company type (e.g., 'ltd').
- * @property {string} productType - The product type (e.g., 'oem').
- * @property {string} addressDetail - The detailed address.
- * @property {string} city - The city.
- * @property {string} postalCode - The postal code.
- * @property {PinPoint} pinPoint - The geographic coordinates of the company.
- * @property {CompanyPhoneNumber[]} phoneNumbers - A list of company phone numbers.
- */
-
-/**
- * @typedef {Object} VendorData
- * @property {AccountInformation} accountInformation - Account-related information.
- * @property {PicInformation} picInformation - PIC-related information.
- * @property {CompanyInformation} companyInformation - Company-related information.
- */
-
-/**
- * @typedef {Object} APIResponse
- * @property {Object} Message
- * @property {number} Message.Code
- * @property {string} Message.Text
- * @property {VendorData} Data
- * @property {string} Type
- */
-
-/**
- * @typedef {Object} MockAPIResult
- * @property {APIResponse} data - Mock API response data
- */
-
-/** @type {MockAPIResult} */
-export const mockAPIResult = {
+// Mock API response structure, simulating a real API call.
+const apiResult = {
   data: {
     Message: {
       Code: 200,
-      Text: "Success get international vendor data",
+      Text: "Success: Fetched international vendor data.",
     },
     Data: {
-      accountInformation: {
-        email: "djada@gmail.com",
-        phoneNumber: "878212312322",
-      },
-      picInformation: {
-        name: "huaaaa",
-        email: "huaaaa@gmail.com",
-        phoneNumber: "878212312322",
-        position: "Account executive",
-      },
-      companyInformation: {
-        name: "PT. Sukarindo",
-        type: "ltd",
-        productType: "oem",
-        addressDetail: "Jl. jalan - saja",
-        city: "surabaya",
-        postalCode: "612312",
-        pinPoint: {
-          latitude: -7.289161,
-          longitude: 112.753335,
+      vendors: [
+        {
+          id: "vendor-001",
+          companyName: "PT. Maju Mundur",
+          email: "majumundur@gmail.com",
+          country: "China",
+          companyType: "JV",
+          totalProducts: 30,
+          registrationDate: "20/02/25 20.00",
         },
-        phoneNumbers: [{ id: 1, number: "878212312322" }],
+        {
+          id: "vendor-002",
+          companyName: "PT. Maju Mapan",
+          email: "majumapan@gmail.com",
+          country: "China",
+          companyType: "Ltd",
+          totalProducts: 10,
+          registrationDate: "20/02/25 20.00",
+        },
+        {
+          id: "vendor-003",
+          companyName: "PT. Jaya Abadi",
+          email: "jayabadi@gmail.com",
+          country: "China",
+          companyType: "LLC",
+          totalProducts: 15,
+          registrationDate: "20/02/25 20.00",
+        },
+        {
+          id: "vendor-004",
+          companyName: "PT. Agung Sejahtera",
+          email: "agungsejah@gmail.com",
+          country: "China",
+          companyType: "Ltd",
+          totalProducts: 5,
+          registrationDate: "20/02/25 20.00",
+        },
+        {
+          id: "vendor-005",
+          companyName: "PT. Budi Mulya",
+          email: "budmul@gmail.com",
+          country: "China",
+          companyType: "Ltd",
+          totalProducts: 5,
+          registrationDate: "20/02/25 20.00",
+        },
+        {
+          id: "vendor-006",
+          companyName: "PT. Indo Perkasa",
+          email: "indoper@gmail.com",
+          country: "China",
+          companyType: "Ltd",
+          totalProducts: 10,
+          registrationDate: "20/02/25 20.00",
+        },
+        {
+          id: "vendor-007",
+          companyName: "PT. Jaya Teknik",
+          email: "jayatek@gmail.com",
+          country: "China",
+          companyType: "Ltd",
+          totalProducts: 20,
+          registrationDate: "20/02/25 20.00",
+        },
+        {
+          id: "vendor-008",
+          companyName: "PT. Tekno Baru Abadi",
+          email: "teknobardi@gmail.com",
+          country: "China",
+          companyType: "Ltd",
+          totalProducts: 10,
+          registrationDate: "20/02/25 20.00",
+        },
+        {
+          id: "vendor-009",
+          companyName: "PT. Sukses Murni Jaya",
+          email: "suksesmurnijay@gmail.com",
+          country: "China",
+          companyType: "Ltd",
+          totalProducts: 15,
+          registrationDate: "20/02/25 20.00",
+        },
+        {
+          id: "vendor-010",
+          companyName: "PT. Sekawan Lima",
+          email: "sekawanlim@gmail.com",
+          country: "China",
+          companyType: "Ltd",
+          totalProducts: 15,
+          registrationDate: "20/02/25 20.00",
+        },
+      ],
+      pagination: {
+        currentPage: 1,
+        itemsPerPage: 10,
+        totalItems: 45, // Total items across all pages
+        totalPages: 5,
       },
     },
-    Type: "GET_INTERNATIONAL_VENDOR",
+    Type: "vendor-international-list",
   },
 };
 
 /**
- * Fetches international vendor data.
- * @returns {Promise<VendorData>}
+ * Fetches vendor data. Returns mock data if isMockData is true,
+ * otherwise makes a real API call.
  */
-export const fetcherInternationalVendor = async () => {
-  let response;
-  if (USE_MOCK) {
-    response = mockAPIResult;
-  } else {
-    // Replace with your actual API endpoint
-    response = await fetcher.get("/v1/international-vendor/1");
+export const fetcherVendors = async () => {
+  if (isMockData) {
+    return apiResult.data.Data;
   }
-  return response.data?.Data;
+  // This would be the actual API call
+  const result = await fetcherMuatparts.get("v1/vendors/international");
+  return result?.data?.Data || {};
 };
 
 /**
- * @typedef {Object} UseGetVendorsInternationalReturn
- * @property {VendorData|null} data
- * @property {Error|null} error
- * @property {boolean} isLoading
- * @property {Function} mutate
+ * Custom SWR hook for fetching international vendor data.
+ * The SWR key 'vendor-international-list' ensures unique caching.
  */
-
-/**
- * SWR hook for fetching international vendor data.
- * @returns {UseGetVendorsInternationalReturn}
- */
-export const useGetVendorsInternational = () => {
-  const { data, error, isLoading, mutate } = useSWR(
-    "international-vendor-detail",
-    fetcherInternationalVendor
-  );
-
-  return {
-    data,
-    error,
-    isLoading,
-    mutate,
-  };
-};
+export const useGetVendorsInternational = () =>
+  useSWR("vendor-international-list", fetcherVendors);

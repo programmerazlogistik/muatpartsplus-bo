@@ -17,7 +17,7 @@ import { useGetVendorsInternational } from "@/services/vendorInternasional/useGe
 // Main page component
 const VendorInternationalContainer = () => {
   const { t } = useTranslation();
-  const { data: vendorData, isLoading, error } = useGetVendorsInternasional();
+  const { data: vendorData, isLoading, error } = useGetVendorsInternational();
   const [activeTab, setActiveTab] = useState("transaksi");
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
