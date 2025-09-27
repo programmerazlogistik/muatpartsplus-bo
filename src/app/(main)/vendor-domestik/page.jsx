@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { useGetSellerTransactions } from "@/services/vendor-domestik/useGetSellerTransactions";
 
@@ -9,18 +9,66 @@ import BadgeStatus from "@/components/Badge/BadgeStatus";
 import Button from "@/components/Button/Button";
 import Input from "@/components/Form/Input";
 import IconComponent from "@/components/IconComponent/IconComponent";
+import FilterField from "../../../container/VendorSeller/components/FilterField";
+// import Popover, { PopoverContent, PopoverTrigger, PopoverArrow } from "@/components/Popover/Popover";
+import NotificationDot from "@/components/NotificationDot/NotificationDot";
 
 import { cn } from "@/lib/utils";
 
+/**
+ * Renders a single notification item within the popover.
+ * @param {{ item: NotificationItemData }} props
+ */
+const NotificationItem = ({ item }) => {
+  // This logic splits the message to style the second sentence blue.
+  const parts = item.message.split(". ");
+  const firstSentence = parts[0] ? `${parts[0]}.` : "";
+  const secondSentence = parts.slice(1).join(". ");
+
+  return (
+    <div className="border-b border-gray-200 px-4 py-3 last:border-b-0">
+      <p className="text-sm leading-relaxed text-black">
+        {firstSentence}
+        {secondSentence && " "}
+        {secondSentence && (
+          <span className="text-blue-600">{secondSentence}</span>
+        )}
+      </p>
+    </div>
+  );
+};
+
 import { DataTableBO } from "@/components";
+import { Popover, PopoverArrow, PopoverContent, PopoverTrigger } from "@muatmuat/ui";
 
 const SellerDomestikPage = () => {
   const [activeTab, setActiveTab] = useState("Transaksi");
+  const [showFilter, setShowFilter] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const tabs = ["Transaksi", "Pengajuan", "Riwayat"];
   const router = useRouter();
 
+  // Mock data for notifications
+  const mockNotifications = [
+    {
+      id: 1,
+      message: "Haki PT. Maju Mapan telah kedaluwarsa. Segera perpanjang untuk menghindari penalti.",
+    },
+    {
+      id: 2,
+      message: "Dokumen telah dikirim ke PT. Madju Djada. Tunggu konfirmasi selanjutnya.",
+    },
+    {
+      id: 3,
+      message: "Haki PT. Maju Mapan telah kedaluwarsa. Segera perpanjang untuk menghindari penalti.",
+    },
+    {
+      id: 4,
+      message: "Haki PT. Maju Mapan telah kedaluwarsa. Segera perpanjang untuk menghindari penalti.",
+    },
+  ];
+
   // State for DataTableBO
-  const [columns, setColumns] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
@@ -39,7 +87,7 @@ const SellerDomestikPage = () => {
     order: sortConfig.order,
   });
 
-  useEffect(() => {
+  const columns = useMemo(() => {
     const getStatusVariant = (status) => {
       switch (status) {
         case "SELESAI":
@@ -135,7 +183,7 @@ const SellerDomestikPage = () => {
       },
     ];
 
-    setColumns(tableColumns);
+    return tableColumns;
   }, [router]);
 
   // Handlers for DataTableBO props
@@ -191,17 +239,54 @@ const SellerDomestikPage = () => {
           </div>
 
           <div className="flex shrink-0 items-center gap-4">
-            <button
-              aria-label="Notifications"
-              className="flex h-8 w-8 items-center justify-center rounded-md border border-[#EBEBEB] bg-white p-2 shadow-[1px_2px_4px_rgba(0,0,0,0.11)]"
-            >
-              <IconComponent src="/icons/bell.svg" className="size-4" />
-            </button>
+            <Popover open={isNotificationOpen} onOpenChange={(open) => { console.log('notification open:', open); setIsNotificationOpen(open); }}>
+              <PopoverTrigger asChild>
+                <button
+                  aria-label="Notifications"
+                  className={cn(
+                    "relative flex h-8 w-8 items-center justify-center rounded-md border p-2 shadow-[1px_2px_4px_rgba(0,0,0,0.11)]",
+                    isNotificationOpen
+                      ? "border-blue-500 bg-blue-500"
+                      : "border-[#EBEBEB] bg-white"
+                  )}
+                >
+                  <IconComponent
+                    src="/icons/bell.svg"
+                    className={cn(
+                      "size-4",
+                      isNotificationOpen ? "text-white" : "text-black"
+                    )}
+                  />
+                  {mockNotifications.length > 0 && (
+                    <NotificationDot
+                      color="red"
+                      size="sm"
+                      position="absolute"
+                      positionClasses="top-1 right-1"
+                    />
+                  )}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent
+                className={cn(
+                  "w-[380px] rounded-xl border bg-white p-0 shadow-lg"
+                )}
+                sideOffset={12}
+              >
+                <PopoverArrow className="fill-neutral-900" />
+                <div className="max-h-[320px] overflow-y-auto">
+                  {mockNotifications.map((item) => (
+                    <NotificationItem key={item.id} item={item} />
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
             <Button
               variant="muatparts-primary-secondary"
               className="h-8 rounded-full"
+              onClick={() => setShowFilter(!showFilter)}
             >
-              Filter
+              {showFilter ? "Sembunyikan" : "Filter"}
             </Button>
             <Button
               variant="muatparts-primary-secondary"
@@ -224,6 +309,8 @@ const SellerDomestikPage = () => {
           </div>
         </div>
       </div>
+
+      {showFilter && <FilterField activeTab={activeTab} />}
 
       {/* Dynamic Content: DataTable for "Transaksi" tab */}
       <div className="mt-4">

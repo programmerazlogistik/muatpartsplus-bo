@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 
 // import { useGetVendorsInternasional } from "@/services/vendorInternasional/useGetVendorsInternasional";
-import Button from "@/components/Button/Button";
 import Dropdown from "@/components/Dropdown/Dropdown";
 import IconComponent from "@/components/IconComponent/IconComponent";
 import PageTitle from "@/components/PageTitle/PageTitle";
@@ -18,11 +17,10 @@ import { useGetVendorsInternational } from "@/services/vendorInternasional/useGe
 const VendorInternationalContainer = () => {
   const { t } = useTranslation();
   const { data: vendorData, isLoading, error } = useGetVendorsInternational();
-  const [activeTab, setActiveTab] = useState("transaksi");
+  const [activeTab, setActiveTab] = useState("Transaksi");
+  const tabs = ["Transaksi", "Pengajuan", "Riwayat"];
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
-
-  const handleTabChange = (tab) => setActiveTab(tab);
 
   // Extract data
   const vendors = vendorData?.vendors || [];
@@ -63,70 +61,47 @@ const VendorInternationalContainer = () => {
         {t("VendorInternational.title", {}, "Vendor International")}
       </PageTitle>
 
-      <div className="flex items-center justify-center pb-4">
-        <Button
-          variant={
-            activeTab === "active"
-              ? "muatparts-primary"
-              : "muatparts-primary-secondary"
-          }
-          className={cn(
-            "min-w-[148px] rounded-[4px] rounded-r-none px-6 py-2 text-sm font-semibold",
-            activeTab === "active"
-              ? "z-10"
-              : "border-[#868686] text-[#868686] hover:bg-neutral-100"
-          )}
-          onClick={() => handleTabChange("transaction")}
-        >
-          Transaksi
-        </Button>
-        <Button
-          variant={
-            activeTab === "expired"
-              ? "muatparts-primary"
-              : "muatparts-primary-secondary"
-          }
-          className={cn(
-            "-ml-px min-w-[148px] rounded-[4px] rounded-l-none px-6 py-2 text-sm font-semibold",
-            activeTab === "expired"
-              ? "z-10 border-[#0066FF] text-white"
-              : "border-[#868686] text-[#868686] hover:bg-neutral-100"
-          )}
-          onClick={() => handleTabChange("submission")}
-        >
-          Pengajuan
-        </Button>
-        <Button
-          variant={
-            activeTab === "expired"
-              ? "muatparts-primary"
-              : "muatparts-primary-secondary"
-          }
-          className={cn(
-            "-ml-px min-w-[148px] rounded-[4px] rounded-l-none px-6 py-2 text-sm font-semibold",
-            activeTab === "expired"
-              ? "z-10 border-[#0066FF] text-white"
-              : "border-[#868686] text-[#868686] hover:bg-neutral-100"
-          )}
-          onClick={() => handleTabChange("history")}
-        >
-          Riwayat
-        </Button>
+      <div className="flex justify-center">
+        {tabs.map((tab, index) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={cn(
+              "h-[30px] basis-0 border px-8 py-2 text-center text-xs font-semibold",
+              activeTab === tab
+                ? "z-10 border-[#176CF7] bg-[#176CF7] text-white"
+                : "border-[#868686] bg-white text-[#868686]",
+              index === 0 ? "rounded-l-md" : "",
+              index === tabs.length - 1 ? "rounded-r-md" : "",
+              index > 0 ? "-ml-px" : ""
+            )}
+          >
+            {tab}
+          </button>
+        ))}
       </div>
 
-      <VendorInternationalTable
-        data={vendors}
-        loading={isLoading}
-        onSearch={handleSearch}
-        onFilter={handleFilter}
-        onSort={handleSort}
-        onPageChange={handlePageChange}
-        onPerPageChange={handlePerPageChange}
-        currentPage={pagination.currentPage || currentPage}
-        totalPages={pagination.totalPages || 1}
-        totalItems={pagination.totalItems || vendors.length}
-        perPage={pagination.itemsPerPage || perPage}
-      />
+      {activeTab === "Transaksi" && (
+        <VendorInternationalTable
+          data={vendors}
+          loading={isLoading}
+          onSearch={handleSearch}
+          onFilter={handleFilter}
+          onSort={handleSort}
+          onPageChange={handlePageChange}
+          onPerPageChange={handlePerPageChange}
+          currentPage={pagination.currentPage || currentPage}
+          totalPages={pagination.totalPages || 1}
+          totalItems={pagination.totalItems || vendors.length}
+          perPage={pagination.itemsPerPage || perPage}
+        />
+      )}
+      {activeTab === "Pengajuan" && (
+        <div className="p-10 text-center">Content for Pengajuan</div>
+      )}
+      {activeTab === "Riwayat" && (
+        <div className="p-10 text-center">Content for Riwayat</div>
+      )}
     </div>
   );
 };

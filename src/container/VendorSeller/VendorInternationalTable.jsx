@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Button from "@/components/Button/Button";
 import { DataTable } from "@/components/DataTable";
@@ -26,11 +26,10 @@ const VendorInternationalTable = ({
   perPage = 10,
 }) => {
   const { t = (key, _, fallback) => fallback || key } = useTranslation() || {};
-  const [columns, setColumns] = useState([]);
 
   const router = useRouter();
 
-  useEffect(() => {
+  const columns = useMemo(() => {
     // Define columns for the vendor table
     const tableColumns = [
       {
@@ -131,8 +130,8 @@ const VendorInternationalTable = ({
       },
     ];
 
-    setColumns(tableColumns);
-  }, [t, router]);
+    return tableColumns;
+  }, [router]);
 
   const handleSearch = (searchValue) => {
     setSearch(searchValue);

@@ -67,12 +67,16 @@ const Dropdown = ({
   const [startDate, endDate] = dateRange;
 
   const { t } = useTranslation();
+
+  const optionsKey = useMemo(() => JSON.stringify(pilihan), [pilihan]);
+  const optionsOtherKey = useMemo(() => JSON.stringify(pilihanLain), [pilihanLain]);
+
   useEffect(() => {
     if (pilihan?.length) setOptions(pilihan);
-  }, [pilihan]);
+  }, [optionsKey]);
   useEffect(() => {
     if (pilihanLain?.length) setOptionsOther(pilihanLain);
-  }, [pilihanLain]);
+  }, [optionsOtherKey]);
   useEffect(() => {
     setIsOpen(showDropdown);
   }, [onCustom]);
