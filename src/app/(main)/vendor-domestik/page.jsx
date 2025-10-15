@@ -3,13 +3,13 @@
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
+import { BadgeStatus } from "@muatmuat/ui/Badge";
 import {
-  BadgeStatus,
   Popover,
   PopoverArrow,
   PopoverContent,
   PopoverTrigger,
-} from "@muatmuat/ui";
+} from "@muatmuat/ui/Popover";
 import { Input } from "@muatmuat/ui/Form";
 import { IconComponent } from "@muatmuat/ui/IconComponent";
 
