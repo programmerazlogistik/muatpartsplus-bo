@@ -92,7 +92,7 @@ const TableBO = ({
         <div className="absolute inset-x-0 top-0 z-0 h-[84px]" />
         <div className="relative z-10 px-[10px] pb-1">
           <table className="relative z-10 w-full table-fixed">
-            <thead className="h-10 text-left text-[#868686] border-b border-b-[#A8A8A8]">
+            <thead className="h-10 border-b border-b-[#A8A8A8] text-left text-[#868686]">
               <tr>
                 {columns.map((column, index) => {
                   const isSortable =
@@ -145,7 +145,7 @@ const TableBO = ({
                                     : "/icons/desc-sort.svg"
                               }
                               height={16}
-                              className="text-[#868686]"
+                              className="text-[#A8A8A8]"
                             />
                           </button>
                         )}
@@ -192,7 +192,7 @@ const TableBO = ({
                       <td
                         key={`${rowIndex}-${column.key || columnIndex}`}
                         className={cn(
-                          "p-3 text-xs font-medium break-words border-b border-b-[#E5E5E5]",
+                          "break-words border-b border-b-[#E5E5E5] p-3 text-xs font-medium",
                           "bg-white",
                           columnIndex === 0 && "rounded-l-md",
                           columnIndex === columns.length - 1 && "rounded-r-md",

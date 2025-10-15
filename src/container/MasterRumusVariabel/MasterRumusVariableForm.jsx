@@ -1,16 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import Button from "@/components/Button/Button";
 import { FormContainer, FormLabel } from "@/components/Form/Form";
 import Input from "@/components/Form/Input";
 import Toggle from "@/components/Toggle/Toggle";
 
-import { useTranslation } from "@/hooks/use-translation";
-
-const MasterRumusVariableForm = ({ 
+const MasterRumusVariableForm = ({
   mode = "add", // "add", "edit", or "detail"
   initialData = null, // Data for edit/detail mode
   onSubmit,
@@ -18,11 +16,10 @@ const MasterRumusVariableForm = ({
   onDataChange,
   disabled = false, // For detail mode
   onEdit, // Callback for edit button in detail mode
-  onBack // Callback for back button in detail mode
+  onBack, // Callback for back button in detail mode
 }) => {
-  const { t = (key, _, fallback) => fallback || key } = useTranslation() || {};
   const router = useRouter();
-  
+
   // Form state
   const [formData, setFormData] = useState({
     formulaName: "",
@@ -34,7 +31,7 @@ const MasterRumusVariableForm = ({
     {
       id: 1,
       name: "",
-    }
+    },
   ]);
 
   // Error state
@@ -47,7 +44,7 @@ const MasterRumusVariableForm = ({
         formulaName: initialData.formulaName || "",
         isActive: initialData.isActive || false,
       });
-      
+
       // Load variables if they exist
       if (initialData.variables && initialData.variables.length > 0) {
         setVariables(initialData.variables);
@@ -59,12 +56,12 @@ const MasterRumusVariableForm = ({
   // Handle form input changes
   const handleInputChange = (field, value) => {
     if (disabled) return; // Don't allow changes in detail mode
-    
-    setFormData(prev => ({
+
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
-    
+
     // Notify parent component about data changes
     if (onDataChange) {
       onDataChange(true);
@@ -74,15 +71,13 @@ const MasterRumusVariableForm = ({
   // Handle variable changes
   const handleVariableChange = (variableId, value) => {
     if (disabled) return; // Don't allow changes in detail mode
-    
-    setVariables(prev => 
-      prev.map(variable => 
-        variable.id === variableId 
-          ? { ...variable, name: value }
-          : variable
+
+    setVariables((prev) =>
+      prev.map((variable) =>
+        variable.id === variableId ? { ...variable, name: value } : variable
       )
     );
-    
+
     // Notify parent component about data changes
     if (onDataChange) {
       onDataChange(true);
@@ -92,16 +87,16 @@ const MasterRumusVariableForm = ({
   // Add new variable
   const addVariable = () => {
     if (disabled || mode === "edit") return; // Don't allow changes in detail mode or edit mode
-    
-    const newId = Math.max(...variables.map(v => v.id), 0) + 1;
-    setVariables(prev => [
+
+    const newId = Math.max(...variables.map((v) => v.id), 0) + 1;
+    setVariables((prev) => [
       ...prev,
       {
         id: newId,
         name: "",
-      }
+      },
     ]);
-    
+
     // Notify parent component about data changes
     if (onDataChange) {
       onDataChange(true);
@@ -111,10 +106,12 @@ const MasterRumusVariableForm = ({
   // Remove variable
   const removeVariable = (variableId) => {
     if (disabled || mode === "edit") return; // Don't allow changes in detail mode or edit mode
-    
+
     if (variables.length > 1) {
-      setVariables(prev => prev.filter(variable => variable.id !== variableId));
-      
+      setVariables((prev) =>
+        prev.filter((variable) => variable.id !== variableId)
+      );
+
       // Notify parent component about data changes
       if (onDataChange) {
         onDataChange(true);
@@ -125,12 +122,12 @@ const MasterRumusVariableForm = ({
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     if (disabled) return; // Don't submit in detail mode
-    
+
     // Clear previous errors
     setErrors({});
-    
+
     // Basic validation
     if (!formData.formulaName.trim()) {
       setErrors({ formulaName: "Nama Rumus harus diisi" });
@@ -146,7 +143,7 @@ const MasterRumusVariableForm = ({
           variableErrors[`variable_${i}`] = "Nama Variabel harus diisi";
         }
       }
-      
+
       if (Object.keys(variableErrors).length > 0) {
         setErrors({ ...errors, ...variableErrors });
         return;
@@ -157,7 +154,7 @@ const MasterRumusVariableForm = ({
     if (onSubmit) {
       onSubmit({
         ...formData,
-        variables: variables
+        variables: variables,
       });
     }
   };
@@ -177,13 +174,17 @@ const MasterRumusVariableForm = ({
               <Input
                 placeholder="Masukkan Nama Rumus"
                 value={formData.formulaName}
-                onChange={(e) => handleInputChange("formulaName", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("formulaName", e.target.value)
+                }
                 required={!disabled}
                 disabled={disabled}
                 className={errors.formulaName ? "border-red-500" : ""}
               />
               {errors.formulaName && (
-                <span className="text-red-500 text-sm mt-1">{errors.formulaName}</span>
+                <span className="mt-1 text-sm text-red-500">
+                  {errors.formulaName}
+                </span>
               )}
             </FormContainer>
 
@@ -211,13 +212,19 @@ const MasterRumusVariableForm = ({
                         <Input
                           placeholder="Masukkan Nama Variabel"
                           value={variable.variableName}
-                          onChange={(e) => handleVariableChange(variable.id, e.target.value)}
+                          onChange={(e) =>
+                            handleVariableChange(variable.id, e.target.value)
+                          }
                           required={!disabled}
                           disabled={disabled || mode === "edit"}
-                          className={errors[`variable_${index}`] ? "border-red-500" : ""}
+                          className={
+                            errors[`variable_${index}`] ? "border-red-500" : ""
+                          }
                         />
                         {errors[`variable_${index}`] && (
-                          <span className="text-red-500 text-sm mt-1">{errors[`variable_${index}`]}</span>
+                          <span className="mt-1 text-sm text-red-500">
+                            {errors[`variable_${index}`]}
+                          </span>
                         )}
                       </FormContainer>
                     </div>
@@ -227,7 +234,7 @@ const MasterRumusVariableForm = ({
                           <Button
                             type="button"
                             onClick={() => removeVariable(variable.id)}
-                            className="!h-6 !w-6 !p-0 !text-lg !rounded-lg hover:!bg-red-400 text-red-500 hover:!text-white !border !border-red-500 bg-transparent"
+                            className="!h-6 !w-6 !rounded-lg !border !border-red-500 bg-transparent !p-0 !text-lg text-red-500 hover:!bg-red-400 hover:!text-white"
                           >
                             −
                           </Button>
@@ -237,7 +244,7 @@ const MasterRumusVariableForm = ({
                             type="button"
                             variant="muatparts-primary-secondary"
                             onClick={addVariable}
-                            className="!h-6 !w-6 !p-0 !rounded-lg"
+                            className="!h-6 !w-6 !rounded-lg !p-0"
                           >
                             <span className="text-blue text-lg">+</span>
                           </Button>
@@ -253,23 +260,23 @@ const MasterRumusVariableForm = ({
 
         {/* Action Buttons */}
         {mode === "detail" ? (
-        //   <div className="flex justify-end space-x-4 pt-6">
-        //     <Button
-        //       type="button"
-        //       variant="muatparts-primary-secondary"
-        //       onClick={onBack}
-        //     >
-        //       Kembali
-        //     </Button>
-        //     <Button
-        //       type="button"
-        //       variant="muatparts-primary"
-        //       onClick={onEdit}
-        //     >
-        //       Edit
-        //     </Button>
-        //   </div>
-        <></>
+          //   <div className="flex justify-end space-x-4 pt-6">
+          //     <Button
+          //       type="button"
+          //       variant="muatparts-primary-secondary"
+          //       onClick={onBack}
+          //     >
+          //       Kembali
+          //     </Button>
+          //     <Button
+          //       type="button"
+          //       variant="muatparts-primary"
+          //       onClick={onEdit}
+          //     >
+          //       Edit
+          //     </Button>
+          //   </div>
+          <></>
         ) : (
           <div className="flex justify-center space-x-4 pt-6">
             <Button

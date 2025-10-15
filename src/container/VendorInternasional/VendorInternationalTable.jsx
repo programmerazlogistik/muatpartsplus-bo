@@ -1,14 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import Button from "@/components/Button/Button";
-import { DataTable } from "@/components/DataTable";
 import DataTableBO from "@/components/DataTableBO/DataTableBO";
 import Dropdown from "@/components/Dropdown/Dropdown";
-
-import { useTranslation } from "@/hooks/use-translation";
 
 import { IconComponent } from "@/components";
 
@@ -25,8 +22,6 @@ const VendorInternationalTable = ({
   totalItems = 0,
   perPage = 10,
 }) => {
-  const { t = (key, _, fallback) => fallback || key } = useTranslation() || {};
-
   const router = useRouter();
 
   const columns = useMemo(() => {
@@ -98,7 +93,7 @@ const VendorInternationalTable = ({
       },
       {
         key: "email",
-        header: t("VendorInternational.column.email", {}, "Email"),
+        header: "Email",
         sortable: true,
         width: "200px",
       },
@@ -132,32 +127,6 @@ const VendorInternationalTable = ({
 
     return tableColumns;
   }, [router]);
-
-  const handleSearch = (searchValue) => {
-    setSearch(searchValue);
-    // Implement search logic if needed
-  };
-
-  const handleFilter = (filterValues) => {
-    setFilters(filterValues);
-    // Implement filter logic if needed
-  };
-
-  const handleSort = (sortKey, sortOrder) => {
-    // Implement sort logic if needed
-    console.log("Sort:", sortKey, sortOrder);
-  };
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    // Implement pagination logic if needed
-  };
-
-  const handlePerPageChange = (newPerPage) => {
-    setPerPage(newPerPage);
-    setCurrentPage(1);
-    // Implement per page change logic if needed
-  };
 
   const headerActions = (
     <div className="flex items-center justify-end gap-[15px]">
@@ -200,11 +169,7 @@ const VendorInternationalTable = ({
       columns={columns}
       data={data}
       loading={loading}
-      searchPlaceholder={t(
-        "VendorInternational.searchPlaceholder",
-        {},
-        "Cari Nama Perusahaan atau Email"
-      )}
+      searchPlaceholder={"Cari Nama Perusahaan atau Email"}
       onSearch={onSearch}
       onFilter={onFilter}
       onSort={onSort}
@@ -218,12 +183,12 @@ const VendorInternationalTable = ({
       showSearch={true}
       showPagination={true}
       showTotalCount={true}
-      totalCountLabel={t("VendorInternational.totalCountLabel", {}, "vendor")}
+      totalCountLabel={"vendor"}
       headerActions={headerActions}
       emptyState={
         <div className="flex h-[66px] items-center justify-center">
           <p className="text-xs font-semibold text-[#868686]">
-            {t("VendorInternational.noData", {}, "Belum ada data vendor")}
+            Belum ada data vendor
           </p>
         </div>
       }

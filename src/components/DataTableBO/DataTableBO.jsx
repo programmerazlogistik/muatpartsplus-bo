@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { Search, X } from "lucide-react";
+import { X } from "lucide-react";
 
 import Input from "@/components/Form/Input";
 
@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 
 import { IconComponent } from "../IconComponent";
 import PaginationBO from "../PaginationBO/PaginationBO";
-import SelectTotalDataBO from "../SelectTotalDataBO/SelectTotalDataBO";
 import TableBO from "../TableBO/TableBO";
 
 // Helper components

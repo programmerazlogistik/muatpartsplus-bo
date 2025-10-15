@@ -1,14 +1,11 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import Button from "@/components/Button/Button";
-import { DataTable } from "@/components/DataTable";
 import DataTableBO from "@/components/DataTableBO/DataTableBO";
 import Dropdown from "@/components/Dropdown/Dropdown";
-
-import { useTranslation } from "@/hooks/use-translation";
 
 import { IconComponent } from "@/components";
 
@@ -25,9 +22,10 @@ const VendorInternationalTable = ({
   totalItems = 0,
   perPage = 10,
 }) => {
-  const { t = (key, _, fallback) => fallback || key } = useTranslation() || {};
-
   const router = useRouter();
+
+  // State management for local operations
+  const [filters, _setFilters] = useState({});
 
   const columns = useMemo(() => {
     // Define columns for the vendor table
@@ -98,7 +96,7 @@ const VendorInternationalTable = ({
       },
       {
         key: "email",
-        header: t("VendorInternational.column.email", {}, "Email"),
+        header: "Email",
         sortable: true,
         width: "200px",
       },
@@ -123,6 +121,42 @@ const VendorInternationalTable = ({
         width: "120px",
       },
       {
+        key: "status",
+        header: "Status",
+        sortable: true,
+        width: "100px",
+        render: (row) => {
+          const getStatusBadge = (status) => {
+            const statusConfig = {
+              active: {
+                text: "Aktif",
+                className: "bg-green-100 text-green-800 border-green-200",
+              },
+              pending: {
+                text: "Pending",
+                className: "bg-yellow-100 text-yellow-800 border-yellow-200",
+              },
+              inactive: {
+                text: "Nonaktif",
+                className: "bg-red-100 text-red-800 border-red-200",
+              },
+            };
+
+            const config = statusConfig[status] || statusConfig.pending;
+
+            return (
+              <span
+                className={`inline-flex items-center rounded-full border px-2 py-1 text-xs font-medium ${config.className}`}
+              >
+                {config.text}
+              </span>
+            );
+          };
+
+          return getStatusBadge(row.status);
+        },
+      },
+      {
         key: "registrationDate",
         header: "Registration Date",
         sortable: true,
@@ -133,54 +167,42 @@ const VendorInternationalTable = ({
     return tableColumns;
   }, [router]);
 
-  const handleSearch = (searchValue) => {
-    setSearch(searchValue);
-    // Implement search logic if needed
-  };
-
-  const handleFilter = (filterValues) => {
-    setFilters(filterValues);
-    // Implement filter logic if needed
-  };
-
-  const handleSort = (sortKey, sortOrder) => {
-    // Implement sort logic if needed
-    console.log("Sort:", sortKey, sortOrder);
-  };
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    // Implement pagination logic if needed
-  };
-
-  const handlePerPageChange = (newPerPage) => {
-    setPerPage(newPerPage);
-    setCurrentPage(1);
-    // Implement per page change logic if needed
-  };
-
   const headerActions = (
     <div className="flex items-center justify-end gap-[15px]">
-      <div className="border shadow-md p-1.5 rounded-md hover:bg-neutral-200 hover:cursor-pointer">
+      <div className="rounded-md border p-1.5 shadow-md hover:cursor-pointer hover:bg-neutral-200">
         <IconComponent src="/icons/bell.svg" height={16} />
       </div>
       <Button
         variant="muatparts-primary-secondary"
-        onClick={() => router.push("/vendor-internasional/tambah")}
+        onClick={() => {
+          if (onFilter) {
+            onFilter(filters);
+          }
+        }}
         className="!h-[32px] px-4 font-semibold"
       >
         Filter
       </Button>
       <Button
         variant="muatparts-primary-secondary"
-        onClick={() => router.push("/vendor-internasional/tambah")}
+        onClick={() => {
+          // Implement export functionality
+          if (window.alert) {
+            window.alert("Export functionality will be implemented");
+          }
+        }}
         className="!h-[32px] px-4 font-semibold"
       >
         Export
       </Button>
       <Button
         variant="muatparts-primary-secondary"
-        onClick={() => router.push("/vendor-internasional/tambah")}
+        onClick={() => {
+          // Implement create link functionality
+          if (window.alert) {
+            window.alert("Create link functionality will be implemented");
+          }
+        }}
         className="!h-[32px] px-4 font-semibold"
       >
         Create Link +
@@ -200,11 +222,7 @@ const VendorInternationalTable = ({
       columns={columns}
       data={data}
       loading={loading}
-      searchPlaceholder={t(
-        "VendorInternational.searchPlaceholder",
-        {},
-        "Cari Nama Perusahaan atau Email"
-      )}
+      searchPlaceholder={"Cari Nama Perusahaan atau Email"}
       onSearch={onSearch}
       onFilter={onFilter}
       onSort={onSort}
@@ -218,12 +236,12 @@ const VendorInternationalTable = ({
       showSearch={true}
       showPagination={true}
       showTotalCount={true}
-      totalCountLabel={t("VendorInternational.totalCountLabel", {}, "vendor")}
+      totalCountLabel={"vendor"}
       headerActions={headerActions}
       emptyState={
         <div className="flex h-[66px] items-center justify-center">
           <p className="text-xs font-semibold text-[#868686]">
-            {t("VendorInternational.noData", {}, "Belum ada data vendor")}
+            Belum ada data vendor
           </p>
         </div>
       }

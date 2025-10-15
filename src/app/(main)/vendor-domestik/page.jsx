@@ -1,7 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+
+import {
+  Popover,
+  PopoverArrow,
+  PopoverContent,
+  PopoverTrigger,
+} from "@muatmuat/ui";
 
 import { useGetSellerTransactions } from "@/services/vendor-domestik/useGetSellerTransactions";
 
@@ -9,11 +16,14 @@ import BadgeStatus from "@/components/Badge/BadgeStatus";
 import Button from "@/components/Button/Button";
 import Input from "@/components/Form/Input";
 import IconComponent from "@/components/IconComponent/IconComponent";
-import FilterField from "../../../container/VendorSeller/components/FilterField";
 // import Popover, { PopoverContent, PopoverTrigger, PopoverArrow } from "@/components/Popover/Popover";
 import NotificationDot from "@/components/NotificationDot/NotificationDot";
 
 import { cn } from "@/lib/utils";
+
+import { DataTableBO } from "@/components";
+
+import FilterField from "../../../container/VendorSeller/components/FilterField";
 
 /**
  * Renders a single notification item within the popover.
@@ -38,9 +48,6 @@ const NotificationItem = ({ item }) => {
   );
 };
 
-import { DataTableBO } from "@/components";
-import { Popover, PopoverArrow, PopoverContent, PopoverTrigger } from "@muatmuat/ui";
-
 const SellerDomestikPage = () => {
   const [activeTab, setActiveTab] = useState("Transaksi");
   const [showFilter, setShowFilter] = useState(false);
@@ -52,19 +59,23 @@ const SellerDomestikPage = () => {
   const mockNotifications = [
     {
       id: 1,
-      message: "Haki PT. Maju Mapan telah kedaluwarsa. Segera perpanjang untuk menghindari penalti.",
+      message:
+        "Haki PT. Maju Mapan telah kedaluwarsa. Segera perpanjang untuk menghindari penalti.",
     },
     {
       id: 2,
-      message: "Dokumen telah dikirim ke PT. Madju Djada. Tunggu konfirmasi selanjutnya.",
+      message:
+        "Dokumen telah dikirim ke PT. Madju Djada. Tunggu konfirmasi selanjutnya.",
     },
     {
       id: 3,
-      message: "Haki PT. Maju Mapan telah kedaluwarsa. Segera perpanjang untuk menghindari penalti.",
+      message:
+        "Haki PT. Maju Mapan telah kedaluwarsa. Segera perpanjang untuk menghindari penalti.",
     },
     {
       id: 4,
-      message: "Haki PT. Maju Mapan telah kedaluwarsa. Segera perpanjang untuk menghindari penalti.",
+      message:
+        "Haki PT. Maju Mapan telah kedaluwarsa. Segera perpanjang untuk menghindari penalti.",
     },
   ];
 
@@ -239,7 +250,13 @@ const SellerDomestikPage = () => {
           </div>
 
           <div className="flex shrink-0 items-center gap-4">
-            <Popover open={isNotificationOpen} onOpenChange={(open) => { console.log('notification open:', open); setIsNotificationOpen(open); }}>
+            <Popover
+              open={isNotificationOpen}
+              onOpenChange={(open) => {
+                console.log("notification open:", open);
+                setIsNotificationOpen(open);
+              }}
+            >
               <PopoverTrigger asChild>
                 <button
                   aria-label="Notifications"

@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { useGetVendorsInternasional } from "@/services/vendorInternasional/useGetVendorsInternasional";
 
 import Button from "@/components/Button/Button";
-import Dropdown from "@/components/Dropdown/Dropdown";
-import IconComponent from "@/components/IconComponent/IconComponent";
 import PageTitle from "@/components/PageTitle/PageTitle";
 
 import { useTranslation } from "@/hooks/use-translation";
