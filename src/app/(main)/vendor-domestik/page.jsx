@@ -23,6 +23,9 @@ import FilterField from "@/container/VendorSeller/components/FilterField";
 
 import { cn } from "@/lib/utils";
 
+// Disable static generation for this page
+export const dynamic = 'force-dynamic';
+
 /**
  * Renders a single notification item within the popover.
  * @param {{ item: NotificationItemData }} props
@@ -97,6 +100,9 @@ const SellerDomestikPage = () => {
   });
 
   const columns = useMemo(() => {
+    // Ensure we don't render columns during SSR
+    if (typeof window === 'undefined') return [];
+
     const getStatusVariant = (status) => {
       switch (status) {
         case "SELESAI":
@@ -215,7 +221,7 @@ const SellerDomestikPage = () => {
 
       <div className="space-y-4">
         <div className="flex justify-center">
-          {tabs.map((tab, index) => (
+          {tabs && tabs.map((tab, index) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -290,7 +296,7 @@ const SellerDomestikPage = () => {
               >
                 <PopoverArrow className="fill-neutral-900" />
                 <div className="max-h-[320px] overflow-y-auto">
-                  {mockNotifications.map((item) => (
+                  {mockNotifications && mockNotifications.map((item) => (
                     <NotificationItem key={item.id} item={item} />
                   ))}
                 </div>
@@ -329,7 +335,7 @@ const SellerDomestikPage = () => {
 
       {/* Dynamic Content: DataTable for "Transaksi" tab */}
       <div className="mt-4">
-        {activeTab === "Transaksi" && (
+        {activeTab === "Transaksi" && typeof window !== 'undefined' && (
           <DataTableBO
             columns={columns}
             data={sellerData?.transactions || []}
@@ -337,10 +343,10 @@ const SellerDomestikPage = () => {
             searchPlaceholder="Cari Nomor Transaksi atau Nama Produk"
             onSearch={handleSearch}
             onSort={handleSort}
-            currentPage={sellerData?.pagination.currentPage || 1}
-            totalPages={sellerData?.pagination.totalPages || 1}
-            totalItems={sellerData?.pagination.totalItems || 0}
-            perPage={sellerData?.pagination.perPage || 10}
+            currentPage={sellerData?.pagination?.currentPage || 1}
+            totalPages={sellerData?.pagination?.totalPages || 1}
+            totalItems={sellerData?.pagination?.totalItems || 0}
+            perPage={sellerData?.pagination?.perPage || 10}
             onPageChange={handlePageChange}
             onPerPageChange={handlePerPageChange}
             showFilter={false} // Hiding filter bar for this implementation

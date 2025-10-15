@@ -117,15 +117,36 @@ export const mockAPIResult = {
 
 /**
  * Fetches seller transaction data from the API.
+ * @param {Object} params - The parameters for fetching data.
+ * @param {number} params.page - The page number to fetch.
+ * @param {number} params.limit - The number of items per page.
+ * @param {string} params.search - The search term.
+ * @param {string} params.sort - The sort field.
+ * @param {string} params.order - The sort order (asc/desc).
  * @returns {Promise<SellerTransactionsData>} The seller transaction data.
  */
-export const fetcherSellerTransactions = async () => {
+export const fetcherSellerTransactions = async ({
+  page = 1,
+  limit = 10,
+  search = '',
+  sort = null,
+  order = null
+} = {}) => {
   let response;
   if (USE_MOCK) {
+    // For now, return the mock data regardless of parameters
+    // In a real implementation, you would filter/sort the mock data based on parameters
     response = mockAPIResult;
   } else {
     // Replace with your actual API endpoint
-    response = await fetcherMock.get("/v1/seller/transactions");
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      ...(search && { search }),
+      ...(sort && { sort }),
+      ...(order && { order })
+    });
+    response = await fetcherMock.get(`/v1/seller/transactions?${params}`);
   }
   return response.data?.Data;
 };
@@ -140,12 +161,27 @@ export const fetcherSellerTransactions = async () => {
 
 /**
  * SWR hook for fetching seller transaction data.
+ * @param {Object} params - The parameters for fetching data.
+ * @param {number} params.page - The page number to fetch.
+ * @param {number} params.limit - The number of items per page.
+ * @param {string} params.search - The search term.
+ * @param {string} params.sort - The sort field.
+ * @param {string} params.order - The sort order (asc/desc).
  * @returns {UseGetSellerTransactionsReturn} SWR result with seller transaction data.
  */
-export const useGetSellerTransactions = () => {
+export const useGetSellerTransactions = ({
+  page = 1,
+  limit = 10,
+  search = '',
+  sort = null,
+  order = null
+} = {}) => {
+  // Create a cache key based on the parameters
+  const cacheKey = `seller-transactions-list-${page}-${limit}-${search}-${sort}-${order}`;
+
   const { data, error, isLoading, mutate } = useSWR(
-    "seller-transactions-list",
-    fetcherSellerTransactions
+    cacheKey,
+    () => fetcherSellerTransactions({ page, limit, search, sort, order })
   );
 
   return {

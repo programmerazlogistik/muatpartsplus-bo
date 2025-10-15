@@ -1,12 +1,13 @@
-// src/app/edit-vendor-international/page.js
 "use client";
 
-import React, { useState } from "react";
-import StepBreadcrumb from "./StepBreadcrumb";
+import { useState } from "react";
+
+import { IconComponent } from "@muatmuat/ui/IconComponent";
+
 import EditVendorInternationalAccountContainer from "./EditVendorInternationalAccountContainer";
-import EditVendorInternationalLegalityContainer from "./EditVendorInternationalLegalityContainer";
 import EditVendorInternationalContractContainer from "./EditVendorInternationalContractContainer";
-import { IconComponent } from "@muatmuat/ui";
+import EditVendorInternationalLegalityContainer from "./EditVendorInternationalLegalityContainer";
+import StepBreadcrumb from "./StepBreadcrumb";
 
 /**
  * Main container component that manages the multi-step vendor editing process
@@ -31,13 +32,13 @@ const EditVendorInternationalContainer = () => {
     if (stepData) {
       switch (activeStep) {
         case 1:
-          setFormData(prev => ({ ...prev, accountData: stepData }));
+          setFormData((prev) => ({ ...prev, accountData: stepData }));
           break;
         case 2:
-          setFormData(prev => ({ ...prev, legalityData: stepData }));
+          setFormData((prev) => ({ ...prev, legalityData: stepData }));
           break;
         case 3:
-          setFormData(prev => ({ ...prev, contractData: stepData }));
+          setFormData((prev) => ({ ...prev, contractData: stepData }));
           break;
       }
     }
@@ -64,15 +65,15 @@ const EditVendorInternationalContainer = () => {
    */
   const handleFinalSave = () => {
     console.log("Final save - all data:", formData);
-    
+
     // Here you would typically:
     // 1. Validate all form data
     // 2. Call API to save vendor information
     // 3. Show success message
     // 4. Redirect to vendor list or detail page
-    
+
     alert("Vendor data saved successfully!");
-    
+
     // Example: redirect to vendor list
     // router.push('/vendors/international');
   };
@@ -142,28 +143,44 @@ const EditVendorInternationalContainer = () => {
 
       {/* Progress indicator (optional) */}
       <div className="hidden">
-        <div className="flex items-center justify-center py-4 bg-white shadow-sm">
+        <div className="flex items-center justify-center bg-white py-4 shadow-sm">
           <div className="flex items-center space-x-4">
-            <div className={`flex items-center ${activeStep >= 1 ? 'text-primary-600' : 'text-gray-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeStep >= 1 ? 'bg-primary-600 text-white' : 'bg-gray-200'}`}>
+            <div
+              className={`flex items-center ${activeStep >= 1 ? "text-primary-600" : "text-gray-400"}`}
+            >
+              <div
+                className={`flex h-8 w-8 items-center justify-center rounded-full ${activeStep >= 1 ? "bg-primary-600 text-white" : "bg-gray-200"}`}
+              >
                 1
               </div>
               <span className="ml-2">Account</span>
             </div>
-            
-            <div className={`w-8 h-1 ${activeStep > 1 ? 'bg-primary-600' : 'bg-gray-200'}`}></div>
-            
-            <div className={`flex items-center ${activeStep >= 2 ? 'text-primary-600' : 'text-gray-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeStep >= 2 ? 'bg-primary-600 text-white' : 'bg-gray-200'}`}>
+
+            <div
+              className={`h-1 w-8 ${activeStep > 1 ? "bg-primary-600" : "bg-gray-200"}`}
+            ></div>
+
+            <div
+              className={`flex items-center ${activeStep >= 2 ? "text-primary-600" : "text-gray-400"}`}
+            >
+              <div
+                className={`flex h-8 w-8 items-center justify-center rounded-full ${activeStep >= 2 ? "bg-primary-600 text-white" : "bg-gray-200"}`}
+              >
                 2
               </div>
               <span className="ml-2">Legality</span>
             </div>
-            
-            <div className={`w-8 h-1 ${activeStep > 2 ? 'bg-primary-600' : 'bg-gray-200'}`}></div>
-            
-            <div className={`flex items-center ${activeStep >= 3 ? 'text-primary-600' : 'text-gray-400'}`}>
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${activeStep >= 3 ? 'bg-primary-600 text-white' : 'bg-gray-200'}`}>
+
+            <div
+              className={`h-1 w-8 ${activeStep > 2 ? "bg-primary-600" : "bg-gray-200"}`}
+            ></div>
+
+            <div
+              className={`flex items-center ${activeStep >= 3 ? "text-primary-600" : "text-gray-400"}`}
+            >
+              <div
+                className={`flex h-8 w-8 items-center justify-center rounded-full ${activeStep >= 3 ? "bg-primary-600 text-white" : "bg-gray-200"}`}
+              >
                 3
               </div>
               <span className="ml-2">Contract</span>
