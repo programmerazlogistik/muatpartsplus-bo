@@ -1,17 +1,11 @@
 "use client";
 
+import { IconComponent } from "@muatmuat/ui/IconComponent";
 import PropTypes from "prop-types";
 
 import { cn } from "@/lib/utils";
 
-import IconComponent from "@/components/IconComponent/IconComponent";
-
-const StepBreadcrumb = ({
-  data = [],
-  className,
-  activeStep,
-  onStepClick,
-}) => {
+const StepBreadcrumb = ({ data = [], className, activeStep, onStepClick }) => {
   const getItemClasses = (idx) =>
     cn(
       "text-xs font-medium capitalize text-neutral-600",

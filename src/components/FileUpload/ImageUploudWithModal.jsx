@@ -2,12 +2,13 @@
 
 import { useCallback, useRef, useState } from "react";
 
+import { IconComponent } from "@muatmuat/ui/IconComponent";
+
 import { toast } from "@/lib/toast";
 import { cn } from "@/lib/utils";
 
 import Button from "../Button/Button";
 import CropperWeb from "../Cropper/CropperWeb";
-import IconComponent from "../IconComponent/IconComponent";
 import { Modal, ModalContent, ModalHeader } from "../Modal/Modal";
 
 const Dropzone = ({ onFileAccepted, inputRef, maxSize, acceptedFormats }) => {

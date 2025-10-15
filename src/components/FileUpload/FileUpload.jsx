@@ -2,8 +2,9 @@
 
 import { useRef, useState } from "react";
 
+import { IconComponent } from "@muatmuat/ui/IconComponent";
+
 import Button from "../Button/Button";
-import IconComponent from "../IconComponent/IconComponent";
 
 const FileUpload = ({
   className,

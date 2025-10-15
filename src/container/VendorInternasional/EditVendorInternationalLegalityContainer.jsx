@@ -2,18 +2,18 @@
 "use client";
 
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useGetVendorLegality } from "@/services/vendorInternasional/useGetVendorLegality";
 
-import BreadCrumb from "@/components/Breadcrumb/Breadcrumb";
 import Button from "@/components/Button/Button";
-import FileUpload from "@/components/FileUpload/FileUpload";
-import IconComponent from "@/components/IconComponent/IconComponent";
+
 import AddBusinessEntityLegalityModal from "./components/AddBusinessEntityLegalityModal";
+
+// src/app/edit-vendor-international/components/EditVendorInternationalLegalityContainer.jsx
+
 // import { AddBusinessEntityLegalityModal } from "./components/AddBusinessEntityLegalityModal";
 // import AddBusinessEntityLegalityModal from "./components/AddBusinessEntityLegalityModal";
-
 
 // src/app/edit-vendor-international/components/EditVendorInternationalLegalityContainer.jsx
 
@@ -131,11 +131,12 @@ const EditVendorInternationalLegalityContainer = ({
             file={vendorData?.businessLegalEntity?.vatCertificate}
             isOptional
           />
-          <button 
-          type="button"
-          className="flex items-center text-sm text-primary-600 underline" 
-          onClick={() => setIsModalOpen(true)}>
-             + Bussiness Legal Entity
+          <button
+            type="button"
+            className="flex items-center text-sm text-primary-600 underline"
+            onClick={() => setIsModalOpen(true)}
+          >
+            + Bussiness Legal Entity
           </button>
           <div className="w-[619px] rounded-lg border border-neutral-300 p-4">
             <table className="w-full text-left text-sm">
@@ -180,9 +181,7 @@ const EditVendorInternationalLegalityContainer = ({
               </tbody>
             </table>
           </div>
-          <div className="flex items-center justify-center">
-            
-          </div>
+          <div className="flex items-center justify-center"></div>
         </section>
 
         {/* Director Information */}

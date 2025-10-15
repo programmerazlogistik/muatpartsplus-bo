@@ -1,5 +1,6 @@
 import useSWR from "swr";
-import { fetcher } from "@/lib/axios";
+
+import { fetcherMock } from "@/lib/axios";
 
 const USE_MOCK = true;
 
@@ -52,7 +53,9 @@ export const mockAPIResult = {
  * @returns {Promise<BusinessCategoryData>} The business category options data.
  */
 export const fetcherBusinessCategoryOptions = async () => {
-  const response = USE_MOCK ? mockAPIResult : await fetcher.get("/v1/options/business-categories");
+  const response = USE_MOCK
+    ? mockAPIResult
+    : await fetcherMock.get("/v1/options/business-categories");
   return response.data?.Data;
 };
 

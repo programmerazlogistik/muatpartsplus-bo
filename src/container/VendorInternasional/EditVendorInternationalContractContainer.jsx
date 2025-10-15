@@ -1,22 +1,16 @@
-// src/app/edit-vendor-international/components/EditVendorInternationalContractContainer.jsx
 "use client";
 
 import { useEffect, useState } from "react";
 
-import { Select } from "@muatmuat/ui";
+import { Input, Select, TextArea } from "@muatmuat/ui/Form";
 
 import { useGetVendorContract } from "@/services/vendorInternasional/useGetVendorContract";
 
-import BreadCrumb from "@/components/Breadcrumb/Breadcrumb";
 import Button from "@/components/Button/Button";
 import DatetimePicker from "@/components/DatetimePicker/DatetimePicker";
 import FileUpload from "@/components/FileUpload/FileUpload";
-import { MyTextArea } from "@/components/Form/TextArea";
-import IconComponent from "@/components/IconComponent/IconComponent";
-import Input from "@/components/Input/Input";
-import AddNewContractModal from "./components/AddNewContractModal";
 
-// src/app/edit-vendor-international/components/EditVendorInternationalContractContainer.jsx
+import AddNewContractModal from "./components/AddNewContractModal";
 
 const EditVendorInternationalContractContainer = ({
   onPrevious,
@@ -96,7 +90,6 @@ const EditVendorInternationalContractContainer = ({
 
   return (
     <div className="mx-auto bg-white p-8">
-
       <form className="mt-6 space-y-8" onSubmit={handleSave}>
         {/* Bank Account Section */}
         <section className="space-y-5">
@@ -195,7 +188,7 @@ const EditVendorInternationalContractContainer = ({
             <label className="mb-2 block w-[230px] text-sm font-medium text-neutral-700">
               Catatan Kerjasama *
             </label>
-            <MyTextArea
+            <TextArea
               value={formState.cooperationNotes}
               onChange={(e) =>
                 setFormState((prev) => ({
@@ -223,7 +216,7 @@ const EditVendorInternationalContractContainer = ({
             <label className="mb-2 block w-[230px] text-sm font-medium text-neutral-700">
               Jangka Lama Kontrak *
             </label>
-            <div className="flex items-center gap-2 w-full">
+            <div className="flex w-full items-center gap-2">
               <Input
                 type="number"
                 value={formState.contractDuration}
@@ -267,10 +260,7 @@ const EditVendorInternationalContractContainer = ({
         </div>
       </form>
 
-      <AddNewContractModal
-        isOpen={isModalOpen}
-        onOpenChange={setIsModalOpen}
-      />
+      <AddNewContractModal isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
     </div>
   );
 };

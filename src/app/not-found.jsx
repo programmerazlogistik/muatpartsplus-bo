@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Home, Search } from "lucide-react";
 
 import Button from "@/components/Button/Button";
-import ImageComponent from "@/components/ImageComponent/ImageComponent";
 
 export default function NotFound() {
   const router = useRouter();

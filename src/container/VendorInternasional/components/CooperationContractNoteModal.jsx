@@ -1,16 +1,12 @@
-// src/app/example/cooperation-contract-notes/page.js
 "use client";
 
-import React from "react";
-import Button from "@/components/Button/Button";
-import {
-  Modal,
-  ModalContent,
-  ModalTrigger,
-} from "@/components/Modal/Modal";
-import { useTranslation } from "@/hooks/use-translation";
+import { Modal, ModalContent, ModalTrigger } from "@muatmuat/ui/Modal";
+
 import { useGetCooperationContractNotes } from "@/services/vendorInternasional/useGetCooperationContractNotes";
 
+import Button from "@/components/Button/Button";
+
+import { useTranslation } from "@/hooks/use-translation";
 
 const CooperationContractNotesModal = () => {
   const { t } = useTranslation();

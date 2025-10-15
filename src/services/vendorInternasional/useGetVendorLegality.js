@@ -1,6 +1,6 @@
-// src/services/useGetVendorLegality.js
 import useSWR from "swr";
-import { fetcher } from "@/lib/axios";
+
+import { fetcherMock } from "@/lib/axios";
 
 const USE_MOCK = true;
 
@@ -140,7 +140,7 @@ export const fetcherVendorLegality = async () => {
   if (USE_MOCK) {
     return mockAPIResult.data.Data;
   }
-  const response = await fetcher.get("/v1/vendor/legality/international");
+  const response = await fetcherMock.get("/v1/vendor/legality/international");
   return response.data.Data;
 };
 

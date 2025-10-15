@@ -2,17 +2,16 @@
 
 import { useState } from "react";
 
+import { Input } from "@muatmuat/ui/Form";
+import { IconComponent } from "@muatmuat/ui/IconComponent";
 import { X } from "lucide-react";
-
-import Input from "@/components/Form/Input";
 
 import { useTranslation } from "@/hooks/use-translation";
 
 import { cn } from "@/lib/utils";
 
-import { IconComponent } from "../IconComponent";
-import PaginationBO from "../PaginationBO/PaginationBO";
-import TableBO from "../TableBO/TableBO";
+import PaginationBO from "./PaginationBO";
+import TableBO from "./TableBO";
 
 // Helper components
 const ActiveFiltersBar = ({ filters, onRemoveFilter, onClearAll }) => {

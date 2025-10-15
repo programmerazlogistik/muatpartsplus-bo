@@ -1,11 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-import IconComponent from "../IconComponent/IconComponent";
+import { IconComponent } from "@muatmuat/ui/IconComponent";
 
 const Sidebar = () => {
   const pathname = usePathname();
@@ -153,7 +152,7 @@ const Sidebar = () => {
                           isChildActive ? "bg-[#007BFF]" : ""
                         }`}
                       >
-                        <span className="text-sm font-semibold text-white flex items-center gap-2">
+                        <span className="flex items-center gap-2 text-sm font-semibold text-white">
                           <IconComponent
                             src="/icons/rec.svg"
                             alt="Chevron Right"

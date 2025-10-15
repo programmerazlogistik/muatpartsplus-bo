@@ -1,8 +1,7 @@
 // src/services/useGetVendorContract.js
-
 import useSWR from "swr";
 
-import { fetcher } from "@/lib/axios";
+import { fetcherMock } from "@/lib/axios";
 
 const USE_MOCK = true;
 
@@ -69,7 +68,7 @@ export const fetcherVendorContract = async () => {
     response = mockAPIResult;
   } else {
     // Replace with your actual API endpoint
-    response = await fetcher.get("/v1/vendor/international/contract");
+    response = await fetcherMock.get("/v1/vendor/international/contract");
   }
   return response.data?.Data;
 };

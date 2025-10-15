@@ -1,9 +1,8 @@
+import { IconComponent } from "@muatmuat/ui/IconComponent";
 import { cva } from "class-variance-authority";
 import PropTypes from "prop-types";
 
 import { cn } from "@/lib/utils";
-
-import IconComponent from "../IconComponent/IconComponent";
 
 /**
  * @typedef {'muattrans-primary' | 'muattrans-primary-secondary' | 'muattrans-error' | 'muattrans-error-secondary' | 'muattrans-warning' | 'muatparts-primary' | 'muatparts-primary-secondary' | 'muatparts-error' | 'muatparts-error-secondary' | 'muatparts-warning'} ButtonVariant

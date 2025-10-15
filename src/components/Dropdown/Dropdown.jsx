@@ -2,15 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import PropTypes from "prop-types";
+import { Checkbox } from "@muatmuat/ui/Checkbox";
+import { IconComponent } from "@muatmuat/ui/IconComponent";
 import DatePicker from "react-datepicker";
-
-// LBM - Multibahasa Optimization
 
 import { useTranslation } from "@/hooks/use-translation";
 
-import Checkbox from "../Form/Checkbox";
-import IconComponent from "../IconComponent/IconComponent";
 import style from "./Dropdown.module.scss";
 
 export const formatDateFE = (val) => {
@@ -69,7 +66,10 @@ const Dropdown = ({
   const { t } = useTranslation();
 
   const optionsKey = useMemo(() => JSON.stringify(pilihan), [pilihan]);
-  const optionsOtherKey = useMemo(() => JSON.stringify(pilihanLain), [pilihanLain]);
+  const optionsOtherKey = useMemo(
+    () => JSON.stringify(pilihanLain),
+    [pilihanLain]
+  );
 
   useEffect(() => {
     if (pilihan?.length) setOptions(pilihan);
@@ -195,7 +195,10 @@ const Dropdown = ({
                     {val?.title}
                   </span>
                 )}
-                <span className="line-clamp-2 font-[500]" dangerouslySetInnerHTML={{ __html: val?.name }} />
+                <span
+                  className="line-clamp-2 font-[500]"
+                  dangerouslySetInnerHTML={{ __html: val?.name }}
+                />
               </span>
             </div>
             {!!selected.filter((a) => a.value === val.value).length &&
@@ -381,34 +384,3 @@ const Dropdown = ({
 };
 
 export default Dropdown;
-
-Dropdown.propTypes = {
-  options: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-        .isRequired,
-      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
-        .isRequired,
-    })
-  ).isRequired,
-  children: PropTypes.element,
-  onSearchValue: PropTypes.func,
-  selectedIconElement: PropTypes.element,
-  leftIconElement: PropTypes.element,
-  searchPlaceholder: PropTypes.string,
-  showDropdown: PropTypes.bool,
-  getShowIndicator: PropTypes.func,
-  placeholder: PropTypes.string,
-  onSelected: PropTypes.func,
-  isNotEmpty: PropTypes.bool,
-  isMultipleSelected: PropTypes.bool,
-  onCustom: PropTypes.func,
-  textCustom: PropTypes.string,
-  defaultValue: PropTypes.shape(PropTypes.object),
-  id: PropTypes.string,
-  defaultShow: PropTypes.oneOf(["title", "name"]),
-  fixedPlaceholder: PropTypes.bool,
-  isError: PropTypes.bool,
-  onClick: PropTypes.func,
-  listItemClassName: PropTypes.string,
-};

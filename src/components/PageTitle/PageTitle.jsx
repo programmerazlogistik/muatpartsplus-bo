@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import IconComponent from "@/components/IconComponent/IconComponent";
+import { IconComponent } from "@muatmuat/ui/IconComponent";
 
 import { cn } from "@/lib/utils";
 

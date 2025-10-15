@@ -2,10 +2,9 @@
 
 import { useEffect, useMemo } from "react";
 
+import { IconComponent } from "@muatmuat/ui/IconComponent";
 import { Portal } from "@radix-ui/react-portal";
 import PropTypes from "prop-types";
-
-import IconComponent from "@/components/IconComponent/IconComponent";
 
 import useDevice from "@/hooks/use-device";
 

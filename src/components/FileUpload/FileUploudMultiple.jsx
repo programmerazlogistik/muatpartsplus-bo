@@ -2,13 +2,14 @@
 
 import { useRef, useState } from "react";
 
+import { IconComponent } from "@muatmuat/ui/IconComponent";
+
 import { useSWRMutateHook } from "@/hooks/use-swr";
 
 import { fetcherMuatrans } from "@/lib/axios";
 import { toast } from "@/lib/toast";
 
 import Button from "../Button/Button";
-import IconComponent from "../IconComponent/IconComponent";
 
 const ProgressBar = ({ progress }) => {
   return (

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
+import { IconComponent } from "@muatmuat/ui/IconComponent";
 import { format, setHours, setMinutes } from "date-fns";
 import { id } from "date-fns/locale/id";
 import DatePicker, { registerLocale } from "react-datepicker";
@@ -7,7 +8,6 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { cn } from "@/lib/utils";
 
-import IconComponent from "../IconComponent/IconComponent";
 import style from "./DatetimePicker.module.scss";
 
 // Helper function to ensure we're working with a proper Date object
