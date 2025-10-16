@@ -66,12 +66,40 @@ export const Modal: React.FC<ModalProps> = ({
 export interface ModalTitleProps {
   className?: string;
   children: React.ReactNode;
+  withClose?: boolean; // New prop added
 }
 
 export const ModalTitle: React.FC<ModalTitleProps> = ({
   className,
   children,
+  withClose,
 }) => {
+  if (withClose) {
+    return (
+      <div className="flex w-full items-start justify-center">
+        <Dialog.Title
+          className={cn(
+            "flex-grow text-center text-sm font-bold text-[#1B1B1B]",
+            className
+          )}
+        >
+          {children}
+        </Dialog.Title>
+        <ModalClose asChild>
+          <button
+            aria-label="Close"
+            className="flex-shrink-0 focus:outline-none"
+          >
+            <IconComponent
+              src="/icons/close12.svg"
+              className="size-2.5 text-[#176CF7]"
+            />
+          </button>
+        </ModalClose>
+      </div>
+    );
+  }
+
   return (
     <Dialog.Title
       className={cn(
