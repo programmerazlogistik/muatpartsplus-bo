@@ -3,7 +3,7 @@
 import * as React from "react";
 import { forwardRef, memo, useId } from "react";
 
-import { cn } from "@muatmuat/lib";
+import { cn } from "@muatmuat/lib/utils";
 // Assuming this utility exists
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
 
