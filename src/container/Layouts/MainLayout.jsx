@@ -3,10 +3,12 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 
+import { Toaster } from "@muatmuat/ui/Toaster";
+
 import LoadingStatic from "@/components/Loading/LoadingStatic";
-import Navbar from "@/components/Navbar";
-import Sidebar from "@/components/Sidebar";
-import Toaster from "@/components/Toaster/Toaster";
+
+import Navbar from "@/container/Layouts/Navbar";
+import Sidebar from "@/container/Layouts/Sidebar";
 
 import useDevice from "@/hooks/use-device";
 
@@ -34,7 +36,8 @@ const MainLayout = ({ children }) => {
 
   return (
     <Suspense fallback={<LoadingStatic />}>
-      <div className="flex h-screen overflow-hidden">
+      <div className="grid min-h-screen grid-rows-[58px_1fr] overflow-hidden">
+        <Navbar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
         <div
           className={`absolute z-20 h-screen w-64 bg-white shadow-md transition-all duration-300 ${
             sidebarOpen ? "left-0" : "-left-64"
@@ -48,12 +51,10 @@ const MainLayout = ({ children }) => {
             onClick={toggleSidebar}
           />
         )}
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <Navbar toggleSidebar={toggleSidebar} sidebarOpen={sidebarOpen} />
-          <main className="flex-1 overflow-y-auto bg-white p-[18px]">
-            {children}
-          </main>
-        </div>
+
+        <main className="flex-1 overflow-y-auto bg-white p-[18px]">
+          {children}
+        </main>
       </div>
       <Toaster />
       <Script />

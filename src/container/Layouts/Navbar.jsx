@@ -7,7 +7,7 @@ import { IconComponent } from "@muatmuat/ui/IconComponent";
 
 const Navbar = ({ user = "Admin", toggleSidebar, sidebarOpen }) => {
   return (
-    <div className="bg-primary relative z-30 flex h-[58px] w-full items-center justify-between px-7 text-white">
+    <div className="bg-primary sticky left-0 top-0 z-30 flex h-[58px] w-full w-screen items-center justify-between px-7 text-white">
       <div className="flex">
         <button
           onClick={toggleSidebar}

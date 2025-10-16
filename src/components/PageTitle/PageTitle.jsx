@@ -32,7 +32,7 @@ const PageTitle = ({
   return (
     <div
       className={cn(
-        "mb-4 flex items-center gap-3 text-xl font-semibold",
+        "mb-[10px] flex items-center gap-3 text-xl font-semibold",
         className
       )}
     >
@@ -44,7 +44,7 @@ const PageTitle = ({
           <IconComponent
             src="/icons/arrow-left.svg"
             size={20}
-            className={cn(appearance.iconClassName)}
+            className={cn("text-[#176CF7]", appearance.iconClassName)}
           />
         </button>
       )}
