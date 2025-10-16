@@ -33,16 +33,8 @@
       "types": "./dist/utils/index.d.ts",
       "import": "./src/utils/*.ts",
       "default": "./src/utils/*.ts"
-    },
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./src/index.ts",
-      "default": "./src/index.ts"
     }
   },
-  "main": "./src/index.ts",
-  "module": "./src/index.ts",
-  "types": "./dist/index.d.ts",
   "files": [
     "src",
     "dist"

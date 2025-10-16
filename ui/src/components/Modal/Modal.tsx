@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useRef, useState } from "react";
 
-import { cn } from "@muatmuat/lib";
+import { cn } from "@muatmuat/lib/utils";
 import * as Dialog from "@radix-ui/react-dialog";
 
 import IconComponent from "../IconComponent/IconComponent";
