@@ -1,0 +1,72 @@
+{
+  "name": "@muatmuat/lib",
+  "version": "0.0.1",
+  "description": "Shared utility library for MuatMuat packages",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "clean": "rimraf dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    "./axios-adapter": {
+      "types": "./dist/axios-adapter/index.d.ts",
+      "import": "./src/axios-adapter/index.ts",
+      "default": "./src/axios-adapter/index.ts"
+    },
+    "./responsive-navigation": {
+      "types": "./dist/responsive-navigation/index.d.ts",
+      "import": "./src/responsive-navigation.ts",
+      "default": "./src/responsive-navigation.ts"
+    },
+    "./stack-manager": {
+      "types": "./dist/stack-manager/index.d.ts",
+      "import": "./src/stack-manager.ts",
+      "default": "./src/stack-manager.ts"
+    },
+    "./utils": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./src/utils/index.ts",
+      "default": "./src/utils/index.ts"
+    },
+    "./utils/*": {
+      "types": "./dist/utils/index.d.ts",
+      "import": "./src/utils/*.ts",
+      "default": "./src/utils/*.ts"
+    },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@muatmuat/hooks": "*",
+    "zustand": "^5.0.8"
+  },
+  "peerDependencies": {
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "next": "^15.5.2",
+    "react": "19.1.1",
+    "tailwind-merge": "^3.3.0",
+    "xior": "^0.7.8",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "@types/react": "^19.1.13",
+    "rimraf": "^6.0.1",
+    "typescript": "^5.9.2"
+  }
+}
