@@ -74,7 +74,7 @@ const CropperPreviewResponsive = ({
           {description}
         </div>
       </div>
-      <div className="shadow-muat fixed bottom-0 left-0 w-full bg-neutral-50 px-4 py-3">
+      <div className="fixed bottom-0 left-0 w-full bg-neutral-50 px-4 py-3 shadow-muat">
         <Button
           className="h-8 w-full max-w-full"
           variant="muatparts-primary"
@@ -93,7 +93,7 @@ const CropperPreviewResponsive = ({
             {uploadOptions.map((option, key) => (
               <div className="flex flex-col items-center gap-y-4" key={key}>
                 <div
-                  className="bg-primary-700 size-16 cursor-pointer rounded-[50px] p-5"
+                  className="size-16 cursor-pointer rounded-[50px] bg-primary-700 p-5"
                   onClick={() => {
                     option.onClick();
                     setIsBottomSheetOpen(false);

@@ -1,5 +1,3 @@
-import * as React from "react";
-
 export interface CropperWebProps {
   imageFile?: File;
   imageSource?: string;
@@ -12,6 +10,7 @@ export interface CropperWebProps {
   onApply?: (croppedImage: string) => void;
   aspectRatio?: number;
   viewMode?: number;
+  variant?: "muattrans" | "muatparts";
 }
 
 export interface CropperResponsiveProps {
@@ -26,6 +25,7 @@ export interface CropperResponsiveProps {
   onApply?: (croppedImage: string) => void;
   aspectRatio?: number;
   viewMode?: number;
+  variant?: "muattrans" | "muatparts";
 }
 
 export interface CropperScreenProps {
@@ -40,6 +40,7 @@ export interface CropperScreenProps {
   onApply?: (croppedImage: string) => void;
   aspectRatio?: number;
   viewMode?: number;
+  variant?: "muattrans" | "muatparts";
 }
 
 export interface CropperPreviewScreenProps {
@@ -54,6 +55,7 @@ export interface CropperPreviewScreenProps {
   onApply?: (croppedImage: string) => void;
   aspectRatio?: number;
   viewMode?: number;
+  variant?: "muattrans" | "muatparts";
 }
 
 export interface CropperPreviewResponsiveProps {
@@ -68,6 +70,7 @@ export interface CropperPreviewResponsiveProps {
   onApply?: (croppedImage: string) => void;
   aspectRatio?: number;
   viewMode?: number;
+  variant?: "muattrans" | "muatparts";
 }
 
 export interface CropperWebNewProps {
@@ -82,4 +85,5 @@ export interface CropperWebNewProps {
   onApply?: (croppedImage: string) => void;
   aspectRatio?: number;
   viewMode?: number;
+  variant?: "muattrans" | "muatparts";
 }

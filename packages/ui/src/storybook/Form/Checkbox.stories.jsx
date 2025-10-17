@@ -84,7 +84,7 @@ export const WithChildren = {
   args: {
     value: "custom",
     children: (
-      <span className="text-primary-700 font-bold">Custom Label Content</span>
+      <span className="font-bold text-primary-700">Custom Label Content</span>
     ),
   },
 };

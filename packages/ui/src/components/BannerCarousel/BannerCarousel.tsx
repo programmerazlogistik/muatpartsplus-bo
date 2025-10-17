@@ -93,7 +93,7 @@ export const BannerCarousel: React.FC<BannerCarouselProps> = ({
   return (
     <div
       className={cn(
-        "bg-background relative mx-auto h-[146px] md:h-[250px] md:w-[1054px]",
+        "relative mx-auto h-[146px] bg-background md:h-[250px] md:w-[1054px]",
         className
       )}
       onMouseEnter={handleMouseEnter}

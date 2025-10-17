@@ -184,7 +184,7 @@ const TimeColumn = ({
 
   return (
     <div className="relative w-12" style={{ height: `${containerHeight}px` }}>
-      <div className="bg-primary-700 pointer-events-none absolute left-0 top-1/2 z-0 h-8 w-full -translate-y-1/2 rounded-md"></div>
+      <div className="pointer-events-none absolute left-0 top-1/2 z-0 h-8 w-full -translate-y-1/2 rounded-md bg-primary-700"></div>
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
@@ -213,7 +213,12 @@ interface TimePickerModalProps {
 /**
  * A modal component for selecting time (hours and minutes)
  */
-const TimePickerModal = ({ isOpen, onOpenChange, value, onApply }: TimePickerModalProps) => {
+const TimePickerModal = ({
+  isOpen,
+  onOpenChange,
+  value,
+  onApply,
+}: TimePickerModalProps) => {
   const [tempTime, setTempTime] = useState(value);
 
   // Only update tempTime when modal opens

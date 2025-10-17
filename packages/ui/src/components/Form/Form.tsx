@@ -1,5 +1,6 @@
-import { cn } from "@muatmuat/lib/utils";
 import React from "react";
+
+import { cn } from "@muatmuat/lib/utils";
 
 import { tMockFn } from "../../lib/mock-t";
 
@@ -15,19 +16,30 @@ export interface FormLabelProps {
   required?: boolean;
   optional?: boolean;
   tooltip?: React.ReactNode;
-  t?: (key: string, options?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    options?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 export type FormLabelVariant = "big" | "small";
 
-export type TranslationFunction = (key: string, options?: Record<string, any>, defaultValue?: string) => string;
+export type TranslationFunction = (
+  key: string,
+  options?: Record<string, any>,
+  defaultValue?: string
+) => string;
 
 /**
  * FormContainer component for consistent form layouts
  * @param {FormContainerProps} props - Component props
  * @returns {JSX.Element} Rendered FormContainer component
  */
-export const FormContainer: React.FC<FormContainerProps> = ({ children, className }) => (
+export const FormContainer: React.FC<FormContainerProps> = ({
+  children,
+  className,
+}) => (
   <div
     className={cn(
       "grid grid-cols-1 items-start gap-4 bg-white md:grid-cols-[174px_1fr] md:gap-8",

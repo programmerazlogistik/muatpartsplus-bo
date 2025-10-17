@@ -2,8 +2,8 @@ import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import prettier from "eslint-plugin-prettier";
 import storybook from "eslint-plugin-storybook";
-import tseslint from "typescript-eslint";
 import { dirname } from "path";
+import tseslint from "typescript-eslint";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -87,7 +87,10 @@ export const nextJsConfig = [
       // TypeScript-specific rules
       "no-undef": "off", // Disable no-undef for TypeScript as it handles type checking
       "no-unused-vars": "off", // Disable in favor of TypeScript's unused vars
-      "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_" },
+      ],
 
       // Core JavaScript/ES6 rules for TypeScript files
       "no-console": "warn",

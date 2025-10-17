@@ -1,4 +1,8 @@
-import { LightboxPreview, LightboxProvider, LightboxTrigger } from "@muatmuat/ui/Lightbox";
+import {
+  LightboxPreview,
+  LightboxProvider,
+  LightboxTrigger,
+} from "@muatmuat/ui/Lightbox";
 
 export default {
   title: "Components/Lightbox",
@@ -123,7 +127,7 @@ export const WithTrigger = {
     <LightboxProvider {...args}>
       <div className="p-8">
         <LightboxTrigger variant={args.variant}>
-          <button className="bg-primary-700 hover:bg-primary-800 rounded-lg px-6 py-3 text-white transition-colors">
+          <button className="rounded-lg bg-primary-700 px-6 py-3 text-white transition-colors hover:bg-primary-800">
             Open Gallery
           </button>
         </LightboxTrigger>

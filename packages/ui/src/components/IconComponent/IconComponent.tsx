@@ -37,95 +37,93 @@ export interface IconComponentProps {
 /**
  * Icon component that renders SVG icons with customizable colors, sizes, and rotation.
  */
-const IconComponentImplementation = (
-  {
-    src,
-    color = "default",
-    size,
-    title,
-    height = 16,
-    width = 16,
-    loader = true,
-    rotate = 0,
-    className,
-    onClick,
-  }: IconComponentProps
-) => {
-    // Memoize computed values to prevent unnecessary re-renders
-    const computedSize = useMemo(
-      () => ({
-        width: size && sizes[size] ? sizes[size] : width,
-        height: size && sizes[size] ? sizes[size] : height,
-      }),
-      [size, width, height]
-    );
+const IconComponentImplementation = ({
+  src,
+  color = "default",
+  size,
+  title,
+  height = 16,
+  width = 16,
+  loader = true,
+  rotate = 0,
+  className,
+  onClick,
+}: IconComponentProps) => {
+  // Memoize computed values to prevent unnecessary re-renders
+  const computedSize = useMemo(
+    () => ({
+      width: size && sizes[size] ? sizes[size] : width,
+      height: size && sizes[size] ? sizes[size] : height,
+    }),
+    [size, width, height]
+  );
 
-    const iconSrc = useMemo(() => {
-      const srcPath = typeof src === "string" ? src : src.src;
-      return process.env.NEXT_PUBLIC_ASSET_REVERSE + srcPath;
-    }, [src]);
+  const iconSrc = useMemo(() => {
+    const srcPath = typeof src === "string" ? src : src.src;
+    return process.env.NEXT_PUBLIC_ASSET_REVERSE + srcPath;
+  }, [src]);
 
-    const loaderElement = useMemo(
-      () =>
-        loader ? (
-          <span
-            className={cn(
-              "animate-pulse",
-              "rounded-sm",
-              "bg-gray-500",
-              rotate && `rotate-${rotate}`
-            )}
-            style={{
-              width: `${computedSize.width}px`,
-              height: `${computedSize.height}px`,
-            }}
-          />
-        ) : null,
-      [loader, computedSize.width, computedSize.height, rotate]
-    );
+  const loaderElement = useMemo(
+    () =>
+      loader ? (
+        <span
+          className={cn(
+            "animate-pulse",
+            "rounded-sm",
+            "bg-gray-500",
+            rotate && `rotate-${rotate}`
+          )}
+          style={{
+            width: `${computedSize.width}px`,
+            height: `${computedSize.height}px`,
+          }}
+        />
+      ) : null,
+    [loader, computedSize.width, computedSize.height, rotate]
+  );
 
-    const buttonStyle = useMemo(
-      () => ({
-        width: `${computedSize.width}px`,
-        height: `${computedSize.height}px`,
-      }),
-      [computedSize.width, computedSize.height]
-    );
+  const buttonStyle = useMemo(
+    () => ({
+      width: `${computedSize.width}px`,
+      height: `${computedSize.height}px`,
+    }),
+    [computedSize.width, computedSize.height]
+  );
 
-    const svgClassName = useMemo(
-      () => cn(className, colorClasses[color], rotate && `rotate-${rotate}`),
-      [className, color, rotate]
-    );
+  const svgClassName = useMemo(
+    () => cn(className, colorClasses[color], rotate && `rotate-${rotate}`),
+    [className, color, rotate]
+  );
 
-    // Interactive element
-    if (onClick) {
-      return (
-        <button style={buttonStyle} onClick={onClick}>
-          <SVG
-            cacheRequests
-            loader={loaderElement}
-            src={iconSrc}
-            title={title}
-            width={computedSize.width}
-            height={computedSize.height}
-            className={svgClassName}
-          />
-        </button>
-      );
-    }
-
-    // Non-interactive element
+  // Interactive element
+  if (onClick) {
     return (
-      <SVG
-        cacheRequests
-        loader={loaderElement}
-        src={iconSrc}
-        title={title}
-        width={computedSize.width}
-        height={computedSize.height}
-        className={svgClassName}
-      />
+      <button style={buttonStyle} onClick={onClick}>
+        <SVG
+          cacheRequests
+          loader={loaderElement}
+          src={iconSrc}
+          title={title}
+          width={computedSize.width}
+          height={computedSize.height}
+          className={svgClassName}
+        />
+      </button>
     );
+  }
+
+  // Non-interactive element
+  return (
+    <SVG
+      cacheRequests
+      loader={loaderElement}
+      src={iconSrc}
+      title={title}
+      width={computedSize.width}
+      height={computedSize.height}
+      className={svgClassName}
+    />
+  );
 };
 
 const IconComponent = React.memo(IconComponentImplementation);

@@ -5,11 +5,12 @@ import { useCallback, useRef } from "react";
 import "cropperjs/dist/cropper.css";
 import Cropper from "react-cropper";
 
+import Button from "../Button/Button";
 import IconComponent from "../IconComponent/IconComponent";
 import { Modal, ModalContent, ModalTitle } from "../Modal/Modal";
-import { CropperWebProps } from "./types";
 import styles from "./CropperWeb.module.scss";
 import "./cropper_az.css";
+import { CropperWebProps } from "./types";
 
 /**
  * A web-based image cropper component with modal interface, zoom controls, and circle cropping support.
@@ -24,6 +25,7 @@ export default function CropperWeb({
   onClose,
   isCircle = false,
   title = "Unggah Gambar",
+  variant = "muattrans",
 }: CropperWebProps) {
   const cropperRef = useRef<any>(null);
   const defaultRatioRef = useRef<number | null>(null);
@@ -42,16 +44,6 @@ export default function CropperWeb({
   const getCropData = () => {
     const cropper = cropperRef.current?.cropper;
     if (cropper) {
-      // Get filename from imageFile or generate one
-      let fileName =
-        imageFile?.name ||
-        `cropped_image_${Date.now()}.${
-          imageFile?.type?.split("/")[1] || "jpeg"
-        }`;
-
-      // Ensure the filename doesn't have spaces or special characters
-      fileName = fileName.replace(/[^a-zA-Z0-9.-]/g, "_");
-
       cropper.getCroppedCanvas().toBlob(
         (blob: Blob | null) => {
           if (blob) {
@@ -161,25 +153,31 @@ export default function CropperWeb({
           </div>
         </div>
         <div className="flex w-full items-center justify-between">
-          <button
+          <Button
             type="button"
             onClick={handleClose}
-            className="border-muat-trans-secondary-900 hover:bg-muat-trans-secondary-100 flex h-8 min-w-[112px] items-center justify-center rounded-full border bg-white px-3 outline-none"
+            variant={
+              variant === "muatparts"
+                ? "muatparts-primary-secondary"
+                : "muattrans-primary-secondary"
+            }
+            className="min-w-[112px]"
           >
-            <span className="text-muat-trans-secondary-900 text-sm font-semibold leading-[16.8px]">
-              Batal
-            </span>
-          </button>
-          <button
+            Batal
+          </Button>
+          <Button
             type="button"
             onClick={getCropData}
-            className="bg-muat-trans-primary-400 hover:bg-muat-trans-primary-500 flex h-8 min-w-[112px] items-center justify-center rounded-full px-3 outline-none"
+            variant={
+              variant === "muatparts"
+                ? "muatparts-primary"
+                : "muattrans-primary"
+            }
+            className="min-w-[112px]"
             autoFocus
           >
-            <span className="text-sm font-semibold leading-[16.8px] text-neutral-900">
-              Simpan
-            </span>
-          </button>
+            Simpan
+          </Button>
         </div>
       </ModalContent>
     </Modal>

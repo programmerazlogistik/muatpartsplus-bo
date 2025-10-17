@@ -4,6 +4,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@muatmuat/lib/utils";
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import * as Popover from "@radix-ui/react-popover";
 import { ChevronRight } from "lucide-react";
 
@@ -12,7 +13,6 @@ import {
   SimpleDropdownContent,
   SimpleDropdownTrigger,
 } from "../Dropdown/SimpleDropdownMenu";
-import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
 import Checkbox from "../Form/Checkbox";
 import Input from "../Form/Input";
 import IconComponent from "../IconComponent/IconComponent";
@@ -278,7 +278,7 @@ const FilterDropdownImplementation = ({
                   side="right"
                   align="start"
                   sideOffset={4}
-                  className="shadow-muat z-50 w-fit overflow-hidden rounded-md border border-neutral-400 bg-white"
+                  className="z-50 w-fit overflow-hidden rounded-md border border-neutral-400 bg-white shadow-muat"
                   onMouseEnter={() => handleMouseEnter(category.key)}
                   onMouseLeave={() => handleMouseLeave(category.key)}
                   onOpenAutoFocus={(e) => e.preventDefault()}

@@ -1,10 +1,12 @@
 "use client";
 
 import React from "react";
+
 import { cn } from "@muatmuat/lib/utils";
 import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
 
-export interface ScrollAreaProps extends React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> {
+export interface ScrollAreaProps
+  extends React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> {
   className?: string;
   children: React.ReactNode;
 }
@@ -31,7 +33,10 @@ function ScrollArea({ className, children, ...props }: ScrollAreaProps) {
   );
 }
 
-export interface ScrollBarProps extends React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar> {
+export interface ScrollBarProps
+  extends React.ComponentPropsWithoutRef<
+    typeof ScrollAreaPrimitive.ScrollAreaScrollbar
+  > {
   className?: string;
   orientation?: "vertical" | "horizontal";
 }
@@ -39,7 +44,11 @@ export interface ScrollBarProps extends React.ComponentPropsWithoutRef<typeof Sc
 /**
  * ScrollBar component for custom scrollbar styling.
  */
-function ScrollBar({ className, orientation = "vertical", ...props }: ScrollBarProps) {
+function ScrollBar({
+  className,
+  orientation = "vertical",
+  ...props
+}: ScrollBarProps) {
   return (
     <ScrollAreaPrimitive.ScrollAreaScrollbar
       data-slot="scroll-area-scrollbar"

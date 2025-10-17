@@ -1,6 +1,10 @@
 import { cn } from "@muatmuat/lib/utils";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
-import { DropdownMenuContentProps, DropdownMenuItemProps } from "./DropdownMenu.types";
+
+import {
+  DropdownMenuContentProps,
+  DropdownMenuItemProps,
+} from "./DropdownMenu.types";
 
 /**
  * DropdownMenu root component built on Radix UI primitives.
@@ -29,7 +33,7 @@ export const DropdownMenuContent = ({
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.Content
         className={cn(
-          "shadow-muat z-50 mt-1 flex max-w-[194px] flex-col overflow-hidden rounded-md border border-neutral-300 bg-neutral-50",
+          "z-50 mt-1 flex max-w-[194px] flex-col overflow-hidden rounded-md border border-neutral-300 bg-neutral-50 shadow-muat",
           className
         )}
         side={side}

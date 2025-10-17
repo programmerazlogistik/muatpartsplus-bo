@@ -38,7 +38,7 @@ Feedback / Information Components
 \`\`\`javascript
 import { InfoBottomsheet } from "@muatmuat/ui/BottomSheet";
 // or
-import { InfoBottomsheet } from "@muatmuat/ui";
+import { InfoBottomsheet } from "@muatmuat/ui/BottomSheet";
 \`\`\`
 
 ## Basic Usage

@@ -24,7 +24,10 @@ export interface RadioButtonProps {
  * A customizable radio button that supports both label text and custom children content
  * with proper keyboard navigation, screen reader support, and visual feedback.
  */
-const RadioButtonImplementation = (props: RadioButtonProps, ref: React.ForwardedRef<HTMLInputElement>) => {
+const RadioButtonImplementation = (
+  props: RadioButtonProps,
+  ref: React.ForwardedRef<HTMLInputElement>
+) => {
   const {
     onClick = () => {},
     name,

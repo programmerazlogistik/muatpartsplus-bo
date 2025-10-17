@@ -79,7 +79,10 @@ const _parseDate = (dateInput: DateInput): Date | null => {
  * // Returns: "25 Des 2023 10:30"
  */
 const defaultFormatOptions = { padDay: false, withWIB: true };
-export function formatDate(isoString: DateInput, options: FormatDateOptions = defaultFormatOptions): string {
+export function formatDate(
+  isoString: DateInput,
+  options: FormatDateOptions = defaultFormatOptions
+): string {
   const { padDay, withWIB } = { ...defaultFormatOptions, ...options };
   const date = _parseDate(isoString);
   if (!date) return "";
@@ -278,7 +281,10 @@ export const formatDateToDDMonYYYY = (isoString: DateInput): string => {
  * formatDateRange("2023-12-20", "2023-12-25")
  * // Returns: "20 Des 2023 - 25 Des 2023" or time remaining message
  */
-export const formatDateRange = (startDate: DateInput, endDate: DateInput): string => {
+export const formatDateRange = (
+  startDate: DateInput,
+  endDate: DateInput
+): string => {
   const start = _parseDate(startDate);
   const end = _parseDate(endDate);
 

@@ -419,7 +419,7 @@ export const Playground = {
   render: (args) => (
     <ConditionalDiv {...args}>
       <p>Sample content for testing</p>
-      <button className="bg-primary-500 mt-2 rounded px-3 py-1 text-sm text-white">
+      <button className="mt-2 rounded bg-primary-500 px-3 py-1 text-sm text-white">
         Test Button
       </button>
     </ConditionalDiv>

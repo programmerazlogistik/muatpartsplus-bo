@@ -8,6 +8,7 @@ The `@muatmuat/hooks/swr-adapter` provides a convenient wrapper around SWR (Stal
 
 ```javascript
 import { createSWRAdapter } from "@muatmuat/hooks/swr-adapter";
+
 import { fetcherMuatparts, fetcherMuatrans } from "@/lib/axios";
 ```
 
@@ -16,9 +17,11 @@ import { fetcherMuatparts, fetcherMuatrans } from "@/lib/axios";
 ```javascript
 // src/hooks/use-swr.js
 import { createSWRAdapter } from "@muatmuat/hooks/swr-adapter";
+
 import { fetcherMuatparts } from "@/lib/axios";
 
-export const { useSWRHook, useSWRMutateHook } = createSWRAdapter(fetcherMuatparts);
+export const { useSWRHook, useSWRMutateHook } =
+  createSWRAdapter(fetcherMuatparts);
 ```
 
 ## 🔧 **Basic Usage**
@@ -119,7 +122,7 @@ function UserOrders({ userId, showOrders }) {
   return showOrders ? (
     <div>
       <h2>Orders:</h2>
-      {orders?.map(order => (
+      {orders?.map((order) => (
         <div key={order.id}>{order.description}</div>
       ))}
     </div>
@@ -132,9 +135,7 @@ function UserOrders({ userId, showOrders }) {
 ```javascript
 function UserDashboard({ userId }) {
   // First, fetch user data
-  const { data: user } = useSWRHook(
-    userId ? `/api/users/${userId}` : null
-  );
+  const { data: user } = useSWRHook(userId ? `/api/users/${userId}` : null);
 
   // Then, fetch user's orders (depends on user data)
   const { data: orders } = useSWRHook(
@@ -147,7 +148,7 @@ function UserDashboard({ userId }) {
     <div>
       <h1>Welcome, {user.name}!</h1>
       <h2>Your Orders:</h2>
-      {orders?.map(order => (
+      {orders?.map((order) => (
         <div key={order.id}>{order.description}</div>
       ))}
     </div>
@@ -176,15 +177,12 @@ function PaginatedUsers() {
       ) : (
         <>
           <ul>
-            {data?.users.map(user => (
+            {data?.users.map((user) => (
               <li key={user.id}>{user.name}</li>
             ))}
           </ul>
           <div className="pagination">
-            <button
-              disabled={page === 1}
-              onClick={() => setPage(page - 1)}
-            >
+            <button disabled={page === 1} onClick={() => setPage(page - 1)}>
               Previous
             </button>
             <span>Page {page}</span>
@@ -256,7 +254,7 @@ export function useUpdateUser(userId) {
 
 ```javascript
 // components/UserProfile.jsx
-import { useUserData, useUpdateUser } from "@/hooks/useUserData";
+import { useUpdateUser, useUserData } from "@/hooks/useUserData";
 
 function UserProfile({ userId }) {
   const { data: user, isLoading, error, mutate } = useUserData(userId);
@@ -319,7 +317,7 @@ export function SWRProvider({ children }) {
 
 ```javascript
 function UserList() {
-  const { data: users, mutate: mutateUsers } = useSWRHook('/api/users');
+  const { data: users, mutate: mutateUsers } = useSWRHook("/api/users");
 
   const handleUserUpdate = async (userId, updateData) => {
     // Update via API
@@ -327,7 +325,7 @@ function UserList() {
 
     // Optimistically update the UI
     mutateUsers(
-      users.map(user =>
+      users.map((user) =>
         user.id === userId ? { ...user, ...updateData } : user
       ),
       false // Don't revalidate from server
@@ -367,7 +365,7 @@ Your fetcher already handles 401/503 errors globally. The SWR adapter will propa
 
 ```javascript
 function DataComponent() {
-  const { data, error, isLoading } = useSWRHook('/api/data');
+  const { data, error, isLoading } = useSWRHook("/api/data");
 
   if (isLoading) return <LoadingSpinner />;
   if (error) {
@@ -384,7 +382,7 @@ function DataComponent() {
 ```javascript
 function SafeDataComponent() {
   const { data, error, mutate } = useSWRHook(
-    '/api/data',
+    "/api/data",
     {},
     {
       onError: (error) => {

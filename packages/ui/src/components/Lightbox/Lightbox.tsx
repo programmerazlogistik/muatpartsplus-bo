@@ -300,7 +300,10 @@ interface LightboxTriggerProps {
  * @param {LightboxTriggerProps} props - Component props
  * @returns {React.ReactElement} Rendered LightboxTrigger component
  */
-export const LightboxTrigger: React.FC<LightboxTriggerProps> = ({ children, _variant = "shipper" }) => {
+export const LightboxTrigger: React.FC<LightboxTriggerProps> = ({
+  children,
+  _variant = "shipper",
+}) => {
   const { openLightbox } = useLightbox();
 
   return <div onClick={() => openLightbox(0)}>{children}</div>;

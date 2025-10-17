@@ -37,7 +37,11 @@ export interface ConditionalDivProps {
 export interface CardRiwayatPerubahanRootProps {
   title?: string;
   children?: React.ReactNode;
-  t?: (key: string, params?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    params?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 export interface CardRiwayatPerubahanItemProps {
@@ -56,7 +60,11 @@ export interface CardRiwayatPerubahanContentPerubahanProps {
     contentClassName?: string;
   };
   footer?: React.ReactNode;
-  t?: (key: string, params?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    params?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 export interface ChangeSectionProps {
@@ -87,14 +95,22 @@ export interface ItemPerubahanDriverProps {
     picture: string;
     name: string;
   };
-  t?: (key: string, params?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    params?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 export interface ArmadaInfoProps {
   picture: string;
   plate: string;
   name: string;
-  t?: (key: string, params?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    params?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 export interface ItemPerubahanArmadaProps {
@@ -110,7 +126,11 @@ export interface ItemPerubahanArmadaProps {
     plate: string;
     name: string;
   };
-  t?: (key: string, params?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    params?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 export interface TransporterInfoProps {
@@ -118,7 +138,11 @@ export interface TransporterInfoProps {
   name: string;
   units: number;
   phone?: string;
-  t?: (key: string, params?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    params?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 export interface ItemPerubahanTransporterProps {
@@ -133,7 +157,11 @@ export interface ItemPerubahanTransporterProps {
   appearance?: {
     sectionContentClassName?: string;
   };
-  t?: (key: string, params?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    params?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 export interface ItemPesananDibatalkanProps {
@@ -141,7 +169,11 @@ export interface ItemPesananDibatalkanProps {
   name?: string;
   unit?: number;
   reason?: string;
-  t?: (key: string, params?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    params?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 export interface ItemPenolakanGMProps {
@@ -171,7 +203,11 @@ export interface ItemPerubahanRuteProps {
   appearance?: {
     sectionContentClassName?: string;
   };
-  t?: (key: string, params?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    params?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 export interface ItemPerubahanWaktuProps {
@@ -189,7 +225,11 @@ export interface ItemPerubahanWaktuProps {
   appearance?: {
     sectionContentClassName?: string;
   };
-  t?: (key: string, params?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    params?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 export interface TimeInfoProps {

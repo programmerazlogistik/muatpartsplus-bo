@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import { DayPickerProps } from "react-day-picker";
 
 export type CalendarProps = {
@@ -11,15 +12,34 @@ export type CalendarProps = {
   components?: DayPickerProps["components"];
   mode?: "single" | "multiple" | "range";
   selected?: Date | Date[] | { from: Date; to: Date } | undefined;
-  onSelect?: (date: Date | Date[] | { from: Date; to: Date } | undefined) => void;
+  onSelect?: (
+    date: Date | Date[] | { from: Date; to: Date } | undefined
+  ) => void;
   initialFocus?: boolean;
   fromDate?: Date;
   toDate?: Date;
   disabled?: boolean;
   required?: boolean;
-} & Omit<DayPickerProps, 'className' | 'classNames' | 'showOutsideDays' | 'captionLayout' | 'formatters' | 'components' | 'mode' | 'selected' | 'onSelect' | 'initialFocus' | 'fromDate' | 'toDate' | 'disabled' | 'required'>
+} & Omit<
+  DayPickerProps,
+  | "className"
+  | "classNames"
+  | "showOutsideDays"
+  | "captionLayout"
+  | "formatters"
+  | "components"
+  | "mode"
+  | "selected"
+  | "onSelect"
+  | "initialFocus"
+  | "fromDate"
+  | "toDate"
+  | "disabled"
+  | "required"
+>;
 
-export interface CalendarDayButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface CalendarDayButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   day: {
     date: Date;

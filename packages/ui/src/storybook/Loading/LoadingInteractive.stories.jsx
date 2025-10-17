@@ -1,4 +1,5 @@
 import { LoadingInteractive } from "@muatmuat/ui/Loading";
+
 import { useLoadingAction } from "./loadingStore";
 
 // Mock the loading store for Storybook
@@ -90,7 +91,7 @@ export const WithControls = {
             // This would normally use the store action
             console.log("Loading state toggled:", newState);
           }}
-          className="bg-primary-700 hover:bg-primary-800 rounded px-4 py-2 text-white transition-colors"
+          className="rounded bg-primary-700 px-4 py-2 text-white transition-colors hover:bg-primary-800"
         >
           Stop Loading
         </button>

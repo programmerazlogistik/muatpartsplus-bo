@@ -91,7 +91,7 @@ export const Default = {
   render: (args) => (
     <Modal {...args}>
       <ModalTrigger asChild>
-        <button className="bg-primary-600 hover:bg-primary-700 rounded-md px-4 py-2 text-white">
+        <button className="rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700">
           Open Modal
         </button>
       </ModalTrigger>
@@ -127,7 +127,7 @@ export const WithHeader = {
   render: (args) => (
     <Modal {...args}>
       <ModalTrigger asChild>
-        <button className="bg-primary-600 hover:bg-primary-700 rounded-md px-4 py-2 text-white">
+        <button className="rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700">
           Open Modal with Header
         </button>
       </ModalTrigger>
@@ -165,7 +165,7 @@ export const WithFooter = {
   render: (args) => (
     <Modal {...args}>
       <ModalTrigger asChild>
-        <button className="bg-primary-600 hover:bg-primary-700 rounded-md px-4 py-2 text-white">
+        <button className="rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700">
           Open Modal with Footer
         </button>
       </ModalTrigger>
@@ -183,7 +183,7 @@ export const WithFooter = {
               Cancel
             </button>
           </ModalClose>
-          <button className="bg-error-600 hover:bg-error-700 rounded-md px-4 py-2 text-white">
+          <button className="rounded-md bg-error-600 px-4 py-2 text-white hover:bg-error-700">
             Confirm
           </button>
         </ModalFooter>
@@ -212,7 +212,7 @@ export const Lightbox = {
   render: (args) => (
     <Modal {...args}>
       <ModalTrigger asChild>
-        <button className="bg-primary-600 hover:bg-primary-700 rounded-md px-4 py-2 text-white">
+        <button className="rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700">
           Open Lightbox
         </button>
       </ModalTrigger>
@@ -250,7 +250,7 @@ export const Sizes = {
     <div className="space-y-4">
       <Modal>
         <ModalTrigger asChild>
-          <button className="bg-primary-600 hover:bg-primary-700 rounded-md px-4 py-2 text-white">
+          <button className="rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700">
             Small Modal
           </button>
         </ModalTrigger>
@@ -264,7 +264,7 @@ export const Sizes = {
 
       <Modal>
         <ModalTrigger asChild>
-          <button className="bg-secondary-600 hover:bg-secondary-700 rounded-md px-4 py-2 text-white">
+          <button className="rounded-md bg-secondary-600 px-4 py-2 text-white hover:bg-secondary-700">
             Medium Modal
           </button>
         </ModalTrigger>
@@ -278,7 +278,7 @@ export const Sizes = {
 
       <Modal>
         <ModalTrigger asChild>
-          <button className="bg-success-600 hover:bg-success-700 rounded-md px-4 py-2 text-white">
+          <button className="rounded-md bg-success-600 px-4 py-2 text-white hover:bg-success-700">
             Large Modal
           </button>
         </ModalTrigger>
@@ -312,7 +312,7 @@ export const Types = {
     <div className="space-y-4">
       <Modal>
         <ModalTrigger asChild>
-          <button className="bg-primary-600 hover:bg-primary-700 rounded-md px-4 py-2 text-white">
+          <button className="rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700">
             MuatMuat Theme
           </button>
         </ModalTrigger>
@@ -326,7 +326,7 @@ export const Types = {
 
       <Modal>
         <ModalTrigger asChild>
-          <button className="bg-muat-parts-non-600 hover:bg-muat-parts-non-700 rounded-md px-4 py-2 text-white">
+          <button className="rounded-md bg-muat-parts-non-600 px-4 py-2 text-white hover:bg-muat-parts-non-700">
             MuatParts Theme
           </button>
         </ModalTrigger>
@@ -340,7 +340,7 @@ export const Types = {
 
       <Modal>
         <ModalTrigger asChild>
-          <button className="bg-muat-trans-secondary-600 hover:bg-muat-trans-secondary-700 rounded-md px-4 py-2 text-white">
+          <button className="rounded-md bg-muat-trans-secondary-600 px-4 py-2 text-white hover:bg-muat-trans-secondary-700">
             MuatTrans Theme
           </button>
         </ModalTrigger>
@@ -398,7 +398,7 @@ export const Playground = {
   render: (args) => (
     <Modal>
       <ModalTrigger asChild>
-        <button className="bg-primary-600 hover:bg-primary-700 rounded-md px-4 py-2 text-white">
+        <button className="rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700">
           Open Custom Modal
         </button>
       </ModalTrigger>

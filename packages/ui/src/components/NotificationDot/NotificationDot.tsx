@@ -1,4 +1,5 @@
 import React from "react";
+
 import { cn } from "@muatmuat/lib/utils";
 import { cva } from "class-variance-authority";
 
@@ -8,7 +9,18 @@ export interface NotificationDotProps {
   /** Size of the dot */
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   /** Color of the dot */
-  color?: "red" | "green" | "blue" | "yellow" | "orange" | "purple" | "gray" | "primary" | "success" | "warning" | "error";
+  color?:
+    | "red"
+    | "green"
+    | "blue"
+    | "yellow"
+    | "orange"
+    | "purple"
+    | "gray"
+    | "primary"
+    | "success"
+    | "warning"
+    | "error";
   /** Additional CSS classes */
   className?: string;
   /** Position type */

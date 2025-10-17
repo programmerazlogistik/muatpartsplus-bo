@@ -109,7 +109,7 @@ export const DimensionInput: FC<DimensionInputProps> = ({
         "grid h-8 w-full grid-cols-[1fr,auto,1fr,auto,1fr] items-center gap-x-1 rounded-md border border-neutral-600 px-3",
         disabled
           ? "cursor-not-allowed bg-neutral-200"
-          : "focus-within:border-primary-700 hover:border-primary-700 bg-neutral-50",
+          : "bg-neutral-50 focus-within:border-primary-700 hover:border-primary-700",
         className
       )}
     >

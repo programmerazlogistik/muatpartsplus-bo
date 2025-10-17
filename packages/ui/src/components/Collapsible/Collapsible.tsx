@@ -3,7 +3,12 @@ import React, { createContext, useContext } from "react";
 import { cn } from "@muatmuat/lib/utils";
 import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
 
-import { CollapsibleContextType, CollapsibleContentProps, CollapsibleProps, CollapsibleTriggerProps } from "./types";
+import {
+  CollapsibleContentProps,
+  CollapsibleContextType,
+  CollapsibleProps,
+  CollapsibleTriggerProps,
+} from "./types";
 
 const CollapsibleContext = createContext<CollapsibleContextType>({
   open: false,
@@ -79,7 +84,7 @@ export const CollapsibleContent = React.forwardRef<
     <CollapsiblePrimitive.Content
       ref={ref}
       className={cn(
-        "data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down overflow-hidden text-sm",
+        "overflow-hidden text-sm data-[state=closed]:animate-collapsible-up data-[state=open]:animate-collapsible-down",
         className
       )}
       {...props}

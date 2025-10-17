@@ -2,10 +2,10 @@ import { createContext, useContext } from "react";
 
 import { cn } from "@muatmuat/lib/utils";
 
-import { TimelineContainer } from "./TimelineContainer";
-import { TimelineItem } from "./TimelineItem";
 import { tMockFn } from "../../lib/mock-t";
 import IconComponent from "../IconComponent/IconComponent";
+import { TimelineContainer } from "./TimelineContainer";
+import { TimelineItem } from "./TimelineItem";
 
 interface TimelineFieldValue {
   name?: string;
@@ -25,7 +25,9 @@ interface TimelineFieldContextValue {
 }
 
 // Context for TimelineField
-const TimelineFieldContext = createContext<TimelineFieldContextValue | null>(null);
+const TimelineFieldContext = createContext<TimelineFieldContextValue | null>(
+  null
+);
 
 function useTimelineField(): TimelineFieldContextValue {
   const context = useContext(TimelineFieldContext);
@@ -48,7 +50,11 @@ export interface TimelineFieldRootProps {
   errorMessage?: string;
   disabled?: boolean;
   children: React.ReactNode;
-  t?: (key: string, options?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    options?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 const Root: React.FC<TimelineFieldRootProps> = ({
@@ -92,7 +98,7 @@ const Root: React.FC<TimelineFieldRootProps> = ({
           <TimelineContainer>{children}</TimelineContainer>
         </div>
         {errorMessage && (
-          <span className="text-error-400 text-xs font-medium">
+          <span className="text-xs font-medium text-error-400">
             {errorMessage}
           </span>
         )}
@@ -105,11 +111,21 @@ export interface TimelineFieldItemProps {
   buttonRemove?: React.ReactNode;
   index: number;
   className?: string;
-  t?: (key: string, options?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    options?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
-const Item: React.FC<TimelineFieldItemProps> = ({ buttonRemove, index, className, t = tMockFn }) => {
-  const { variant, values, onEditLocation, disabled, maxLocation } = useTimelineField();
+const Item: React.FC<TimelineFieldItemProps> = ({
+  buttonRemove,
+  index,
+  className,
+  t = tMockFn,
+}) => {
+  const { variant, values, onEditLocation, disabled, maxLocation } =
+    useTimelineField();
 
   const item = values[index];
 
@@ -131,7 +147,7 @@ const Item: React.FC<TimelineFieldItemProps> = ({ buttonRemove, index, className
     <>
       <TimelineItem
         variant={getVariant().variant as any}
-                index={index}
+        index={index}
         activeIndex={getVariant().activeIndex}
         title={
           item?.name ||
@@ -205,7 +221,9 @@ export interface TimelineFieldRemoveButtonProps {
   onClick: () => void;
 }
 
-const RemoveButton: React.FC<TimelineFieldRemoveButtonProps> = ({ onClick }) => {
+const RemoveButton: React.FC<TimelineFieldRemoveButtonProps> = ({
+  onClick,
+}) => {
   return (
     <button className="size-4" onClick={onClick}>
       <IconComponent

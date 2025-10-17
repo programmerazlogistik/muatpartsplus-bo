@@ -1,7 +1,6 @@
-import { AlertCircle, HelpCircle, Info } from "lucide-react";
-
 import { Button } from "@muatmuat/ui/Button";
 import { InfoTooltip } from "@muatmuat/ui/Tooltip";
+import { AlertCircle, HelpCircle, Info } from "lucide-react";
 
 export default {
   title: "Components/Tooltip",
@@ -189,7 +188,7 @@ export const CustomTriggers = {
         <p className="mb-4 text-sm text-neutral-600">Text Trigger</p>
         <InfoTooltip
           trigger={
-            <span className="text-primary-700 cursor-pointer underline">
+            <span className="cursor-pointer text-primary-700 underline">
               Hover me
             </span>
           }
@@ -203,8 +202,8 @@ export const CustomTriggers = {
         <p className="mb-4 text-sm text-neutral-600">Icon Trigger</p>
         <InfoTooltip
           trigger={
-            <div className="bg-warning-100 flex h-6 w-6 cursor-pointer items-center justify-center rounded-full">
-              <AlertCircle className="text-warning-700 h-4 w-4" />
+            <div className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-full bg-warning-100">
+              <AlertCircle className="h-4 w-4 text-warning-700" />
             </div>
           }
           {...args}
@@ -244,7 +243,7 @@ export const RichContent = {
         <InfoTooltip {...args}>
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <div className="bg-success-500 h-3 w-3 rounded-full" />
+              <div className="h-3 w-3 rounded-full bg-success-500" />
               <span className="font-medium">Status: Active</span>
             </div>
             <div className="text-sm text-neutral-600">
@@ -288,7 +287,7 @@ export const CustomStyling = {
           {...args}
         >
           <div className="flex items-center gap-2">
-            <div className="bg-success-500 h-2 w-2 rounded-full" />
+            <div className="h-2 w-2 rounded-full bg-success-500" />
             <span className="font-medium">Success!</span>
           </div>
           <p>Your action was completed successfully.</p>
@@ -306,7 +305,7 @@ export const CustomStyling = {
           {...args}
         >
           <div className="flex items-center gap-2">
-            <div className="bg-warning-500 h-2 w-2 rounded-full" />
+            <div className="h-2 w-2 rounded-full bg-warning-500" />
             <span className="font-medium">Warning</span>
           </div>
           <p>Please review your input before proceeding.</p>
@@ -324,7 +323,7 @@ export const CustomStyling = {
           {...args}
         >
           <div className="flex items-center gap-2">
-            <div className="bg-error-500 h-2 w-2 rounded-full" />
+            <div className="h-2 w-2 rounded-full bg-error-500" />
             <span className="font-medium">Error</span>
           </div>
           <p>Something went wrong. Please try again.</p>

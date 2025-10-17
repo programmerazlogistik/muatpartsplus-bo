@@ -102,7 +102,7 @@ export const Default = {
       <div className="p-4">
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-muat-parts-non-600 hover:bg-muat-parts-non-700 rounded-md px-4 py-2 text-white"
+          className="rounded-md bg-muat-parts-non-600 px-4 py-2 text-white hover:bg-muat-parts-non-700"
         >
           Open Responsive Modal
         </button>
@@ -146,7 +146,7 @@ export const DocumentConfirmation = {
       <div className="p-4">
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-muat-parts-non-600 hover:bg-muat-parts-non-700 rounded-md px-4 py-2 text-white"
+          className="rounded-md bg-muat-parts-non-600 px-4 py-2 text-white hover:bg-muat-parts-non-700"
         >
           Receive Document
         </button>
@@ -192,7 +192,7 @@ export const MobileOptimized = {
       <div className="p-4">
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-muat-parts-non-600 hover:bg-muat-parts-non-700 rounded-md px-4 py-2 text-white"
+          className="rounded-md bg-muat-parts-non-600 px-4 py-2 text-white hover:bg-muat-parts-non-700"
         >
           Mobile Optimized
         </button>
@@ -238,7 +238,7 @@ export const CustomStyling = {
       <div className="p-4">
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-muat-parts-non-600 hover:bg-muat-parts-non-700 rounded-md px-4 py-2 text-white"
+          className="rounded-md bg-muat-parts-non-600 px-4 py-2 text-white hover:bg-muat-parts-non-700"
         >
           Custom Styled Modal
         </button>
@@ -288,7 +288,7 @@ export const NoOutsideClick = {
       <div className="p-4">
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-muat-parts-non-600 hover:bg-muat-parts-non-700 rounded-md px-4 py-2 text-white"
+          className="rounded-md bg-muat-parts-non-600 px-4 py-2 text-white hover:bg-muat-parts-non-700"
         >
           Critical Action
         </button>
@@ -335,7 +335,7 @@ export const ViewportComparison = {
       <div className="p-4">
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-muat-parts-non-600 hover:bg-muat-parts-non-700 rounded-md px-4 py-2 text-white"
+          className="rounded-md bg-muat-parts-non-600 px-4 py-2 text-white hover:bg-muat-parts-non-700"
         >
           Test Responsive Layout
         </button>
@@ -418,7 +418,7 @@ export const Playground = {
       <div className="p-4">
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-muat-parts-non-600 hover:bg-muat-parts-non-700 rounded-md px-4 py-2 text-white"
+          className="rounded-md bg-muat-parts-non-600 px-4 py-2 text-white hover:bg-muat-parts-non-700"
         >
           Open Responsive Modal
         </button>

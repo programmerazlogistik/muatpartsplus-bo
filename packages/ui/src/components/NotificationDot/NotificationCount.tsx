@@ -1,4 +1,5 @@
 import React from "react";
+
 import { cn } from "@muatmuat/lib/utils";
 import { cva } from "class-variance-authority";
 
@@ -10,9 +11,28 @@ export interface NotificationCountProps {
   /** Size of the counter */
   size?: "xs" | "sm" | "md" | "lg" | "xl";
   /** Text color */
-  color?: "white" | "black" | "gray" | "red" | "blue" | "green" | "yellow" | "primary";
+  color?:
+    | "white"
+    | "black"
+    | "gray"
+    | "red"
+    | "blue"
+    | "green"
+    | "yellow"
+    | "primary";
   /** Background color */
-  backgroundColor?: "red" | "green" | "blue" | "yellow" | "orange" | "purple" | "gray" | "primary" | "success" | "warning" | "error";
+  backgroundColor?:
+    | "red"
+    | "green"
+    | "blue"
+    | "yellow"
+    | "orange"
+    | "purple"
+    | "gray"
+    | "primary"
+    | "success"
+    | "warning"
+    | "error";
   /** Style variant */
   variant?: "default" | "bordered";
   /** Border color for bordered variant */
@@ -32,7 +52,7 @@ const notificationCountVariants = cva(
   {
     variants: {
       size: {
-        xs: "text-xxs h-4 w-4",
+        xs: "h-4 w-4 text-xxs",
         sm: "h-5 w-5 text-xs",
         md: "h-6 w-6 text-sm",
         lg: "h-7 w-7 text-base",

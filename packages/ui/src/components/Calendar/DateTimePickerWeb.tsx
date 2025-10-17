@@ -164,7 +164,7 @@ const TimeColumn = ({
 
   return (
     <div className="relative w-12" style={{ height: `${containerHeight}px` }}>
-      <div className="bg-primary-700 pointer-events-none absolute left-0 top-1/2 z-0 h-8 w-full -translate-y-1/2 rounded-md"></div>
+      <div className="pointer-events-none absolute left-0 top-1/2 z-0 h-8 w-full -translate-y-1/2 rounded-md bg-primary-700"></div>
 
       <div
         ref={scrollContainerRef}
@@ -262,7 +262,7 @@ const DateTimePickerWebImplementation = (
           type="button"
           disabled={disabled}
           className={cn(
-            "focus:ring-primary-700 flex h-10 w-full items-center justify-between rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:text-neutral-400",
+            "flex h-10 w-full items-center justify-between rounded-md border border-neutral-300 bg-white px-3 py-2 text-sm ring-offset-white placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-0 disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:text-neutral-400",
             status && statusClasses[status]
           )}
         >

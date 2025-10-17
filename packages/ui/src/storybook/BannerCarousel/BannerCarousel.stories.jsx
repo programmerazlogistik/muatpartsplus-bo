@@ -84,7 +84,7 @@ A responsive, accessible banner carousel component designed for showcasing featu
 \`\`\`javascript
 import { BannerCarousel } from "@muatmuat/ui/BannerCarousel";
 // or
-import { BannerCarousel } from "@muatmuat/ui";
+import { BannerCarousel } from "@muatmuat/ui/BannerCarousel";
 \`\`\`
 
 ## Basic Usage

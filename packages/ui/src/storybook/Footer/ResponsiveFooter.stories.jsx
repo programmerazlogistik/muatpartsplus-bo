@@ -37,7 +37,7 @@ export const Default = {
     children: (
       <div className="flex items-center justify-between">
         <span className="text-sm text-neutral-700">© 2024 MuatMuat</span>
-        <button className="text-primary-600 hover:text-primary-700 text-sm font-medium">
+        <button className="text-sm font-medium text-primary-600 hover:text-primary-700">
           Learn More
         </button>
       </div>
@@ -53,7 +53,7 @@ export const WithNavigation = {
           <span className="text-sm font-medium text-neutral-900">
             Quick Links
           </span>
-          <button className="text-primary-600 hover:text-primary-700 text-sm">
+          <button className="text-sm text-primary-600 hover:text-primary-700">
             View All
           </button>
         </div>
@@ -102,7 +102,7 @@ export const WithActions = {
           <button className="rounded-lg bg-neutral-200 px-3 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-300">
             Cancel
           </button>
-          <button className="bg-primary-600 hover:bg-primary-700 rounded-lg px-3 py-2 text-sm font-medium text-white">
+          <button className="rounded-lg bg-primary-600 px-3 py-2 text-sm font-medium text-white hover:bg-primary-700">
             Confirm
           </button>
         </div>
@@ -127,7 +127,7 @@ export const Playground = {
     children: (
       <div className="flex items-center justify-between">
         <span className="text-sm text-neutral-700">Footer Content</span>
-        <button className="text-primary-600 hover:text-primary-700 text-sm font-medium">
+        <button className="text-sm font-medium text-primary-600 hover:text-primary-700">
           Action
         </button>
       </div>

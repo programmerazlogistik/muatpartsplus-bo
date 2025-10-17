@@ -1,4 +1,5 @@
 import React from "react";
+
 import { cn } from "@muatmuat/lib/utils";
 
 import IconComponent from "../IconComponent/IconComponent";
@@ -18,7 +19,12 @@ export interface InfoBottomsheetProps {
   render?: string;
 }
 
-export const InfoBottomsheet: React.FC<InfoBottomsheetProps> = ({ className, title, children, render }) => {
+export const InfoBottomsheet: React.FC<InfoBottomsheetProps> = ({
+  className,
+  title,
+  children,
+  render,
+}) => {
   return (
     <BottomSheet>
       <BottomSheetTrigger

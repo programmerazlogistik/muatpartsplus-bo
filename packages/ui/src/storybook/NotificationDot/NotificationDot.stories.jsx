@@ -188,7 +188,7 @@ export const RealWorldExamples = {
     <div className="space-y-6">
       <div className="flex items-center gap-4">
         <div className="relative">
-          <div className="bg-primary-100 flex h-10 w-10 items-center justify-center rounded-lg">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary-100">
             <span className="text-primary-700">📧</span>
           </div>
           <NotificationDot
@@ -203,7 +203,7 @@ export const RealWorldExamples = {
 
       <div className="flex items-center gap-4">
         <div className="relative">
-          <div className="bg-warning-100 flex h-10 w-10 items-center justify-center rounded-lg">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-warning-100">
             <span className="text-warning-700">🔔</span>
           </div>
           <NotificationDot
@@ -218,7 +218,7 @@ export const RealWorldExamples = {
 
       <div className="flex items-center gap-4">
         <div className="relative">
-          <div className="bg-success-100 flex h-10 w-10 items-center justify-center rounded-lg">
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-success-100">
             <span className="text-success-700">✓</span>
           </div>
           <NotificationDot

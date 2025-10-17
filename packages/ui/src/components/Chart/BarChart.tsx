@@ -21,13 +21,19 @@ interface CustomTooltipProps {
 }
 
 // The CustomTooltip remains unchanged.
-const CustomTooltip = ({ active, payload, label, dataKeys, t = tMockFn }: CustomTooltipProps) => {
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+  dataKeys,
+  t = tMockFn,
+}: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     const total = payload.reduce((sum, entry) => sum + entry.value, 0);
     return (
-      <div className="shadow-muat h-[84px] w-[136px] rounded-md bg-white p-2">
+      <div className="h-[84px] w-[136px] rounded-md bg-white p-2 shadow-muat">
         <p className="text-xxs font-bold text-neutral-900">{`${label}`}</p>
-        <p className="text-xxs mb-1 font-bold text-neutral-900">{`(${total} ${t("BarChart.unitOrders", {}, "Pesanan")})`}</p>
+        <p className="mb-1 text-xxs font-bold text-neutral-900">{`(${total} ${t("BarChart.unitOrders", {}, "Pesanan")})`}</p>
         <hr className="-ml-2 w-[136px]" />
         <div className="mt-1.5 flex flex-col gap-y-1.5">
           {payload.map((entry, index) => {
@@ -180,7 +186,11 @@ const CustomBarChart = ({
           dataKey={xAxisKey}
           axisLine={showXAxisLine ? { stroke: "#d9d9d9" } : false}
           tickLine={false}
-          tick={{ fontSize: tickFontSize.toString(), fill: "#7b7b7b", fontWeight: 500 }}
+          tick={{
+            fontSize: tickFontSize.toString(),
+            fill: "#7b7b7b",
+            fontWeight: 500,
+          }}
         />
         <YAxis
           axisLine={false}
@@ -188,7 +198,22 @@ const CustomBarChart = ({
           tick={{ fontSize: "12", fill: "#7b7b7b", fontWeight: 500 }}
         />
         <Tooltip
-          content={({ active, payload, label }: { active?: boolean; payload?: any[]; label?: string | number }) => <CustomTooltip active={active} payload={payload} label={label?.toString()} dataKeys={dataKeys} />}
+          content={({
+            active,
+            payload,
+            label,
+          }: {
+            active?: boolean;
+            payload?: any[];
+            label?: string | number;
+          }) => (
+            <CustomTooltip
+              active={active}
+              payload={payload}
+              label={label?.toString()}
+              dataKeys={dataKeys}
+            />
+          )}
           cursor={{ fill: "transparent" }}
         />
         <Legend verticalAlign="top" align="center" content={<CustomLegend />} />

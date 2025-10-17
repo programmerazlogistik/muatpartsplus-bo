@@ -3,16 +3,116 @@
 import useSWR from "swr";
 
 const sellersData = [
-  { id: "550e8400-e29b-41d4-a716-446655440000", companyName: "PT. Maju Mundur", email: "majumundur@gmail.com", city: "Kota Surabaya", businessType: "Perseroan", businessCategory: "Manufaktur", totalActiveProducts: 30, registrationDate: "2025-02-20T20:00:00Z", status: "active" },
-  { id: "550e8400-e29b-41d4-a716-446655440001", companyName: "PT. Maju Mapan", email: "majumapan@gmail.com", city: "Kab. Sidoarjo", businessType: "CV", businessCategory: "ATPM", totalActiveProducts: 10, registrationDate: "2025-02-20T20:00:00Z", status: "active" },
-  { id: "550e8400-e29b-41d4-a716-446655440002", companyName: "PT. Jaya Abadi", email: "jayabadi@gmail.com", city: "Kab. Malang", businessType: "PT", businessCategory: "Importir", totalActiveProducts: 15, registrationDate: "2025-02-20T20:00:00Z", status: "pending" },
-  { id: "550e8400-e29b-41d4-a716-446655440003", companyName: "PT. Agung Sejahtera", email: "agungsejah@gmail.com", city: "Kab. Lamongan", businessType: "Firma", businessCategory: "ATPM", totalActiveProducts: 5, registrationDate: "2025-02-20T20:00:00Z", status: "draft" },
-  { id: "550e8400-e29b-41d4-a716-446655440004", companyName: "PT. Budi Mulya", email: "budmul@gmail.com", city: "Kab. Jombang", businessType: "PT", businessCategory: "Manufaktur", totalActiveProducts: 5, registrationDate: "2025-02-20T20:00:00Z", status: "active" },
-  { id: "550e8400-e29b-41d4-a716-446655440005", companyName: "PT. Indo Perkasa", email: "indoper@gmail.com", city: "Kab. Lamongan", businessType: "PT", businessCategory: "Manufaktur", totalActiveProducts: 10, registrationDate: "2025-02-20T20:00:00Z", status: "rejected" },
-  { id: "550e8400-e29b-41d4-a716-446655440006", companyName: "PT. Jaya Teknik", email: "jayatek@gmail.com", city: "Kab. Lamongan", businessType: "PT", businessCategory: "Manufaktur", totalActiveProducts: 20, registrationDate: "2025-02-20T20:00:00Z", status: "active" },
-  { id: "550e8400-e29b-41d4-a716-446655440007", companyName: "PT. Tekno Baru Abadi", email: "teknobardi@gmail.com", city: "Kab. Lamongan", businessType: "PT", businessCategory: "ATPM", totalActiveProducts: 10, registrationDate: "2025-02-20T20:00:00Z", status: "pending" },
-  { id: "550e8400-e29b-41d4-a716-446655440008", companyName: "PT. Sukses Murni Jaya", email: "suksesmunjay@gmail.com", city: "Kab. Lamongan", businessType: "CV", businessCategory: "ATPM", totalActiveProducts: 15, registrationDate: "2025-02-20T20:00:00Z", status: "active" },
-  { id: "550e8400-e29b-41d4-a716-446655440009", companyName: "PT. Sekawan Lima", email: "sekawanlim@gmail.com", city: "Kab. Lamongan", businessType: "Firma", businessCategory: "Distributor", totalActiveProducts: 15, registrationDate: "2025-02-20T20:00:00Z", status: "pending" },
+  {
+    id: "550e8400-e29b-41d4-a716-446655440000",
+    companyName: "PT. Maju Mundur",
+    email: "majumundur@gmail.com",
+    city: "Kota Surabaya",
+    businessType: "Perseroan",
+    businessCategory: "Manufaktur",
+    totalActiveProducts: 30,
+    registrationDate: "2025-02-20T20:00:00Z",
+    status: "active",
+  },
+  {
+    id: "550e8400-e29b-41d4-a716-446655440001",
+    companyName: "PT. Maju Mapan",
+    email: "majumapan@gmail.com",
+    city: "Kab. Sidoarjo",
+    businessType: "CV",
+    businessCategory: "ATPM",
+    totalActiveProducts: 10,
+    registrationDate: "2025-02-20T20:00:00Z",
+    status: "active",
+  },
+  {
+    id: "550e8400-e29b-41d4-a716-446655440002",
+    companyName: "PT. Jaya Abadi",
+    email: "jayabadi@gmail.com",
+    city: "Kab. Malang",
+    businessType: "PT",
+    businessCategory: "Importir",
+    totalActiveProducts: 15,
+    registrationDate: "2025-02-20T20:00:00Z",
+    status: "pending",
+  },
+  {
+    id: "550e8400-e29b-41d4-a716-446655440003",
+    companyName: "PT. Agung Sejahtera",
+    email: "agungsejah@gmail.com",
+    city: "Kab. Lamongan",
+    businessType: "Firma",
+    businessCategory: "ATPM",
+    totalActiveProducts: 5,
+    registrationDate: "2025-02-20T20:00:00Z",
+    status: "draft",
+  },
+  {
+    id: "550e8400-e29b-41d4-a716-446655440004",
+    companyName: "PT. Budi Mulya",
+    email: "budmul@gmail.com",
+    city: "Kab. Jombang",
+    businessType: "PT",
+    businessCategory: "Manufaktur",
+    totalActiveProducts: 5,
+    registrationDate: "2025-02-20T20:00:00Z",
+    status: "active",
+  },
+  {
+    id: "550e8400-e29b-41d4-a716-446655440005",
+    companyName: "PT. Indo Perkasa",
+    email: "indoper@gmail.com",
+    city: "Kab. Lamongan",
+    businessType: "PT",
+    businessCategory: "Manufaktur",
+    totalActiveProducts: 10,
+    registrationDate: "2025-02-20T20:00:00Z",
+    status: "rejected",
+  },
+  {
+    id: "550e8400-e29b-41d4-a716-446655440006",
+    companyName: "PT. Jaya Teknik",
+    email: "jayatek@gmail.com",
+    city: "Kab. Lamongan",
+    businessType: "PT",
+    businessCategory: "Manufaktur",
+    totalActiveProducts: 20,
+    registrationDate: "2025-02-20T20:00:00Z",
+    status: "active",
+  },
+  {
+    id: "550e8400-e29b-41d4-a716-446655440007",
+    companyName: "PT. Tekno Baru Abadi",
+    email: "teknobardi@gmail.com",
+    city: "Kab. Lamongan",
+    businessType: "PT",
+    businessCategory: "ATPM",
+    totalActiveProducts: 10,
+    registrationDate: "2025-02-20T20:00:00Z",
+    status: "pending",
+  },
+  {
+    id: "550e8400-e29b-41d4-a716-446655440008",
+    companyName: "PT. Sukses Murni Jaya",
+    email: "suksesmunjay@gmail.com",
+    city: "Kab. Lamongan",
+    businessType: "CV",
+    businessCategory: "ATPM",
+    totalActiveProducts: 15,
+    registrationDate: "2025-02-20T20:00:00Z",
+    status: "active",
+  },
+  {
+    id: "550e8400-e29b-41d4-a716-446655440009",
+    companyName: "PT. Sekawan Lima",
+    email: "sekawanlim@gmail.com",
+    city: "Kab. Lamongan",
+    businessType: "Firma",
+    businessCategory: "Distributor",
+    totalActiveProducts: 15,
+    registrationDate: "2025-02-20T20:00:00Z",
+    status: "pending",
+  },
 ];
 
 const sortData = (data, sorting) => {
@@ -29,14 +129,24 @@ const sortData = (data, sorting) => {
   });
 };
 
-const fetcherCompanies = async ({ pageIndex, pageSize, sorting, currentStatus }) => {
-  console.log("Fetching data with:", { pageIndex, pageSize, sorting, currentStatus });
-  await new Promise(res => setTimeout(res, 300));
+const fetcherCompanies = async ({
+  pageIndex,
+  pageSize,
+  sorting,
+  currentStatus,
+}) => {
+  console.log("Fetching data with:", {
+    pageIndex,
+    pageSize,
+    sorting,
+    currentStatus,
+  });
+  await new Promise((res) => setTimeout(res, 300));
 
   // Apply status filter if currentStatus is set
   let filteredData = sellersData;
   if (currentStatus) {
-    filteredData = sellersData.filter(item => item.status === currentStatus);
+    filteredData = sellersData.filter((item) => item.status === currentStatus);
   }
 
   const sortedData = sortData(filteredData, sorting);
@@ -48,10 +158,12 @@ const fetcherCompanies = async ({ pageIndex, pageSize, sorting, currentStatus })
 
   // Calculate summary counts
   const summary = {
-    totalActive: sellersData.filter(item => item.status === "active").length,
-    totalPending: sellersData.filter(item => item.status === "pending").length,
-    totalDraft: sellersData.filter(item => item.status === "draft").length,
-    totalRejected: sellersData.filter(item => item.status === "rejected").length,
+    totalActive: sellersData.filter((item) => item.status === "active").length,
+    totalPending: sellersData.filter((item) => item.status === "pending")
+      .length,
+    totalDraft: sellersData.filter((item) => item.status === "draft").length,
+    totalRejected: sellersData.filter((item) => item.status === "rejected")
+      .length,
   };
 
   return {

@@ -296,10 +296,10 @@ export const BadgeSOSPopoverDefault = {
     getStatusPesananMetadata: () => ({ variant: "primary", label: "Loading" }),
     footer: (
       <div className="flex gap-2">
-        <button className="bg-primary-600 flex-1 rounded-lg px-4 py-2 text-sm font-medium text-white">
+        <button className="flex-1 rounded-lg bg-primary-600 px-4 py-2 text-sm font-medium text-white">
           Contact Driver
         </button>
-        <button className="bg-error-400 flex-1 rounded-lg px-4 py-2 text-sm font-medium text-white">
+        <button className="flex-1 rounded-lg bg-error-400 px-4 py-2 text-sm font-medium text-white">
           Escalate
         </button>
       </div>
