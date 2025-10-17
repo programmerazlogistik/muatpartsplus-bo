@@ -17,6 +17,7 @@ import {
 } from "../Collapsible";
 import IconComponent from "../IconComponent/IconComponent";
 import { TimelineChangeRow } from "../Timeline";
+import "./CardRiwayatPerubahan.scss";
 import {
   ArmadaInfoProps,
   CardRiwayatPerubahanContentPerubahanProps,
@@ -24,18 +25,17 @@ import {
   CardRiwayatPerubahanRootProps,
   ChangeDetailColumnProps,
   ChangeSectionProps,
-  ItemPesananDibatalkanProps,
+  ItemPenolakanGMProps,
   ItemPerubahanArmadaProps,
   ItemPerubahanDriverProps,
   ItemPerubahanRuteProps,
   ItemPerubahanTransporterProps,
   ItemPerubahanWaktuProps,
-  ItemPenolakanGMProps,
+  ItemPesananDibatalkanProps,
   RouteInfo,
   TimeInfoProps,
   TransporterInfoProps,
 } from "./types";
-import "./CardRiwayatPerubahan.scss";
 
 // Context for tracking change items
 interface ItemsContextType {
@@ -100,7 +100,9 @@ const Root = ({
   children,
   t = tMockFn,
 }: CardRiwayatPerubahanRootProps) => {
-  const [registeredItems, setRegisteredItems] = useState<Set<string>>(new Set());
+  const [registeredItems, setRegisteredItems] = useState<Set<string>>(
+    new Set()
+  );
 
   const registerItem = useCallback((itemId: string) => {
     setRegisteredItems((prev) => new Set([...prev, itemId]));
@@ -178,7 +180,7 @@ const Item = ({
     <div className="relative z-10 flex items-start gap-3">
       <div className="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-neutral-300">
         {isActive && (
-          <div className="bg-muat-trans-primary-400 h-4 w-4 rounded-full" />
+          <div className="h-4 w-4 rounded-full bg-muat-trans-primary-400" />
         )}
       </div>
       <div className="flex flex-1 flex-col items-start pt-px">
@@ -227,7 +229,7 @@ const ContentPerubahan = ({
           <>
             <h3 className="font-semibold">{translatedTitle}</h3>
 
-            <div className="text-primary-700 flex items-center gap-2 text-xs font-medium">
+            <div className="flex items-center gap-2 text-xs font-medium text-primary-700">
               <p>
                 {open
                   ? t(
@@ -286,7 +288,7 @@ const ChangeSection = ({
           className
         )}
       >
-        <div className="bg-muat-trans-primary-400 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full">
+        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-muat-trans-primary-400">
           <IconComponent
             src={icon}
             width={16}
@@ -465,7 +467,7 @@ const TransporterInfo = ({
             <IconComponent
               src="/icons/transporter16.svg"
               alt="unit icon"
-              className="text-muat-trans-secondary-900 h-4 w-4"
+              className="h-4 w-4 text-muat-trans-secondary-900"
             />
             <p className="text-xs font-medium text-neutral-900">
               {t("CardRiwayatPerubahan.unitCount", { units }, "{units} Unit")}
@@ -475,7 +477,7 @@ const TransporterInfo = ({
             <IconComponent
               src="/icons/contact.svg"
               alt="phone icon"
-              className="text-muat-trans-secondary-900 h-4 w-4"
+              className="h-4 w-4 text-muat-trans-secondary-900"
             />
             <p className="text-xs font-medium text-neutral-900">
               {phone || "-"}
@@ -594,7 +596,7 @@ const ItemPesananDibatalkan = ({
             <IconComponent
               src="/icons/transporter16.svg"
               alt="Unit icon"
-              className="text-muat-trans-secondary-900 size-4"
+              className="size-4 text-muat-trans-secondary-900"
             />
             <p className="text-xs font-medium leading-tight text-neutral-900">
               {t("CardRiwayatPerubahan.unitCount", { unit }, "{unit} Unit")}

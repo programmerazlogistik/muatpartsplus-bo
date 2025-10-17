@@ -175,7 +175,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
         className={cn(
           "flex h-8 w-full items-center rounded-md border bg-neutral-50 px-3 transition-colors",
           // Default & Hover & Focus states
-          "focus-within:border-primary-700 hover:border-primary-700 border-neutral-600",
+          "border-neutral-600 focus-within:border-primary-700 hover:border-primary-700",
           // Error state
           showErrorState && "border-error-400",
           // Disabled state
@@ -270,7 +270,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           {errorMessage && !hideErrorMessage && (
             <span
               className={cn(
-                "text-error-400 text-xs font-medium",
+                "text-xs font-medium text-error-400",
                 appearance.errorMessageClassName
               )}
             >

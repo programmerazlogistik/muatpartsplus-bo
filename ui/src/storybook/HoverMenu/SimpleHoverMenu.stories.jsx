@@ -54,7 +54,7 @@ export const Playground = {
   render: (args) => (
     <SimpleHover {...args}>
       <SimpleHoverTrigger asChild>
-        <button className="bg-primary-700 hover:bg-primary-800 flex items-center gap-2 rounded-md px-4 py-2 text-white transition-colors">
+        <button className="flex items-center gap-2 rounded-md bg-primary-700 px-4 py-2 text-white transition-colors hover:bg-primary-800">
           <User size={16} />
           <span>Hover me</span>
           <ChevronDown size={16} />
@@ -103,7 +103,7 @@ export const UserMenu = {
       <SimpleHover>
         <SimpleHoverTrigger asChild>
           <div className="flex cursor-pointer items-center gap-2">
-            <div className="bg-primary-700 flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-white">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-700 text-sm font-medium text-white">
               JD
             </div>
             <span className="text-sm font-medium">John Doe</span>
@@ -147,7 +147,7 @@ export const NotificationMenu = {
   render: () => (
     <SimpleHover>
       <SimpleHoverTrigger asChild>
-        <button className="hover:text-primary-700 relative p-2 text-neutral-700 transition-colors">
+        <button className="relative p-2 text-neutral-700 transition-colors hover:text-primary-700">
           <Bell size={20} />
           <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white">
             3
@@ -178,7 +178,7 @@ export const NotificationMenu = {
         </SimpleHoverItem>
         <hr className="my-1 border-neutral-300" />
         <SimpleHoverItem onClick={() => console.log("View all")}>
-          <p className="text-primary-700 text-xs font-medium">
+          <p className="text-xs font-medium text-primary-700">
             View all notifications
           </p>
         </SimpleHoverItem>
@@ -319,7 +319,7 @@ export const ActionMenu = {
     <div className="flex gap-4">
       <SimpleHover>
         <SimpleHoverTrigger asChild>
-          <button className="hover:text-primary-700 hover:bg-primary-50 rounded-md p-2 text-neutral-600 transition-colors">
+          <button className="rounded-md p-2 text-neutral-600 transition-colors hover:bg-primary-50 hover:text-primary-700">
             <Mail size={18} />
           </button>
         </SimpleHoverTrigger>
@@ -347,7 +347,7 @@ export const ActionMenu = {
 
       <SimpleHover>
         <SimpleHoverTrigger asChild>
-          <button className="hover:text-primary-700 hover:bg-primary-50 rounded-md p-2 text-neutral-600 transition-colors">
+          <button className="rounded-md p-2 text-neutral-600 transition-colors hover:bg-primary-50 hover:text-primary-700">
             <MessageSquare size={18} />
           </button>
         </SimpleHoverTrigger>

@@ -20,7 +20,7 @@ const CustomTooltip = ({ active, payload, t = tMockFn }) => {
     const tooltipLabel = payload[0].payload.tooltipDateLabel;
 
     return (
-      <div className="shadow-muat min-w-[150px] rounded-md bg-white p-3">
+      <div className="min-w-[150px] rounded-md bg-white p-3 shadow-muat">
         {/* Date Section - Now shows the tooltipDateLabel */}
         <div className="pb-2">
           <p className="text-xxs font-semibold text-neutral-900">
@@ -96,7 +96,9 @@ const LineChart = ({ data, width = "100%", height = 182 }) => {
         <CartesianGrid vertical={false} style={{ stroke: "#F1F1F1" }} />
         <Tooltip
           cursor={{ strokeDasharray: "3 3" }}
-          content={({ active, payload }) => <CustomTooltip active={active} payload={payload} />}
+          content={({ active, payload }) => (
+            <CustomTooltip active={active} payload={payload} />
+          )}
         />
         <Line
           type="linear"

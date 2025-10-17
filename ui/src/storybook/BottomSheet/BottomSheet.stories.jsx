@@ -107,7 +107,7 @@ export const Default = {
     <div className="flex min-h-[400px] items-center justify-center">
       <BottomSheet>
         <BottomSheetTrigger asChild>
-          <button className="bg-primary-600 hover:bg-primary-700 rounded-lg px-4 py-2 text-white">
+          <button className="rounded-lg bg-primary-600 px-4 py-2 text-white hover:bg-primary-700">
             Open Bottom Sheet
           </button>
         </BottomSheetTrigger>
@@ -190,7 +190,7 @@ export const WithFormContent = {
                   Cancel
                 </button>
               </BottomSheetClose>
-              <button className="bg-primary-600 hover:bg-primary-700 flex-1 rounded-lg py-2 text-white">
+              <button className="flex-1 rounded-lg bg-primary-600 py-2 text-white hover:bg-primary-700">
                 Save Changes
               </button>
             </div>
@@ -214,7 +214,7 @@ export const WithListContent = {
     <div className="flex min-h-[400px] items-center justify-center">
       <BottomSheet>
         <BottomSheetTrigger asChild>
-          <button className="bg-secondary-600 hover:bg-secondary-700 rounded-lg px-4 py-2 text-white">
+          <button className="rounded-lg bg-secondary-600 px-4 py-2 text-white hover:bg-secondary-700">
             Select Option
           </button>
         </BottomSheetTrigger>
@@ -254,7 +254,7 @@ export const WithListContent = {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-primary-600 font-semibold">
+                      <p className="font-semibold text-primary-600">
                         {plan.price}
                       </p>
                     </div>
@@ -368,7 +368,7 @@ export const WithScrollableContent = {
           </div>
           <BottomSheetFooter>
             <BottomSheetClose asChild>
-              <button className="bg-primary-600 hover:bg-primary-700 w-full rounded-lg py-2 text-white">
+              <button className="w-full rounded-lg bg-primary-600 py-2 text-white hover:bg-primary-700">
                 I Understand
               </button>
             </BottomSheetClose>
@@ -396,7 +396,7 @@ export const MinimalLayout = {
     <div className="flex min-h-[400px] items-center justify-center">
       <BottomSheet>
         <BottomSheetTrigger asChild>
-          <button className="bg-success-600 hover:bg-success-700 rounded-lg px-4 py-2 text-white">
+          <button className="rounded-lg bg-success-600 px-4 py-2 text-white hover:bg-success-700">
             Quick Action
           </button>
         </BottomSheetTrigger>
@@ -412,7 +412,7 @@ export const MinimalLayout = {
                   Cancel
                 </button>
               </BottomSheetClose>
-              <button className="bg-error-600 hover:bg-error-700 flex-1 rounded-lg py-2 text-white">
+              <button className="flex-1 rounded-lg bg-error-600 py-2 text-white hover:bg-error-700">
                 Confirm
               </button>
             </div>
@@ -436,7 +436,7 @@ export const HeaderOnly = {
     <div className="flex min-h-[400px] items-center justify-center">
       <BottomSheet>
         <BottomSheetTrigger asChild>
-          <button className="bg-warning-600 hover:bg-warning-700 rounded-lg px-4 py-2 text-white">
+          <button className="rounded-lg bg-warning-600 px-4 py-2 text-white hover:bg-warning-700">
             Show Notification
           </button>
         </BottomSheetTrigger>
@@ -446,14 +446,14 @@ export const HeaderOnly = {
             <BottomSheetClose />
           </BottomSheetHeader>
           <div className="p-4 pb-6">
-            <div className="bg-warning-50 border-warning-200 rounded-lg border p-4">
+            <div className="rounded-lg border border-warning-200 bg-warning-50 p-4">
               <div className="flex items-start gap-3">
-                <div className="bg-warning-400 mt-0.5 h-5 w-5 rounded-full"></div>
+                <div className="mt-0.5 h-5 w-5 rounded-full bg-warning-400"></div>
                 <div>
-                  <h3 className="text-warning-800 font-medium">
+                  <h3 className="font-medium text-warning-800">
                     Maintenance Scheduled
                   </h3>
-                  <p className="text-warning-700 mt-1 text-sm">
+                  <p className="mt-1 text-sm text-warning-700">
                     System maintenance is scheduled for tonight from 2:00 AM to
                     4:00 AM EST. Some features may be temporarily unavailable
                     during this time.
@@ -524,7 +524,7 @@ export const ActionSheet = {
                   key={index}
                   className={`w-full rounded-lg p-3 text-left transition-colors ${
                     action.danger
-                      ? "hover:bg-error-50 text-error-700"
+                      ? "text-error-700 hover:bg-error-50"
                       : "hover:bg-neutral-50"
                   }`}
                 >
@@ -567,7 +567,7 @@ export const BestPracticesExample = {
 
         <div className="space-y-4">
           <div className="text-sm">
-            <h3 className="text-success-700 mb-2 font-medium">
+            <h3 className="mb-2 font-medium text-success-700">
               ✅ DO: Use for Progressive Disclosure
             </h3>
             <p className="mb-3 text-neutral-600">
@@ -576,7 +576,7 @@ export const BestPracticesExample = {
             </p>
             <BottomSheet>
               <BottomSheetTrigger asChild>
-                <button className="text-primary-600 text-sm underline">
+                <button className="text-sm text-primary-600 underline">
                   See filtering options
                 </button>
               </BottomSheetTrigger>
@@ -611,7 +611,7 @@ export const BestPracticesExample = {
                         Clear
                       </button>
                     </BottomSheetClose>
-                    <button className="bg-primary-600 flex-1 rounded py-2 text-white">
+                    <button className="flex-1 rounded bg-primary-600 py-2 text-white">
                       Apply Filters
                     </button>
                   </div>
@@ -621,7 +621,7 @@ export const BestPracticesExample = {
           </div>
 
           <div className="text-sm">
-            <h3 className="text-error-700 mb-2 font-medium">
+            <h3 className="mb-2 font-medium text-error-700">
               ❌ DON'T: Use for Primary Navigation
             </h3>
             <p className="text-neutral-600">
@@ -653,7 +653,7 @@ export const AccessibilityExample = {
       <BottomSheet>
         <BottomSheetTrigger asChild>
           <button
-            className="bg-primary-600 hover:bg-primary-700 focus:ring-primary-500 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-offset-2"
+            className="rounded-lg bg-primary-600 px-4 py-2 text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
             aria-describedby="bottom-sheet-trigger-description"
           >
             Accessible Bottom Sheet
@@ -669,11 +669,11 @@ export const AccessibilityExample = {
           </BottomSheetHeader>
           <div className="flex-1 p-4">
             <div className="space-y-3 text-sm">
-              <div className="bg-success-50 border-success-200 rounded-lg border p-3">
-                <h4 className="text-success-800 font-medium">
+              <div className="rounded-lg border border-success-200 bg-success-50 p-3">
+                <h4 className="font-medium text-success-800">
                   ✅ Accessibility Features
                 </h4>
-                <ul className="text-success-700 mt-2 space-y-1">
+                <ul className="mt-2 space-y-1 text-success-700">
                   <li>• Automatic focus management</li>
                   <li>• Keyboard navigation (Escape to close)</li>
                   <li>• Screen reader announcements</li>
@@ -693,7 +693,7 @@ export const AccessibilityExample = {
                 <input
                   id="accessible-input"
                   type="text"
-                  className="focus:border-primary-500 focus:ring-primary-500 w-full rounded border border-neutral-300 px-3 py-2 focus:outline-none focus:ring-1"
+                  className="w-full rounded border border-neutral-300 px-3 py-2 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                   placeholder="Type something..."
                   aria-describedby="input-help"
                 />
@@ -705,7 +705,7 @@ export const AccessibilityExample = {
           </div>
           <BottomSheetFooter>
             <BottomSheetClose asChild>
-              <button className="bg-primary-600 hover:bg-primary-700 focus:ring-primary-500 w-full rounded-lg py-2 text-white focus:outline-none focus:ring-2 focus:ring-offset-2">
+              <button className="w-full rounded-lg bg-primary-600 py-2 text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2">
                 Close (Escape key also works)
               </button>
             </BottomSheetClose>
@@ -733,7 +733,7 @@ export const Playground = {
     <div className="flex min-h-[400px] items-center justify-center">
       <BottomSheet>
         <BottomSheetTrigger asChild>
-          <button className="bg-primary-600 hover:bg-primary-700 rounded-lg px-4 py-2 text-white">
+          <button className="rounded-lg bg-primary-600 px-4 py-2 text-white hover:bg-primary-700">
             Open Playground
           </button>
         </BottomSheetTrigger>

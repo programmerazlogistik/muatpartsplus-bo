@@ -1,4 +1,10 @@
-import { Card, CardContent, CardFooter, CardHeader, ListContent } from "@muatmuat/ui/Card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  ListContent,
+} from "@muatmuat/ui/Card";
 
 export default {
   title: "Components/Card",
@@ -81,7 +87,7 @@ export const CompleteCard = {
         </div>
       </CardContent>
       <CardFooter>
-        <button className="bg-primary-500 rounded px-4 py-2 text-sm text-white">
+        <button className="rounded bg-primary-500 px-4 py-2 text-sm text-white">
           Track Order
         </button>
         <button className="ml-2 rounded border border-neutral-300 px-4 py-2 text-sm">
@@ -135,7 +141,7 @@ export const FooterOnly = {
       <CardFooter>
         <div className="flex w-full items-center justify-between">
           <span className="text-sm font-medium">Total: Rp 2,500,000</span>
-          <button className="bg-success-500 rounded px-6 py-2 text-sm text-white">
+          <button className="rounded bg-success-500 px-6 py-2 text-sm text-white">
             Confirm Order
           </button>
         </div>
@@ -195,7 +201,7 @@ export const ListContentVariants = {
             icon="/icons/profile16.svg"
             title="Driver"
             value="Ahmad Subagyo"
-            className="border-primary-400 border-l-4 pl-3"
+            className="border-l-4 border-primary-400 pl-3"
           />
         </CardContent>
       </Card>
@@ -226,7 +232,7 @@ export const ShipmentCard = {
               Created on March 15, 2024
             </p>
           </div>
-          <span className="bg-warning-100 text-warning-800 rounded px-2 py-1 text-xs font-medium">
+          <span className="rounded bg-warning-100 px-2 py-1 text-xs font-medium text-warning-800">
             In Transit
           </span>
         </div>
@@ -261,7 +267,7 @@ export const ShipmentCard = {
           </div>
           <div className="mt-1 h-2 w-full rounded-full bg-neutral-200">
             <div
-              className="bg-primary-500 h-2 rounded-full"
+              className="h-2 rounded-full bg-primary-500"
               style={{ width: "65%" }}
             ></div>
           </div>
@@ -272,7 +278,7 @@ export const ShipmentCard = {
           <button className="rounded border border-neutral-300 px-4 py-2 text-sm hover:bg-neutral-50">
             View Details
           </button>
-          <button className="bg-primary-500 hover:bg-primary-600 rounded px-4 py-2 text-sm text-white">
+          <button className="rounded bg-primary-500 px-4 py-2 text-sm text-white hover:bg-primary-600">
             Track Live
           </button>
         </div>
@@ -287,7 +293,7 @@ export const FleetStatusCard = {
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-success-100 flex h-8 w-8 items-center justify-center rounded-full">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-success-100">
               <img
                 src="/icons/transporter16.svg"
                 alt="truck"
@@ -296,7 +302,7 @@ export const FleetStatusCard = {
             </div>
             <span className="font-bold">B 1234 XYZ</span>
           </div>
-          <span className="bg-success-100 text-success-800 rounded px-2 py-1 text-xs font-medium">
+          <span className="rounded bg-success-100 px-2 py-1 text-xs font-medium text-success-800">
             Active
           </span>
         </div>
@@ -321,7 +327,7 @@ export const FleetStatusCard = {
         </div>
       </CardContent>
       <CardFooter>
-        <button className="bg-primary-500 hover:bg-primary-600 w-full rounded py-2 text-sm text-white">
+        <button className="w-full rounded bg-primary-500 py-2 text-sm text-white hover:bg-primary-600">
           Contact Driver
         </button>
       </CardFooter>
@@ -351,7 +357,7 @@ export const Playground = {
         />
       </CardContent>
       <CardFooter>
-        <button className="bg-primary-500 rounded px-4 py-2 text-sm text-white">
+        <button className="rounded bg-primary-500 px-4 py-2 text-sm text-white">
           Action Button
         </button>
       </CardFooter>

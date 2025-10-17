@@ -170,7 +170,7 @@ export const WithReactChildren = {
         <span>This alert contains </span>
         <a
           href="#"
-          className="text-secondary-600 hover:text-secondary-700 underline"
+          className="text-secondary-600 underline hover:text-secondary-700"
         >
           links
         </a>
@@ -269,7 +269,7 @@ export const WithActions = {
     children: (
       <div className="flex w-full items-center justify-between">
         <span>Failed to connect to server.</span>
-        <button className="bg-error-600 hover:bg-error-700 ml-4 rounded px-3 py-1 text-sm text-white transition-colors">
+        <button className="ml-4 rounded bg-error-600 px-3 py-1 text-sm text-white transition-colors hover:bg-error-700">
           Retry
         </button>
       </div>

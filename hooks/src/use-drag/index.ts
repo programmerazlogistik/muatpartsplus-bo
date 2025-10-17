@@ -49,7 +49,10 @@ export interface DragResult {
  *   </div>
  * );
  */
-export const useDrag = ({ onSwipeLeft, onSwipeRight }: DragHandlers): DragResult => {
+export const useDrag = ({
+  onSwipeLeft,
+  onSwipeRight,
+}: DragHandlers): DragResult => {
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [startPos, setStartPos] = useState<number>(0);
   const [dragOffset, setDragOffset] = useState<number>(0);

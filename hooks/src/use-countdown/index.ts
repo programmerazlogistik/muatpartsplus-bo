@@ -18,7 +18,8 @@ export const useCountdown = ({
   isNeedCountdown,
   withHours = true,
 }: CountdownProps): CountdownResult => {
-  const [isCountdownFinished, setIsCountdownFinished] = useState<boolean>(false);
+  const [isCountdownFinished, setIsCountdownFinished] =
+    useState<boolean>(false);
   const [countdown, setCountdown] = useState<string>("");
   const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined);
 

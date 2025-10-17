@@ -34,7 +34,10 @@ export const MapContainer = ({
   viewOnly?: boolean;
   textLabel?: string;
   draggableMarker?: boolean;
-  onPositionChange?: (position: { latitude: number; longitude: number }) => void;
+  onPositionChange?: (position: {
+    latitude: number;
+    longitude: number;
+  }) => void;
   markerIcon?: string;
 }) => {
   const [map, setMap] = useState<any>(null);

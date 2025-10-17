@@ -63,7 +63,7 @@ export const AvatarDriver: React.FC<AvatarDriverProps> = ({
           {withIcon && (
             <IconComponent
               src="/icons/transporter16.svg"
-              className="text-muat-trans-secondary-900 mb-[2px]"
+              className="mb-[2px] text-muat-trans-secondary-900"
               width={12}
               height={12}
             />
@@ -71,7 +71,7 @@ export const AvatarDriver: React.FC<AvatarDriverProps> = ({
 
           <span
             className={cn(
-              "md:text-xxs text-xs font-medium",
+              "text-xs font-medium md:text-xxs",
               appearance.licensePlateClassName
             )}
           >

@@ -9,9 +9,13 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "lucide-react";
-import { DayPicker, getDefaultClassNames, DayPickerProps } from "react-day-picker";
+import {
+  DayPicker,
+  DayPickerProps,
+  getDefaultClassNames,
+} from "react-day-picker";
 
-import { CalendarProps, CalendarDayButtonProps } from "./types";
+import { CalendarDayButtonProps, CalendarProps } from "./types";
 
 const CalendarImplementation = ({
   className,
@@ -185,7 +189,12 @@ const CalendarImplementation = ({
             <ChevronDownIcon className={cn("size-4", className)} {...props} />
           );
         },
-        DayButton: (props: { day: any; modifiers: Record<string, boolean>; } & React.ButtonHTMLAttributes<HTMLButtonElement>) => React.createElement(CalendarDayButton, props),
+        DayButton: (
+          props: {
+            day: any;
+            modifiers: Record<string, boolean>;
+          } & React.ButtonHTMLAttributes<HTMLButtonElement>
+        ) => React.createElement(CalendarDayButton, props),
         /**
          * Week number component
          * @param {Object} props - Component props
@@ -203,7 +212,7 @@ const CalendarImplementation = ({
         },
         ...components,
       }}
-      {...props as DayPickerProps}
+      {...(props as DayPickerProps)}
     />
   );
 };
@@ -219,7 +228,10 @@ function CalendarDayButtonImplementation(
     if (modifiers.focused) internalRef.current?.focus();
   }, [modifiers.focused]);
 
-  React.useImperativeHandle(ref, () => internalRef.current as HTMLButtonElement);
+  React.useImperativeHandle(
+    ref,
+    () => internalRef.current as HTMLButtonElement
+  );
 
   return (
     <button
@@ -241,7 +253,7 @@ function CalendarDayButtonImplementation(
         "data-[selected-single=true]:bg-primary-500 data-[selected-single=true]:text-white",
         "data-[range-start=true]:bg-primary-500 data-[range-start=true]:text-white",
         "data-[range-end=true]:bg-primary-500 data-[range-end=true]:text-white",
-        "data-[range-middle=true]:bg-primary-100 data-[range-middle=true]:text-primary-900 data-[range-middle=true]:w-12",
+        "data-[range-middle=true]:w-12 data-[range-middle=true]:bg-primary-100 data-[range-middle=true]:text-primary-900",
         // Border radius for different selection states
         "data-[range-end=true]:rounded-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md",
         // Focus state styles

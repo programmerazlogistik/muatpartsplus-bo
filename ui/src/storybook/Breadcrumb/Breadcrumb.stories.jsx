@@ -39,7 +39,7 @@ Navigation Components
 \`\`\`javascript
 import { Breadcrumb } from "@muatmuat/ui/Breadcrumb";
 // or
-import { Breadcrumb } from "@muatmuat/ui";
+import { Breadcrumb } from "@muatmuat/ui/Breadcrumb";
 \`\`\`
 
 ## Basic Usage
@@ -489,11 +489,11 @@ export const AccessibilityExample = {
         </nav>
       </div>
 
-      <div className="bg-success-50 border-success-200 rounded-lg border p-3 text-sm">
-        <h4 className="text-success-800 font-medium">
+      <div className="rounded-lg border border-success-200 bg-success-50 p-3 text-sm">
+        <h4 className="font-medium text-success-800">
           ✅ Accessibility Features
         </h4>
-        <ul className="text-success-700 mt-2 space-y-1">
+        <ul className="mt-2 space-y-1 text-success-700">
           <li>• Semantic navigation structure with nav element</li>
           <li>• Descriptive aria-label for the navigation</li>
           <li>• Proper link semantics for clickable items</li>

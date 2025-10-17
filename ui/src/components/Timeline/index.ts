@@ -1,14 +1,13 @@
 /**
  * @fileoverview Timeline component exports
  */
-
 // Import components
 import { DriverTimeline } from "./DriverTimeline";
-import TimelineField from "./timeline-field";
+import { TimelineChangeRow } from "./TimelineChangeRow";
 import { TimelineContainer } from "./TimelineContainer";
 import { TimelineItem } from "./TimelineItem";
-import { TimelineChangeRow } from "./TimelineChangeRow";
 import { TimelinePICData } from "./TimelinePICData";
+import TimelineField from "./timeline-field";
 
 export { DriverTimeline };
 export { default as TimelineField } from "./timeline-field";
@@ -22,7 +21,7 @@ export type { DriverTimelineProps } from "./DriverTimeline";
 export type {
   TimelineFieldRootProps,
   TimelineFieldItemProps,
-  TimelineFieldRemoveButtonProps
+  TimelineFieldRemoveButtonProps,
 } from "./timeline-field";
 export type { TimelineContainerProps } from "./TimelineContainer";
 export type { TimelineItemProps } from "./TimelineItem";

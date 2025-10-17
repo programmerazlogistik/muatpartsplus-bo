@@ -2,13 +2,13 @@
  * SimpleDropdown Component
  * A simplified dropdown component built on SimpleDropdownMenu
  */
+import React from "react";
 
-import React from 'react';
 import {
-  SimpleDropdownTrigger,
   SimpleDropdownContent,
   SimpleDropdownItem,
-} from './SimpleDropdownMenu';
+  SimpleDropdownTrigger,
+} from "./SimpleDropdownMenu";
 
 export interface SimpleDropdownProps {
   /** Trigger element */
@@ -30,15 +30,10 @@ const SimpleDropdown: React.FC<SimpleDropdownProps> = ({
 }) => {
   return (
     <div className={className}>
-      <SimpleDropdownTrigger asChild>
-        {trigger}
-      </SimpleDropdownTrigger>
+      <SimpleDropdownTrigger asChild>{trigger}</SimpleDropdownTrigger>
       <SimpleDropdownContent>
         {items.map((item) => (
-          <SimpleDropdownItem
-            key={item.id}
-            onClick={item.onClick}
-          >
+          <SimpleDropdownItem key={item.id} onClick={item.onClick}>
             {item.label}
           </SimpleDropdownItem>
         ))}

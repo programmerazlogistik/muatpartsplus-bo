@@ -1,4 +1,5 @@
 import React from "react";
+
 import { cn } from "@muatmuat/lib/utils";
 
 import IconComponent from "../IconComponent/IconComponent";
@@ -46,7 +47,7 @@ const Card = ({ className, keys, children }: CardProps) => {
     <div
       key={keys}
       className={cn(
-        "shadow-muat h-full w-full rounded-md border border-neutral-600 bg-white text-neutral-900",
+        "h-full w-full rounded-md border border-neutral-600 bg-white text-neutral-900 shadow-muat",
         className
       )}
     >
@@ -157,11 +158,16 @@ export const CardFooter = ({ className, children }: CardFooterProps) => {
  *   <ListContent icon="/icons/24-hours.svg" title="Duration" value="8 hours" />
  * </div>
  */
-export const ListContent = ({ icon, title, value, className }: ListContentProps) => {
+export const ListContent = ({
+  icon,
+  title,
+  value,
+  className,
+}: ListContentProps) => {
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
       <div className="sm flex gap-2">
-        {typeof icon === 'string' ? (
+        {typeof icon === "string" ? (
           <IconComponent src={icon} />
         ) : (
           React.createElement(icon)

@@ -70,7 +70,11 @@ export function createSWRAdapter(fetcher: any): SWRAdapterResult {
     swrOptions: any = {}
   ): SWRMutationResult<T> {
     const fetcherFn = async (url: string, { arg }: { arg: any }) => {
-      const res = await fetcher[method.toLowerCase() as Lowercase<HTTPMethod>](url, arg, axiosOptions);
+      const res = await fetcher[method.toLowerCase() as Lowercase<HTTPMethod>](
+        url,
+        arg,
+        axiosOptions
+      );
       return res.data;
     };
     const { trigger, isMutating, data, error, reset } = useSWRMutation<T, any>(

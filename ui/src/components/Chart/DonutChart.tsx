@@ -43,7 +43,7 @@ const CustomRechartsTooltip = ({
       >
         <div
           className={cn(
-            "text-xxs flex flex-col font-semibold text-neutral-900",
+            "flex flex-col text-xxs font-semibold text-neutral-900",
             textTooltipClassname
           )}
         >
@@ -210,7 +210,7 @@ const DonutChart = ({
             >
               <div
                 className={cn(
-                  "text-xxs flex flex-col items-start text-start font-semibold text-neutral-900",
+                  "flex flex-col items-start text-start text-xxs font-semibold text-neutral-900",
                   textCenterTooltipClassname
                 )}
               >

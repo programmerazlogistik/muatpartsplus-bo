@@ -78,7 +78,7 @@ const DropzoneComponent = ({
       return (
         renderPlaceholder?.loading || (
           <div className="flex flex-col items-center gap-4">
-            <LoaderCircle className="text-primary-700 size-5 animate-spin" />
+            <LoaderCircle className="size-5 animate-spin text-primary-700" />
             <p className="text-xs font-semibold text-neutral-900">
               Mengunggah...
             </p>
@@ -114,7 +114,7 @@ const DropzoneComponent = ({
               <>
                 {" "}
                 <span
-                  className="text-primary-700 font-semibold underline"
+                  className="font-semibold text-primary-700 underline"
                   onClick={(e) => {
                     e.stopPropagation();
                     openFileDialog();
@@ -138,7 +138,7 @@ const DropzoneComponent = ({
         isDragging ? "border-primary-700" : "border-neutral-300",
         loading
           ? "bg-neutral-100"
-          : "hover:border-primary-500 cursor-pointer bg-white",
+          : "cursor-pointer bg-white hover:border-primary-500",
         className
       )}
       onDragEnter={(e) => handleDragEvent(e, true)}

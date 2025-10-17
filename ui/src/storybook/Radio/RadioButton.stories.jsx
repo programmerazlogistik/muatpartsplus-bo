@@ -241,7 +241,7 @@ export const FormIntegration = {
       </div>
       <button
         type="submit"
-        className="bg-primary-600 hover:bg-primary-700 rounded-md px-4 py-2 text-white"
+        className="rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700"
       >
         Subscribe
       </button>

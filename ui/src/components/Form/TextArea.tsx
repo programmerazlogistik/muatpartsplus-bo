@@ -88,7 +88,7 @@ const TextArea = memo(
             placeholder={placeholder}
             disabled={disabled}
             className={cn(
-              "focus-within:border-primary-700 hover:border-primary-700 w-full rounded-[6px] border border-neutral-600 p-3 text-xs font-medium leading-[1.2] text-neutral-900 outline-none transition-colors placeholder:text-neutral-600 hover:cursor-pointer disabled:cursor-not-allowed disabled:bg-neutral-200",
+              "w-full rounded-[6px] border border-neutral-600 p-3 text-xs font-medium leading-[1.2] text-neutral-900 outline-none transition-colors placeholder:text-neutral-600 focus-within:border-primary-700 hover:cursor-pointer hover:border-primary-700 disabled:cursor-not-allowed disabled:bg-neutral-200",
               errorMessage && "border-error-400",
               appearance.inputClassName
             )}

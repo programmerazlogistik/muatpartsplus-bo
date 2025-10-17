@@ -53,7 +53,7 @@ const Avatar: React.FC<AvatarProps> = ({
   };
 
   const baseWrapper = cn(
-    "bg-primary-700 inline-flex flex-shrink-0 select-none items-center justify-center overflow-hidden rounded-full",
+    "inline-flex flex-shrink-0 select-none items-center justify-center overflow-hidden rounded-full bg-primary-700",
     className
   );
 

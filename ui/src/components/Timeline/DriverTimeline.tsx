@@ -63,7 +63,11 @@ const calculateTitle = (
   currentStatus: StatusObject | null,
   activeIndex: number,
   images: PhotoEvidence,
-  t: (key: string, options?: Record<string, any>, defaultValue?: string) => string
+  t: (
+    key: string,
+    options?: Record<string, any>,
+    defaultValue?: string
+  ) => string
 ): string => {
   if (!currentStatus) return "";
   if (currentStatus.isParentProof) {
@@ -121,15 +125,23 @@ const calculateTitle = (
 export interface DriverTimelineProps {
   dataTimeline: DataTimeline;
   onClickProof?: (item: StatusObject) => void;
-  t?: (key: string, options?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    options?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 export const DriverTimeline: React.FC<DriverTimelineProps> = ({
   dataTimeline,
   onClickProof,
-  t = tMockFn
+  t = tMockFn,
 }) => {
-  const [images, setImages] = useState<PhotoEvidence>({ packages: [], pods: [], photo: [] });
+  const [images, setImages] = useState<PhotoEvidence>({
+    packages: [],
+    pods: [],
+    photo: [],
+  });
   const [currentStatus, setCurrentStatus] = useState<StatusObject | null>(null);
   const [lightboxActiveIndex, setLightboxActiveIndex] = useState(0);
   const [title, setTitle] = useState("");
@@ -216,7 +228,11 @@ interface ItemWithLightboxProps {
   onSetLightboxData: (statusObject: StatusObject) => void;
   onMobileClick?: (item: StatusObject) => void;
   index: number;
-  t?: (key: string, options?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    options?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 const ItemWithLightbox: React.FC<ItemWithLightboxProps> = ({
@@ -305,7 +321,11 @@ interface ParentItemProps {
   isActive: boolean;
   isLastItem: boolean;
   onSetLightboxData: (statusObject: StatusObject) => void;
-  t?: (key: string, options?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    options?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 const iconStyles: Record<string, string> = {
@@ -354,7 +374,10 @@ const ParentItem: React.FC<ParentItemProps> = ({
 
   const buttonProps = (() => {
     const evidence = parent?.shippingEvidence;
-    if (evidence?.packages && evidence.packages.length > 0 || evidence?.pods && evidence.pods.length > 0) {
+    if (
+      (evidence?.packages && evidence.packages.length > 0) ||
+      (evidence?.pods && evidence.pods.length > 0)
+    ) {
       return {
         label: t(
           "DriverTimeline.labelLihatBuktiMuatBarangPOD",
@@ -410,7 +433,7 @@ const ParentItem: React.FC<ParentItemProps> = ({
               {buttonProps && (
                 <button
                   onClick={buttonProps.onClick}
-                  className="text-primary-700 absolute -bottom-0.5 left-0 translate-y-full text-xs font-medium"
+                  className="absolute -bottom-0.5 left-0 translate-y-full text-xs font-medium text-primary-700"
                 >
                   {buttonProps.label}
                 </button>

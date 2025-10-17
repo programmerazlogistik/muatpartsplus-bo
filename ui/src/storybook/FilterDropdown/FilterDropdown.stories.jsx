@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { Meta, StoryObj } from "@storybook/react";
-
 import { FilterDropdown } from "@muatmuat/ui/FilterDropdown";
+import { Meta, StoryObj } from "@storybook/react";
 
 const meta = {
   title: "Components/FilterDropdown",
@@ -279,8 +278,8 @@ export const CustomTrigger = {
           disabled
             ? "cursor-not-allowed bg-gray-200 text-gray-400"
             : selectedCount > 0
-              ? "bg-primary-700 hover:bg-primary-800 text-white"
-              : "border-primary-700 text-primary-700 hover:bg-primary-50 border-2 bg-white"
+              ? "bg-primary-700 text-white hover:bg-primary-800"
+              : "border-2 border-primary-700 bg-white text-primary-700 hover:bg-primary-50"
         } `}
         disabled={disabled}
       >

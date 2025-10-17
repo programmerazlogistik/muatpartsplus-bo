@@ -109,7 +109,7 @@ export const Default = {
       <div>
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-primary-600 hover:bg-primary-700 rounded-md px-4 py-2 text-white"
+          className="rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700"
         >
           Open Confirmation Modal
         </button>
@@ -150,7 +150,7 @@ export const Warning = {
       <div>
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-error-600 hover:bg-error-700 rounded-md px-4 py-2 text-white"
+          className="rounded-md bg-error-600 px-4 py-2 text-white hover:bg-error-700"
         >
           Delete Account
         </button>
@@ -193,7 +193,7 @@ export const Success = {
       <div>
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-success-600 hover:bg-success-700 rounded-md px-4 py-2 text-white"
+          className="rounded-md bg-success-600 px-4 py-2 text-white hover:bg-success-700"
         >
           Complete Setup
         </button>
@@ -236,7 +236,7 @@ export const MuatPartsVariant = {
       <div>
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-muat-parts-non-600 hover:bg-muat-parts-non-700 rounded-md px-4 py-2 text-white"
+          className="rounded-md bg-muat-parts-non-600 px-4 py-2 text-white hover:bg-muat-parts-non-700"
         >
           Remove from Cart
         </button>
@@ -277,7 +277,7 @@ export const BigSize = {
       <div>
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-primary-600 hover:bg-primary-700 rounded-md px-4 py-2 text-white"
+          className="rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700"
         >
           Bulk Action
         </button>
@@ -320,7 +320,7 @@ export const NoCancel = {
       <div>
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-error-600 hover:bg-error-700 rounded-md px-4 py-2 text-white"
+          className="rounded-md bg-error-600 px-4 py-2 text-white hover:bg-error-700"
         >
           Force Action
         </button>
@@ -397,7 +397,7 @@ export const Playground = {
       <div>
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-primary-600 hover:bg-primary-700 rounded-md px-4 py-2 text-white"
+          className="rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700"
         >
           Open Confirmation Modal
         </button>

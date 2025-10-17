@@ -312,7 +312,7 @@ export const FormIntegration = (args) => {
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, name: e.target.value }))
             }
-            className="focus:ring-primary-500 w-full rounded-md border border-neutral-300 px-3 py-2 focus:outline-none focus:ring-2"
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
             placeholder="Enter your name"
           />
         </div>
@@ -327,14 +327,14 @@ export const FormIntegration = (args) => {
             onChange={(e) =>
               setFormData((prev) => ({ ...prev, email: e.target.value }))
             }
-            className="focus:ring-primary-500 w-full rounded-md border border-neutral-300 px-3 py-2 focus:outline-none focus:ring-2"
+            className="w-full rounded-md border border-neutral-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500"
             placeholder="Enter your email"
           />
         </div>
 
         <button
           type="submit"
-          className="bg-primary-600 hover:bg-primary-700 focus:ring-primary-500 w-full rounded-md px-4 py-2 text-white focus:outline-none focus:ring-2"
+          className="w-full rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
         >
           Schedule Appointment
         </button>

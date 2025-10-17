@@ -5,7 +5,6 @@ import React from "react";
 import { cn } from "@muatmuat/lib/utils";
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 
-
 export const Popover = PopoverPrimitive.Root;
 export const PopoverTrigger = PopoverPrimitive.Trigger;
 export const PopoverClose = PopoverPrimitive.Close;
@@ -22,7 +21,9 @@ export interface PopoverContentProps {
   alignOffset?: number;
   avoidCollisions?: boolean;
   collisionBoundary?: Element | Element[];
-  collisionPadding?: number | Partial<Record<"top" | "right" | "bottom" | "left", number>>;
+  collisionPadding?:
+    | number
+    | Partial<Record<"top" | "right" | "bottom" | "left", number>>;
   sticky?: "partial" | "always";
   hideWhenDetached?: boolean;
   updatePositionStrategy?: "optimized" | "always";
@@ -54,7 +55,10 @@ export const PopoverArrow: React.FC<PopoverArrowProps> = () => (
  * @param {React.ForwardedRef<HTMLDivElement>} ref - The forwarded ref to the content element
  * @returns {React.ReactElement}
  */
-const PopoverContentComponent = ({ className, children, ...props }: PopoverContentProps, ref: React.ForwardedRef<HTMLDivElement>) => (
+const PopoverContentComponent = (
+  { className, children, ...props }: PopoverContentProps,
+  ref: React.ForwardedRef<HTMLDivElement>
+) => (
   <PopoverPrimitive.Portal>
     <PopoverPrimitive.Content
       ref={ref}

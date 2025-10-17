@@ -157,7 +157,7 @@ export const CustomPlaceholder = {
       ),
       loading: (
         <div className="flex flex-col items-center gap-3">
-          <div className="border-primary-700 h-8 w-8 animate-spin rounded-full border-b-2"></div>
+          <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary-700"></div>
           <p className="text-sm font-medium text-neutral-700">
             Memproses file...
           </p>

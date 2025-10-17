@@ -109,8 +109,8 @@ const SelectComponent = (
           className={cn(
             "group",
             "flex h-8 items-center justify-between gap-2 rounded-md border px-3 text-sm font-semibold leading-[14.4px] transition-colors duration-200 md:text-xs md:font-medium",
-            "focus:ring-primary-700/20 bg-white text-black focus:outline-none focus:ring-1",
-            "hover:border-primary-700 data-[state=open]:border-primary-700 border-neutral-600",
+            "bg-white text-black focus:outline-none focus:ring-1 focus:ring-primary-700/20",
+            "border-neutral-600 hover:border-primary-700 data-[state=open]:border-primary-700",
             errorMessage && "border-red-500 focus:border-red-500",
             disabled && "cursor-not-allowed bg-gray-50 opacity-50",
             !value && "text-neutral-600",
@@ -168,7 +168,7 @@ const SelectComponent = (
         </SelectPrimitive.Portal>
       </SelectPrimitive.Root>
       {errorMessage && !hideErrorMessage && (
-        <span className="text-error-400 text-xs font-medium">
+        <span className="text-xs font-medium text-error-400">
           {t(errorMessage)}
         </span>
       )}

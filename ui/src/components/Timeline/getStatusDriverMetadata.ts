@@ -10,7 +10,11 @@ const SHOULD_RETURNS_DRIVER_STATUS = [
 export interface GetStatusDriverMetadataParams {
   driverStatus?: string | null;
   orderStatus?: string | null;
-  t: (key: string, options?: Record<string, any>, defaultValue?: string) => string;
+  t: (
+    key: string,
+    options?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 export interface StatusDriverMetadata {

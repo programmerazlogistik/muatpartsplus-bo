@@ -279,7 +279,7 @@ const NumberInput = forwardRef<HTMLInputElement, NumberInputProps>(
           )}
         </div>
         {errorMessage && !hideErrorMessage && (
-          <span className="text-error-400 text-xs font-medium">
+          <span className="text-xs font-medium text-error-400">
             {t(errorMessage)}
           </span>
         )}

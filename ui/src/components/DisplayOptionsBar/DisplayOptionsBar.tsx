@@ -24,7 +24,7 @@ const DisplayOptionsBar = ({
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <span className="text-xs font-bold">Tampilkan:</span>
-      <div className="text-xxs flex items-center gap-2">
+      <div className="flex items-center gap-2 text-xxs">
         {options.map((status) => (
           <button
             key={status.value ?? "all"}
@@ -34,7 +34,7 @@ const DisplayOptionsBar = ({
             className={cn(
               "flex h-7 items-center gap-1 rounded-full px-4 font-semibold transition-colors",
               currentStatus === status.value
-                ? "border-primary-700 bg-primary-50 text-primary-700 border"
+                ? "border border-primary-700 bg-primary-50 text-primary-700"
                 : "border border-neutral-200 bg-neutral-200 hover:bg-neutral-100"
             )}
           >

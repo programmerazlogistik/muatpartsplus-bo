@@ -52,7 +52,10 @@ export const idrFormat = (num: number, opts?: NumberFormatOptions): string =>
  * thousandSeparator(1000000)
  * // Returns: "1.000.000"
  */
-export const thousandSeparator = (num: number, opts?: NumberFormatOptions): string =>
+export const thousandSeparator = (
+  num: number,
+  opts?: NumberFormatOptions
+): string =>
   new Intl.NumberFormat("id-ID", {
     maximumFractionDigits: 0,
     currencyDisplay: "narrowSymbol",

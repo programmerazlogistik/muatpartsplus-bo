@@ -1,5 +1,6 @@
-import { cn } from "@muatmuat/lib/utils";
 import React from "react";
+
+import { cn } from "@muatmuat/lib/utils";
 
 type BadgeStatusVariant =
   | "primary"

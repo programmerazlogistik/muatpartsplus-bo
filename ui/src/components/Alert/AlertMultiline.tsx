@@ -31,13 +31,17 @@ export interface AlertItem {
 export interface AlertMultilineProps {
   className?: string;
   items?: AlertItem[];
-  t?: (key: string, options?: Record<string, any>, defaultValue?: string) => string;
+  t?: (
+    key: string,
+    options?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 export const AlertMultiline: React.FC<AlertMultilineProps> = ({
   className,
   items = [],
-  t = tMockFn
+  t = tMockFn,
 }) => {
   if (items.length === 0) {
     return null;
@@ -46,7 +50,7 @@ export const AlertMultiline: React.FC<AlertMultilineProps> = ({
   return (
     <div
       className={cn(
-        "bg-secondary-100 flex flex-col gap-y-3 rounded-xl px-6 py-4",
+        "flex flex-col gap-y-3 rounded-xl bg-secondary-100 px-6 py-4",
         "text-xs font-medium leading-[1.2] text-neutral-900",
         className
       )}
@@ -95,7 +99,11 @@ export const AlertMultiline: React.FC<AlertMultilineProps> = ({
 
 interface ItemProps {
   item: AlertItem;
-  t: (key: string, options?: Record<string, any>, defaultValue?: string) => string;
+  t: (
+    key: string,
+    options?: Record<string, any>,
+    defaultValue?: string
+  ) => string;
 }
 
 const Item: React.FC<ItemProps> = ({ item, t }) => {
@@ -108,14 +116,14 @@ const Item: React.FC<ItemProps> = ({ item, t }) => {
 
       {item.link ? (
         <Link
-          className="text-primary-700 text-xs font-medium"
+          className="text-xs font-medium text-primary-700"
           href={item.link.link}
         >
           {t(item.link.label)}
         </Link>
       ) : item.button ? (
         <button
-          className="text-primary-700 text-xs font-medium"
+          className="text-xs font-medium text-primary-700"
           onClick={item.button.onClick}
         >
           {t(item.button.label)}

@@ -1,14 +1,14 @@
+import { Button } from "@muatmuat/ui/Button";
 import Dropdown, {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
   SimpleDropdown,
-  SimpleDropdownTrigger,
   SimpleDropdownContent,
   SimpleDropdownItem,
+  SimpleDropdownTrigger,
 } from "@muatmuat/ui/Dropdown";
-import { Button } from "@muatmuat/ui/Button";
 import { IconComponent } from "@muatmuat/ui/IconComponent";
 
 export default {
@@ -62,21 +62,21 @@ export const BasicDropdown = {
     <Dropdown
       trigger={
         <Button variant="primary">
-          <IconComponent name="chevron-down" className="w-4 h-4 ml-2" />
+          <IconComponent name="chevron-down" className="ml-2 h-4 w-4" />
           Open Dropdown
         </Button>
       }
     >
       <DropdownMenuItem onClick={() => console.log("Profile")}>
-        <IconComponent name="user" className="w-4 h-4 mr-2" />
+        <IconComponent name="user" className="mr-2 h-4 w-4" />
         Profile
       </DropdownMenuItem>
       <DropdownMenuItem onClick={() => console.log("Settings")}>
-        <IconComponent name="settings" className="w-4 h-4 mr-2" />
+        <IconComponent name="settings" className="mr-2 h-4 w-4" />
         Settings
       </DropdownMenuItem>
       <DropdownMenuItem onClick={() => console.log("Logout")}>
-        <IconComponent name="log-out" className="w-4 h-4 mr-2" />
+        <IconComponent name="log-out" className="mr-2 h-4 w-4" />
         Logout
       </DropdownMenuItem>
     </Dropdown>
@@ -96,7 +96,7 @@ export const FilterDropdown = {
       <Dropdown
         trigger={
           <Button variant="secondary">
-            <IconComponent name="filter" className="w-4 h-4 mr-2" />
+            <IconComponent name="filter" className="mr-2 h-4 w-4" />
             Filter by Status
           </Button>
         }
@@ -106,15 +106,15 @@ export const FilterDropdown = {
           All Status
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => console.log("Active")}>
-          <div className="w-2 h-2 bg-green-500 rounded-full mr-2" />
+          <div className="mr-2 h-2 w-2 rounded-full bg-green-500" />
           Active
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => console.log("Pending")}>
-          <div className="w-2 h-2 bg-yellow-500 rounded-full mr-2" />
+          <div className="mr-2 h-2 w-2 rounded-full bg-yellow-500" />
           Pending
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => console.log("Inactive")}>
-          <div className="w-2 h-2 bg-gray-500 rounded-full mr-2" />
+          <div className="mr-2 h-2 w-2 rounded-full bg-gray-500" />
           Inactive
         </DropdownMenuItem>
       </Dropdown>
@@ -122,16 +122,24 @@ export const FilterDropdown = {
       <Dropdown
         trigger={
           <Button variant="secondary">
-            <IconComponent name="calendar" className="w-4 h-4 mr-2" />
+            <IconComponent name="calendar" className="mr-2 h-4 w-4" />
             Date Range
           </Button>
         }
         align="start"
       >
-        <DropdownMenuItem onClick={() => console.log("Today")}>Today</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => console.log("This Week")}>This Week</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => console.log("This Month")}>This Month</DropdownMenuItem>
-        <DropdownMenuItem onClick={() => console.log("Custom")}>Custom Range</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => console.log("Today")}>
+          Today
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => console.log("This Week")}>
+          This Week
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => console.log("This Month")}>
+          This Month
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => console.log("Custom")}>
+          Custom Range
+        </DropdownMenuItem>
       </Dropdown>
     </div>
   ),
@@ -179,7 +187,7 @@ export const NavigationMenu = {
         trigger={
           <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
             Products
-            <IconComponent name="chevron-down" className="w-4 h-4 ml-1" />
+            <IconComponent name="chevron-down" className="ml-1 h-4 w-4" />
           </Button>
         }
         align="start"
@@ -202,7 +210,7 @@ export const NavigationMenu = {
         trigger={
           <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
             Support
-            <IconComponent name="chevron-down" className="w-4 h-4 ml-1" />
+            <IconComponent name="chevron-down" className="ml-1 h-4 w-4" />
           </Button>
         }
         align="start"
@@ -233,7 +241,7 @@ export const UserMenu = {
     <Dropdown
       trigger={
         <Button variant="ghost" className="p-2">
-          <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 font-semibold text-white">
             JD
           </div>
         </Button>
@@ -241,25 +249,25 @@ export const UserMenu = {
       align="end"
       side="bottom"
     >
-      <div className="px-4 py-2 border-b">
+      <div className="border-b px-4 py-2">
         <p className="font-semibold">John Doe</p>
         <p className="text-sm text-gray-600">john.doe@example.com</p>
       </div>
       <DropdownMenuItem onClick={() => console.log("Profile")}>
-        <IconComponent name="user" className="w-4 h-4 mr-2" />
+        <IconComponent name="user" className="mr-2 h-4 w-4" />
         My Profile
       </DropdownMenuItem>
       <DropdownMenuItem onClick={() => console.log("Account")}>
-        <IconComponent name="settings" className="w-4 h-4 mr-2" />
+        <IconComponent name="settings" className="mr-2 h-4 w-4" />
         Account Settings
       </DropdownMenuItem>
       <DropdownMenuItem onClick={() => console.log("Billing")}>
-        <IconComponent name="credit-card" className="w-4 h-4 mr-2" />
+        <IconComponent name="credit-card" className="mr-2 h-4 w-4" />
         Billing
       </DropdownMenuItem>
-      <div className="border-t my-1" />
+      <div className="my-1 border-t" />
       <DropdownMenuItem onClick={() => console.log("Logout")}>
-        <IconComponent name="log-out" className="w-4 h-4 mr-2" />
+        <IconComponent name="log-out" className="mr-2 h-4 w-4" />
         Sign Out
       </DropdownMenuItem>
     </Dropdown>
@@ -276,7 +284,7 @@ export const UserMenu = {
 export const ActionsMenu = {
   render: () => (
     <div className="space-y-4">
-      <div className="flex items-center justify-between p-4 border rounded-lg">
+      <div className="flex items-center justify-between rounded-lg border p-4">
         <div>
           <h3 className="font-semibold">Project Documentation</h3>
           <p className="text-sm text-gray-600">Last updated 2 hours ago</p>
@@ -284,30 +292,30 @@ export const ActionsMenu = {
         <Dropdown
           trigger={
             <Button variant="ghost" size="sm">
-              <IconComponent name="more-horizontal" className="w-4 h-4" />
+              <IconComponent name="more-horizontal" className="h-4 w-4" />
             </Button>
           }
           align="end"
         >
           <DropdownMenuItem onClick={() => console.log("View")}>
-            <IconComponent name="eye" className="w-4 h-4 mr-2" />
+            <IconComponent name="eye" className="mr-2 h-4 w-4" />
             View
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => console.log("Edit")}>
-            <IconComponent name="edit" className="w-4 h-4 mr-2" />
+            <IconComponent name="edit" className="mr-2 h-4 w-4" />
             Edit
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => console.log("Download")}>
-            <IconComponent name="download" className="w-4 h-4 mr-2" />
+            <IconComponent name="download" className="mr-2 h-4 w-4" />
             Download
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => console.log("Share")}>
-            <IconComponent name="share" className="w-4 h-4 mr-2" />
+            <IconComponent name="share" className="mr-2 h-4 w-4" />
             Share
           </DropdownMenuItem>
-          <div className="border-t my-1" />
+          <div className="my-1 border-t" />
           <DropdownMenuItem onClick={() => console.log("Delete")}>
-            <IconComponent name="trash-2" className="w-4 h-4 mr-2" />
+            <IconComponent name="trash-2" className="mr-2 h-4 w-4" />
             Delete
           </DropdownMenuItem>
         </Dropdown>
@@ -367,7 +375,7 @@ export const Playground = {
     <Dropdown
       trigger={
         <Button variant="primary">
-          <IconComponent name="chevron-down" className="w-4 h-4 ml-2" />
+          <IconComponent name="chevron-down" className="ml-2 h-4 w-4" />
           Custom Dropdown
         </Button>
       }

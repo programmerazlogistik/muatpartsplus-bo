@@ -1,6 +1,10 @@
 import { cn } from "@muatmuat/lib/utils";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
-import { SimpleDropdownMenuContentProps, SimpleDropdownItemProps } from "./SimpleDropdownMenu.types";
+
+import {
+  SimpleDropdownItemProps,
+  SimpleDropdownMenuContentProps,
+} from "./SimpleDropdownMenu.types";
 
 /**
  * SimpleDropdown root component for basic dropdown functionality.
@@ -28,7 +32,7 @@ export const SimpleDropdownContent = ({
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.Content
         className={cn(
-          "shadow-muat z-50 mt-1 flex max-w-[194px] flex-col overflow-hidden rounded-md border border-neutral-300 bg-neutral-50",
+          "z-50 mt-1 flex max-w-[194px] flex-col overflow-hidden rounded-md border border-neutral-300 bg-neutral-50 shadow-muat",
           className
         )}
         side={side}
@@ -46,7 +50,11 @@ export const SimpleDropdownContent = ({
  * @param {SimpleDropdownItemProps} props - Component props
  * @returns {JSX.Element} The interactive dropdown menu item
  */
-export const SimpleDropdownItem = ({ className, onClick, children }: SimpleDropdownItemProps) => (
+export const SimpleDropdownItem = ({
+  className,
+  onClick,
+  children,
+}: SimpleDropdownItemProps) => (
   <DropdownMenuPrimitive.Item
     className={cn(
       "capsize cursor-pointer px-2.5 py-3 text-xs font-medium leading-[1.2] outline-none hover:bg-neutral-100",

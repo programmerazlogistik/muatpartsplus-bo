@@ -85,7 +85,7 @@ export const Default = {
     <div className="flex h-64 items-center justify-center">
       <Popover {...args}>
         <PopoverTrigger asChild>
-          <button className="bg-primary-600 hover:bg-primary-700 rounded-md px-4 py-2 text-white">
+          <button className="rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700">
             Open Popover
           </button>
         </PopoverTrigger>
@@ -122,7 +122,7 @@ export const WithCloseButton = {
     <div className="flex h-64 items-center justify-center">
       <Popover {...args}>
         <PopoverTrigger asChild>
-          <button className="bg-secondary-600 hover:bg-secondary-700 rounded-md px-4 py-2 text-white">
+          <button className="rounded-md bg-secondary-600 px-4 py-2 text-white hover:bg-secondary-700">
             Popover with Close
           </button>
         </PopoverTrigger>
@@ -177,7 +177,7 @@ export const InteractiveContent = {
     <div className="flex h-64 items-center justify-center">
       <Popover {...args}>
         <PopoverTrigger asChild>
-          <button className="bg-success-600 hover:bg-success-700 rounded-md px-4 py-2 text-white">
+          <button className="rounded-md bg-success-600 px-4 py-2 text-white hover:bg-success-700">
             Actions Menu
           </button>
         </PopoverTrigger>
@@ -229,7 +229,7 @@ export const ModalPopover = {
       </div>
       <Popover {...args}>
         <PopoverTrigger asChild>
-          <button className="bg-warning-600 hover:bg-warning-700 rounded-md px-4 py-2 text-white">
+          <button className="rounded-md bg-warning-600 px-4 py-2 text-white hover:bg-warning-700">
             Modal Popover
           </button>
         </PopoverTrigger>
@@ -416,7 +416,7 @@ export const Playground = {
     <div className="flex h-64 items-center justify-center">
       <Popover>
         <PopoverTrigger asChild>
-          <button className="bg-primary-600 hover:bg-primary-700 rounded-md px-4 py-2 text-white">
+          <button className="rounded-md bg-primary-600 px-4 py-2 text-white hover:bg-primary-700">
             Customizable Popover
           </button>
         </PopoverTrigger>

@@ -89,62 +89,67 @@ const iconColorVariants: Record<ButtonVariant, string> = {
   link: "text-primary-700",
 };
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
-  variant = "muattrans-primary",
-  children = "Button",
-  className,
-  iconLeft = null,
-  iconRight = null,
-  disabled = false,
-  keepDisabledStyle = false,
-  appearance = {
-    iconClassName: "",
-  },
-  ...buttonProps
-}, ref) => {
-  const isSecondaryVariant = variant.includes("secondary");
-  const disabledVariant = isSecondaryVariant ? "true-secondary" : true;
-  const iconColorClass = disabled ? "icon-gray" : iconColorVariants[variant];
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  (
+    {
+      variant = "muattrans-primary",
+      children = "Button",
+      className,
+      iconLeft = null,
+      iconRight = null,
+      disabled = false,
+      keepDisabledStyle = false,
+      appearance = {
+        iconClassName: "",
+      },
+      ...buttonProps
+    },
+    ref
+  ) => {
+    const isSecondaryVariant = variant.includes("secondary");
+    const disabledVariant = isSecondaryVariant ? "true-secondary" : true;
+    const iconColorClass = disabled ? "icon-gray" : iconColorVariants[variant];
 
-  return (
-    <button
-      ref={ref}
-      disabled={disabled}
-      className={cn(
-        buttonVariants({
-          variant: disabled && !keepDisabledStyle ? undefined : variant,
-          disabled: disabled && !keepDisabledStyle ? disabledVariant : false,
-          className,
-        })
-      )}
-      {...buttonProps}
-    >
-      {typeof iconLeft === "string" ? (
-        <IconComponent
-          loader={false}
-          src={iconLeft}
-          height={16}
-          width={16}
-          className={cn(iconColorClass, appearance.iconClassName)}
-        />
-      ) : (
-        iconLeft
-      )}
-      <span>{children}</span>
-      {typeof iconRight === "string" ? (
-        <IconComponent
-          loader={false}
-          src={iconRight}
-          height={16}
-          width={16}
-          className={cn(iconColorClass, appearance.iconClassName)}
-        />
-      ) : (
-        iconRight
-      )}
-    </button>
-  );
-});
+    return (
+      <button
+        ref={ref}
+        disabled={disabled}
+        className={cn(
+          buttonVariants({
+            variant: disabled && !keepDisabledStyle ? undefined : variant,
+            disabled: disabled && !keepDisabledStyle ? disabledVariant : false,
+            className,
+          })
+        )}
+        {...buttonProps}
+      >
+        {typeof iconLeft === "string" ? (
+          <IconComponent
+            loader={false}
+            src={iconLeft}
+            height={16}
+            width={16}
+            className={cn(iconColorClass, appearance.iconClassName)}
+          />
+        ) : (
+          iconLeft
+        )}
+        <span>{children}</span>
+        {typeof iconRight === "string" ? (
+          <IconComponent
+            loader={false}
+            src={iconRight}
+            height={16}
+            width={16}
+            className={cn(iconColorClass, appearance.iconClassName)}
+          />
+        ) : (
+          iconRight
+        )}
+      </button>
+    );
+  }
+);
 
 Button.displayName = "Button";
 
