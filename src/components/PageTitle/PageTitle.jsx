@@ -2,9 +2,8 @@
 
 import { useRouter } from "next/navigation";
 
+import { cn } from "@muatmuat/lib/utils";
 import { IconComponent } from "@muatmuat/ui/IconComponent";
-
-import { cn } from "@/lib/utils";
 
 const PageTitle = ({
   className,

@@ -2,10 +2,10 @@
 
 import { useCallback, useRef, useState } from "react";
 
+import { cn } from "@muatmuat/lib/utils";
 import { IconComponent } from "@muatmuat/ui/IconComponent";
 
 import { toast } from "@/lib/toast";
-import { cn } from "@/lib/utils";
 
 import Button from "../Button/Button";
 import CropperWeb from "../Cropper/CropperWeb";

@@ -3,17 +3,18 @@
 
 import React, { useState } from "react";
 
+import { cn } from "@muatmuat/lib/utils";
 import { Button } from "@muatmuat/ui/Button";
 import { IconComponent } from "@muatmuat/ui/IconComponent";
 import { NotificationDot } from "@muatmuat/ui/NotificationDot";
 import {
   Popover,
+  PopoverArrow,
   PopoverContent,
   PopoverTrigger,
-  PopoverArrow,
 } from "@muatmuat/ui/Popover";
-import { useTranslation } from "@/hooks/use-translation";
-import { cn } from "@muatmuat/lib";
+
+// src/app/page.js
 
 /**
  * @typedef {Object} NotificationItemData
@@ -27,11 +28,9 @@ import { cn } from "@muatmuat/lib";
  * @param {{ item: NotificationItemData }} props
  */
 const NotificationItem = ({ item }) => {
-  const { t } = useTranslation();
-
   // A simple fallback for demonstration if a key is missing
   const fallbackText = `Notification for key: ${item.i18nKey}`;
-  const message = t(item.i18nKey, item.params, fallbackText);
+  const message = fallbackText;
 
   // This logic splits the translated message to style the second sentence blue.
   const parts = message.split(". ");

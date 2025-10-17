@@ -90,7 +90,7 @@ const UploadButton = ({
         </Button>
 
         {error || invalidTypeError ? (
-          <span className="text-xxs font-medium text-error-500">
+          <span className="text-xs font-medium text-error-500">
             {invalidTypeError || error}
           </span>
         ) : (

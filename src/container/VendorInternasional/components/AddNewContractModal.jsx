@@ -1,14 +1,11 @@
 // src/app/add-contract-modal-example/page.js
 "use client";
 
-import React, { useRef, useState } from "react";
+import { useRef } from "react";
 
 import { valibotResolver } from "@hookform/resolvers/valibot";
-import { cn } from "@muatmuat/lib";
 import { Button } from "@muatmuat/ui/Button";
-import { Input } from "@muatmuat/ui/Form";
-import { TextArea } from "@muatmuat/ui/Form";
-import { Select } from "@muatmuat/ui/Form";
+import { Input, Select, TextArea } from "@muatmuat/ui/Form";
 import { IconComponent } from "@muatmuat/ui/IconComponent";
 import {
   Modal,
@@ -16,10 +13,12 @@ import {
   ModalContent,
   ModalTitle,
 } from "@muatmuat/ui/Modal";
-import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import * as v from "valibot";
 
-import { useTranslation } from "@/hooks/use-translation";
+// src/app/add-contract-modal-example/page.js
+
+// src/app/add-contract-modal-example/page.js
 
 // src/app/add-contract-modal-example/page.js
 
@@ -74,7 +73,6 @@ const addContractSchema = v.object({
 // type AddContractFormData = v.InferOutput<typeof addContractSchema>;
 
 const AddContractModal = ({ isOpen, onOpenChange, onSubmit }) => {
-  const { t } = useTranslation();
   const fileInputRef = useRef(null);
 
   const {
@@ -113,7 +111,7 @@ const AddContractModal = ({ isOpen, onOpenChange, onSubmit }) => {
         </div>
 
         <ModalTitle className="font-bold text-neutral-900">
-          {t("AddContractModal.title", {}, "Tambah Kontrak Baru")}
+          "Tambah Kontrak Baru"
         </ModalTitle>
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <div className="grid grid-cols-[max-content_1fr] items-start gap-x-8 gap-y-4 p-6">
@@ -122,32 +120,18 @@ const AddContractModal = ({ isOpen, onOpenChange, onSubmit }) => {
               htmlFor="agreementNumber"
               className="mt-2 text-sm font-medium text-neutral-700"
             >
-              {t(
-                "AddContractModal.label.agreementNumber",
-                {},
-                "Nomor Perjanjian Kerjasama"
-              )}
-              *
+              "Nomor Perjanjian Kerjasama" *
             </label>
             <Input
               id="agreementNumber"
-              placeholder={t(
-                "AddContractModal.placeholder.agreementNumber",
-                {},
-                "Masukkan Nomor Perjanjian Kerjasama"
-              )}
-              error={t(errors.agreementNumber?.message, {}, "")}
+              placeholder="Masukkan Nomor Perjanjian Kerjasama"
+              error=""
               {...register("agreementNumber")}
             />
 
             {/* Agreement File */}
             <label className="mt-2 text-sm font-medium text-neutral-700">
-              {t(
-                "AddContractModal.label.agreementFile",
-                {},
-                "Perjanjian Kerjasama"
-              )}
-              *
+              "Perjanjian Kerjasama" *
             </label>
             <div>
               <Controller
@@ -169,14 +153,10 @@ const AddContractModal = ({ isOpen, onOpenChange, onSubmit }) => {
                         variant="muatparts-primary-secondary"
                         onClick={() => fileInputRef.current?.click()}
                       >
-                        {t("AddContractModal.button.upload", {}, "Unggah")}
+                        "Unggah"
                       </Button>
                       <span className="text-xs text-neutral-500">
-                        {t(
-                          "AddContractModal.description.fileFormat",
-                          {},
-                          "Format file jpg/png/pdf/zip max. 5MB"
-                        )}
+                        "Format file jpg/png/pdf/zip max. 5MB"
                       </span>
                     </div>
                   </>
@@ -194,9 +174,7 @@ const AddContractModal = ({ isOpen, onOpenChange, onSubmit }) => {
                 </div>
               )}
               {errors.agreementFile && (
-                <p className="mt-1 text-xs text-error-500">
-                  {t(errors.agreementFile.message, {}, "")}
-                </p>
+                <p className="mt-1 text-xs text-error-500">""</p>
               )}
             </div>
 
@@ -205,16 +183,12 @@ const AddContractModal = ({ isOpen, onOpenChange, onSubmit }) => {
               htmlFor="notes"
               className="mt-2 text-sm font-medium text-neutral-700"
             >
-              {t("AddContractModal.label.notes", {}, "Catatan Kerjasama")}*
+              "Catatan Kerjasama"*
             </label>
             <TextArea
               id="notes"
-              placeholder={t(
-                "AddContractModal.placeholder.notes",
-                {},
-                "Masukkan Catatan"
-              )}
-              error={t(errors.notes?.message, {}, "")}
+              placeholder="Masukkan Catatan"
+              error=""
               {...register("notes")}
               className="h-[80px]"
             />
@@ -224,12 +198,7 @@ const AddContractModal = ({ isOpen, onOpenChange, onSubmit }) => {
               htmlFor="agreementDate"
               className="mt-2 text-sm font-medium text-neutral-700"
             >
-              {t(
-                "AddContractModal.label.agreementDate",
-                {},
-                "Tanggal Kerjasama"
-              )}
-              *
+              "Tanggal Kerjasama" *
             </label>
             <Controller
               name="agreementDate"
@@ -238,12 +207,8 @@ const AddContractModal = ({ isOpen, onOpenChange, onSubmit }) => {
                 <Select
                   value={field.value}
                   onValueChange={field.onChange}
-                  placeholder={t(
-                    "AddContractModal.placeholder.agreementDate",
-                    {},
-                    "Pilih Tanggal"
-                  )}
-                  errorMessage={t(errors.agreementDate?.message, {}, "")}
+                  placeholder="Pilih Tanggal"
+                  errorMessage=""
                 >
                   <Select.Content>
                     <Select.Item value="2025-09-26">
@@ -261,43 +226,32 @@ const AddContractModal = ({ isOpen, onOpenChange, onSubmit }) => {
             />
 
             {/* Contract Duration */}
-              <label
-                htmlFor="contractDuration"
-                className="mt-2 text-sm font-medium text-neutral-700"
-              >
-                {t(
-                  "AddContractModal.label.contractDuration",
-                  {},
-                  "Jangka Lama Kontrak"
-                )}
-                *
-              </label>
-            <div className="flex items-center gap-6 justify-between">
+            <label
+              htmlFor="contractDuration"
+              className="mt-2 text-sm font-medium text-neutral-700"
+            >
+              "Jangka Lama Kontrak" *
+            </label>
+            <div className="flex items-center justify-between gap-6">
               <Input
                 id="contractDuration"
                 type="number"
-                placeholder={t(
-                  "AddContractModal.placeholder.contractDuration",
-                  {},
-                  "Masukkan Jangka Lama Kontrak"
-                )}
-                error={t(errors.contractDuration?.message, {}, "")}
+                placeholder="Masukkan Jangka Lama Kontrak"
+                error=""
                 {...register("contractDuration")}
               />
-              <span className="text-neutral-700 text-sm">Tahun</span>
+              <span className="text-sm text-neutral-700">Tahun</span>
             </div>
           </div>
 
-          <div className="flex justify-center pt-3 pb-9">
+          <div className="flex justify-center pb-9 pt-3">
             <Button
               type="submit"
               variant="muatparts-primary"
               disabled={isSubmitting}
               className="w-28"
             >
-              {isSubmitting
-                ? t("AddContractModal.button.saving", {}, "Menyimpan...")
-                : t("AddContractModal.button.save", {}, "Simpan")}
+              {isSubmitting ? "Menyimpan..." : "Simpan"}
             </Button>
           </div>
         </form>

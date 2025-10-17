@@ -1,7 +1,5 @@
-import LoadingInteractive from "@/components/Loading/LoadingInteractive";
+import { LoadingStatic } from "@muatmuat/ui/Loading";
 
-function LoadingMain() {
-  return <LoadingInteractive />;
+export default function LoadingMain() {
+  return <LoadingStatic />;
 }
-
-export default LoadingMain;

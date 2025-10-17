@@ -85,7 +85,9 @@ export const DatePicker = ({
         </PopoverContent>
       </Popover>
       {errorMessage && (
-        <span className="mt-1 text-xs text-error-500">{errorMessage}</span>
+        <span className="mt-1 text-xs font-medium text-error-500">
+          {errorMessage}
+        </span>
       )}
     </div>
   );

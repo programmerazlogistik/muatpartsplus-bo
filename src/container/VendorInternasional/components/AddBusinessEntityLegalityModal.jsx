@@ -1,19 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
-import { Controller, useForm, SubmitHandler } from "react-hook-form";
-import { valibotResolver } from "@hookform/resolvers/valibot";
-import * as v from "valibot";
+import React from "react";
 
+import { valibotResolver } from "@hookform/resolvers/valibot";
 import { Button } from "@muatmuat/ui/Button";
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalTrigger,
-} from "@muatmuat/ui/Modal";
-import { useTranslation } from "@/hooks/use-translation";
-import { IconComponent } from "@muatmuat/ui/IconComponent";
+import { Modal, ModalContent } from "@muatmuat/ui/Modal";
+import { Controller, useForm } from "react-hook-form";
+import * as v from "valibot";
 
 /**
  * @typedef {Object} LegalityFormData
@@ -62,7 +55,6 @@ const legalitySchema = v.object({
 // Custom File Upload Field Component
 const FileUploadField = ({ field, error, label, helpText, uploadText }) => {
   const fileInputRef = React.useRef(null);
-  const { t } = useTranslation();
 
   const handleButtonClick = () => {
     fileInputRef.current?.click();
@@ -75,17 +67,11 @@ const FileUploadField = ({ field, error, label, helpText, uploadText }) => {
     }
   };
 
-  const translatedError =
-    error &&
-    t(
-      error,
-      { fieldName: label },
-      "An error occurred with the file upload."
-    );
+  const translatedError = error && "An error occurred with the file upload.";
 
   return (
-    <div className="flex items-center justify-center gap-x-5 w-full ">
-      <label className="text-right text-sm text-neutral-900 ">{label}</label>
+    <div className="flex w-full items-center justify-center gap-x-5">
+      <label className="text-right text-sm text-neutral-900">{label}</label>
       <div className="">
         <input
           type="file"
@@ -102,7 +88,7 @@ const FileUploadField = ({ field, error, label, helpText, uploadText }) => {
           {uploadText}
         </Button>
       </div>
-      <div className="text-left ">
+      <div className="text-left">
         <p className="text-xs text-neutral-500">
           {field.value ? field.value.name : helpText}
         </p>
@@ -116,8 +102,6 @@ const FileUploadField = ({ field, error, label, helpText, uploadText }) => {
 
 // Main Modal Component
 const AddLegalityModal = ({ isOpen, onOpenChange }) => {
-  const { t } = useTranslation();
-
   const {
     control,
     handleSubmit,
@@ -142,11 +126,7 @@ const AddLegalityModal = ({ isOpen, onOpenChange }) => {
       <ModalContent className="w-[711px] p-0" withCloseButton={true}>
         <div className="px-8 py-6">
           <h2 className="text-center text-xl font-bold text-neutral-900">
-            {t(
-              "AddLegalityModal.title",
-              {},
-              "Tambah Business Entity Legality"
-            )}
+            "Tambah Business Entity Legality"
           </h2>
         </div>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -158,17 +138,9 @@ const AddLegalityModal = ({ isOpen, onOpenChange }) => {
                 <FileUploadField
                   field={field}
                   error={errors.businessLicense?.message}
-                  label={t(
-                    "AddLegalityModal.label.businessLicense",
-                    {},
-                    "Business License (USCI / USCC)*"
-                  )}
-                  helpText={t(
-                    "AddLegalityModal.helpText.fileFormat",
-                    {},
-                    "Format file jpg/png/pdf/zip max. 5MB"
-                  )}
-                  uploadText={t("AddLegalityModal.button.upload", {}, "Unggah")}
+                  label="Business License (USCI / USCC)*"
+                  helpText="Format file jpg/png/pdf/zip max. 5MB"
+                  uploadText="Unggah"
                 />
               )}
             />
@@ -179,17 +151,9 @@ const AddLegalityModal = ({ isOpen, onOpenChange }) => {
                 <FileUploadField
                   field={field}
                   error={errors.companyRegistrationCertificate?.message}
-                  label={t(
-                    "AddLegalityModal.label.companyCertificate",
-                    {},
-                    "Company Registration Certificate*"
-                  )}
-                  helpText={t(
-                    "AddLegalityModal.helpText.fileFormat",
-                    {},
-                    "Format file jpg/png/pdf/zip max. 5MB"
-                  )}
-                  uploadText={t("AddLegalityModal.button.upload", {}, "Unggah")}
+                  label="Company Registration Certificate*"
+                  helpText="Format file jpg/png/pdf/zip max. 5MB"
+                  uploadText="Unggah"
                 />
               )}
             />
@@ -201,9 +165,7 @@ const AddLegalityModal = ({ isOpen, onOpenChange }) => {
               disabled={isSubmitting}
               className="w-[180px]"
             >
-              {isSubmitting
-                ? t("AddLegalityModal.button.saving", {}, "Menyimpan...")
-                : t("AddLegalityModal.button.save", {}, "Simpan")}
+              {isSubmitting ? "Menyimpan..." : "Simpan"}
             </Button>
           </div>
         </form>

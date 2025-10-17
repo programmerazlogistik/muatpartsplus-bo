@@ -1,210 +1,79 @@
 "use client";
 
-import React from "react";
-
 import { valibotResolver } from "@hookform/resolvers/valibot";
+import { cn } from "@muatmuat/lib/utils";
 import { Button } from "@muatmuat/ui/Button";
-// Assuming schema is co-located or correctly imported
-import { Input, Select } from "@muatmuat/ui/Form";
+import { Input, TextArea } from "@muatmuat/ui/Form";
 import { IconComponent } from "@muatmuat/ui/IconComponent";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import * as v from "valibot";
 
 import { DatePicker } from "@/components/Calendar/DatePicker";
+import { ModalSuccess } from "@/components/Modal/ModalSuccess";
+import { ModalWarning } from "@/components/Modal/ModalWarning";
 import PageTitle from "@/components/PageTitle/PageTitle";
 import { FileInput } from "@/components/Upload/FileInput";
 
-import { vendorInternationalSchema } from "./schema2";
+/**
+ * @typedef {import('valibot').InferOutput<typeof contractSchema>} ContractFormData
+ */
 
-const BrandSection = ({ index, length, register, control, errors, remove }) => {
-  const fieldErrors = errors?.brands?.[index];
+// --- Validation Schema ---
+const contractSchema = v.object({
+  // Bank Account
+  swiftBicCode: v.pipe(v.string(), v.nonEmpty("Wajib diisi")),
+  accountNumber: v.pipe(v.string(), v.nonEmpty("Wajib diisi")),
+  accountHolderName: v.pipe(v.string(), v.nonEmpty("Wajib diisi")),
+  picFinancePhoneNumber: v.pipe(v.string(), v.nonEmpty("Wajib diisi")),
 
-  const brandOptions = [
-    { value: "Isuzu", label: "Isuzu" },
-    { value: "Toyota", label: "Toyota" },
-    { value: "Honda", label: "Honda" },
-    { value: "Mitsubishi", label: "Mitsubishi" },
-  ];
-
-  const RequiredIndicator = ({ isRequired }) =>
-    isRequired ? <span>*</span> : null;
-
-  return (
-    <div className="w-full">
-      <div className="flex w-full items-center justify-end">
-        {length > 1 && (
-          <button
-            type="button"
-            onClick={() => remove(index)}
-            className="mb-1 text-sm font-medium text-error-600 hover:text-error-700" // Red styling based on Figma
-          >
-            - Hapus Merek
-          </button>
-        )}
-      </div>
-
-      <div className="space-y-4 rounded-[10px] border border-neutral-300 px-8 py-5">
-        <div className="grid grid-cols-1 items-center gap-4 md:grid-cols-[230px_1fr]">
-          {/* Brand* (Select) */}
-          <label className="text-sm font-semibold text-neutral-600">
-            Brand
-            <RequiredIndicator isRequired={true} />
-          </label>
-
-          <Controller
-            name={`brands.${index}.brand`}
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <Select
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                placeholder="Isuzu"
-                options={brandOptions}
-                errorMessage={error?.message}
-                className="text-sm"
-              />
-            )}
-          />
-
-          {/* Intellectual Property (IP) / IPR (Optional) (File Upload) */}
-          <label className="text-sm font-semibold text-neutral-600">
-            Intellectual Property (IP) / IPR (Optional)
-          </label>
-          <Controller
-            name={`brands.${index}.intellectualPropertyFile`}
-            control={control}
-            render={({ field, fieldState: { error, ref } }) => (
-              <FileInput
-                ref={ref}
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                name={`brands.${index}.intellectualPropertyFile`}
-                error={error?.message}
-              />
-            )}
-          />
-
-          {/* Registration Date* (Date Picker) */}
-          <label className="text-sm font-semibold text-neutral-600">
-            Registration Date
-            <RequiredIndicator isRequired={true} />
-          </label>
-          <div className="w-full">
-            <Controller
-              name={`brands.${index}.registrationDate`}
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <DatePicker
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Pilih Tanggal"
-                  showTime={false}
-                  dateFormat="dd MMM yyyy"
-                  disabled={false}
-                  errorMessage={error?.message}
-                />
-              )}
-            />
-          </div>
-
-          {/* Certificate of Origin* (File Upload) */}
-          <label className="text-sm font-semibold text-neutral-600">
-            Certificate of Origin
-            <RequiredIndicator isRequired={true} />
-          </label>
-          <Controller
-            name={`brands.${index}.certificateOfOriginFile`}
-            control={control}
-            render={({ field, fieldState: { error, ref } }) => (
-              <FileInput
-                ref={ref}
-                value={field.value}
-                onChange={field.onChange}
-                onBlur={field.onBlur}
-                name={`brands.${index}.certificateOfOriginFile`}
-                error={error?.message}
-              />
-            )}
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
+  // Contract
+  agreementNumber: v.pipe(v.string(), v.nonEmpty("Wajib diisi")),
+  agreementFile: v.instance(File, "Wajib diisi"),
+  cooperationNotes: v.optional(v.string()),
+  agreementDate: v.date("Wajib diisi"),
+  contractDuration: v.number("Wajib diisi"),
+});
 
 // --- Main Form Component ---
-
-const RegisterVendorInternationalForm = () => {
+const FormKontrak = () => {
   const {
     register,
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
-    resolver: valibotResolver(vendorInternationalSchema),
+    resolver: valibotResolver(contractSchema),
     mode: "onBlur",
     defaultValues: {
-      // Business Legal Entity
-      businessLicenseFile: null,
-      companyRegistrationFile: null,
-      vatCertificateFile: null,
-
-      // Director Information
-      directorIdFile: null,
-      directorIdNumber: "",
-      fullName: "",
-      position: "",
-      directorStatementFile: null,
-
-      // Exporter Legality
-      brands: [
-        {
-          brand: "",
-          intellectualPropertyFile: null,
-          registrationDate: null,
-          certificateOfOriginFile: null,
-        },
-      ],
-
-      // Product List
-      productCatalogFile: null,
+      swiftBicCode: "",
+      accountNumber: "",
+      accountHolderName: "",
+      picFinancePhoneNumber: "",
+      agreementNumber: "",
+      agreementFile: undefined,
+      cooperationNotes: "",
+      agreementDate: undefined,
+      contractDuration: undefined,
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "brands",
-  });
-
+  /** @param {ContractFormData} data */
   const onSubmit = (data) => {
     console.log("Form Submitted:", data);
-    alert("Form submitted! Check console for data structure.");
+    alert("Form submitted successfully! Check console for data.");
   };
 
-  const handleAddBrand = () => {
-    append({
-      brand: "Isuzu",
-      intellectualPropertyFile: null,
-      registrationDate: null,
-      certificateOfOriginFile: null,
-    });
-  };
-
-  // --- Utility for consistent form layout (Label + Input/Button) ---
-  const FormRow = ({ label, required, children }) => {
-    const RequiredIndicator = () => (required ? <span>*</span> : null);
-
-    return (
-      <React.Fragment>
-        <label className="text-sm font-semibold text-neutral-600">
-          {label.replace("*", "").trim()} <RequiredIndicator />
-        </label>
-        <div className="w-full">{children}</div>
-      </React.Fragment>
-    );
-  };
-  // --- End of Utility ---
+  const FormRow = ({ label, required, children, className }) => (
+    <>
+      <label
+        className={cn("pt-2 text-sm font-semibold text-neutral-600", className)}
+      >
+        {label}
+        {required && <span>*</span>}
+      </label>
+      <div className="w-full">{children}</div>
+    </>
+  );
 
   return (
     <div className="mx-auto flex w-full max-w-[1230px] flex-col items-center">
@@ -218,15 +87,13 @@ const RegisterVendorInternationalForm = () => {
             src="/icons/chevron-down.svg"
             className="h-4 w-4 rotate-[-90deg] text-neutral-600"
           />
-          <span className="font-semibold text-primary-700">Legalitas</span>
+          <span className="font-semibold text-neutral-600">Legalitas</span>
           <IconComponent
             src="/icons/chevron-down.svg"
             className="h-4 w-4 rotate-[-90deg] text-neutral-600"
           />
-          <span className="font-semibold text-neutral-600">Kontrak</span>
+          <span className="font-semibold text-primary-700">Kontrak</span>
         </div>
-
-        {/* Figma component: Simpan Draft Button */}
         <Button
           variant="muatparts-primary-secondary"
           className="h-8 rounded-[20px] border-primary-700 px-6 py-2 text-sm font-semibold text-primary-700"
@@ -239,224 +106,141 @@ const RegisterVendorInternationalForm = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="mt-4 flex w-full flex-1 flex-col gap-[34px]"
       >
-        {/* --- Business Legal Entity --- */}
+        {/* --- Bank Account Section --- */}
         <div className="space-y-4 px-[25px]">
           <h2 className="text-base font-medium text-neutral-900">
-            Business Legal Entity
+            Bank Account
           </h2>
-
-          <div className="grid grid-cols-1 items-center gap-4 pl-2.5 md:grid-cols-[230px_1fr]">
-            <FormRow label="Business License (USCI / USCC)*" required>
-              <Controller
-                name="businessLicenseFile"
-                control={control}
-                render={({ field, fieldState: { error, ref } }) => {
-                  console.log("Controller render for businessLicenseFile", {
-                    hasRef: !!ref,
-                    value: field.value,
-                    error: error?.message,
-                  });
-                  return (
-                    <FileInput
-                      ref={ref}
-                      value={field.value}
-                      onChange={(file) => {
-                        console.log(
-                          "Controller onChange for businessLicenseFile",
-                          { file: file?.name }
-                        );
-                        field.onChange(file);
-                      }}
-                      onBlur={field.onBlur}
-                      name="businessLicenseFile"
-                      error={error?.message}
-                    />
-                  );
-                }}
+          <div className="grid grid-cols-1 gap-4 pl-2.5 md:grid-cols-[230px_1fr]">
+            <FormRow label="SWIFT/BIC Code" required>
+              <Input
+                placeholder="Masukkan Nomor Rekening"
+                errorMessage={errors.swiftBicCode?.message}
+                {...register("swiftBicCode")}
               />
             </FormRow>
-            <FormRow label="Company Registration Certificate*" required>
-              <Controller
-                name="companyRegistrationFile"
-                control={control}
-                render={({ field, fieldState: { error, ref } }) => (
-                  <FileInput
-                    ref={ref}
-                    value={field.value}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    name="companyRegistrationFile"
-                    error={error?.message}
-                  />
-                )}
+            <FormRow label="Account Number" required>
+              <Input
+                placeholder="Masukkan Nama PIC Finance"
+                errorMessage={errors.accountNumber?.message}
+                {...register("accountNumber")}
               />
             </FormRow>
-            <FormRow label="VAT Certificate (Opsional)">
-              <Controller
-                name="vatCertificateFile"
-                control={control}
-                render={({ field, fieldState: { error, ref } }) => (
-                  <FileInput
-                    ref={ref}
-                    value={field.value}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    name="vatCertificateFile"
-                    error={error?.message}
-                  />
-                )}
+            <FormRow label="Account Holder Name" required>
+              <Input
+                placeholder="Masukkan Nama Rekening"
+                errorMessage={errors.accountHolderName?.message}
+                {...register("accountHolderName")}
+              />
+            </FormRow>
+            <FormRow label="PIC Finance Phone Number" required>
+              <Input
+                placeholder="Masukkan Nama PIC Finance"
+                errorMessage={errors.picFinancePhoneNumber?.message}
+                {...register("picFinancePhoneNumber")}
               />
             </FormRow>
           </div>
         </div>
 
-        {/* --- Director Information --- */}
+        {/* --- Kontrak Section --- */}
         <div className="space-y-4 px-[25px]">
-          <h2 className="mb-4 text-base font-medium text-neutral-900">
-            Director Information
-          </h2>
-          <div className="grid grid-cols-1 items-center gap-4 pl-2.5 md:grid-cols-[230px_1fr]">
-            <FormRow label="Director Identity Card*" required>
+          <h2 className="text-base font-medium text-neutral-900">Kontrak</h2>
+          <div className="grid grid-cols-1 gap-4 pl-2.5 md:grid-cols-[230px_1fr]">
+            <FormRow label="Nomor Perjanjian Kerjasama" required>
+              <Input
+                placeholder="Masukkan Nomor Perjanjian Kerjasama"
+                errorMessage={errors.agreementNumber?.message}
+                {...register("agreementNumber")}
+              />
+            </FormRow>
+            <FormRow label="Perjanjian Kerjasama" required>
               <Controller
-                name="directorIdFile"
+                name="agreementFile"
                 control={control}
-                render={({ field, fieldState: { error, ref } }) => (
+                render={({ field, fieldState: { error } }) => (
                   <FileInput
-                    ref={ref}
                     value={field.value}
                     onChange={field.onChange}
                     onBlur={field.onBlur}
-                    name="directorIdFile"
+                    name="agreementFile"
                     error={error?.message}
+                    helperText="Format file jpg/png/pdf/zip max. 5MB"
                   />
                 )}
               />
             </FormRow>
-            <FormRow label="Director Identity Card Number*" required>
-              <Input
-                placeholder="No. Identitas Direksi"
-                errorMessage={errors.directorIdNumber?.message}
-                {...register("directorIdNumber")}
-                className="text-sm"
+            <FormRow label="Catatan Kerjasama" className="pt-4">
+              <TextArea
+                placeholder="Masukkan Catatan"
+                errorMessage={errors.cooperationNotes?.message}
+                {...register("cooperationNotes")}
+                className="h-[45px]"
               />
             </FormRow>
-            <FormRow label="Full Name*" required>
-              <Input
-                placeholder="Nama Direksi"
-                errorMessage={errors.fullName?.message}
-                {...register("fullName")}
-                className="text-sm"
-              />
-            </FormRow>
-            <FormRow label="Position*" required>
-              <Input
-                placeholder="Masukkan Jabatan"
-                errorMessage={errors.position?.message}
-                {...register("position")}
-                className="text-sm"
-              />
-            </FormRow>
-            <FormRow label="Director statement letter*" required>
+            <FormRow label="Tanggal Kerjasama" required>
               <Controller
-                name="directorStatementFile"
+                name="agreementDate"
                 control={control}
-                render={({ field, fieldState: { error, ref } }) => (
-                  <FileInput
-                    ref={ref}
+                render={({ field, fieldState: { error } }) => (
+                  <DatePicker
                     value={field.value}
                     onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    name="directorStatementFile"
-                    error={error?.message}
+                    placeholder="Pilih Tanggal"
+                    dateFormat="dd MMM yyyy"
+                    errorMessage={error?.message}
                   />
                 )}
               />
             </FormRow>
-          </div>
-        </div>
-
-        {/* --- Exporter Legality --- */}
-        <div className="space-y-4">
-          <h2 className="mb-4 px-[25px] text-base font-medium text-neutral-900">
-            Exporter Legality
-          </h2>
-
-          {/* Targeted Border Styling */}
-          <div className="flex flex-col items-center gap-4 bg-white">
-            {fields.map((field, index) => (
-              <BrandSection
-                key={field.id}
-                index={index}
-                length={fields.length}
-                register={register}
-                control={control}
-                errors={errors}
-                remove={remove}
-              />
-            ))}
-            {errors.brands?.message && (
-              <p className="text-sm text-error-500">{errors.brands?.message}</p>
-            )}
-
-            {/* Figma component: Tambah Merek Button */}
-            <Button
-              type="button"
-              variant="muatparts-primary-secondary"
-              onClick={handleAddBrand}
-              className="h-8 rounded-[20px] border-primary-700 px-6 py-2 text-sm font-semibold text-primary-700"
-            >
-              + Tambah Merek
-            </Button>
-          </div>
-        </div>
-
-        {/* --- Product List --- */}
-        <div className="px-[25px]">
-          <h2 className="mb-2.5 text-base font-medium text-neutral-900">
-            Product List
-          </h2>
-          <div className="grid grid-cols-1 items-center gap-4 pl-2.5 md:grid-cols-[230px_1fr]">
-            <FormRow label="Product Catalog (Opsional)">
-              <Controller
-                name="productCatalogFile"
-                control={control}
-                render={({ field, fieldState: { error, ref } }) => (
-                  <FileInput
-                    ref={ref}
-                    value={field.value}
-                    onChange={field.onChange}
-                    onBlur={field.onBlur}
-                    name="productCatalogFile"
-                    error={error?.message}
-                  />
-                )}
-              />
+            <FormRow label="Jangka Lama Kontrak" required>
+              <div className="flex gap-5">
+                <Input
+                  type="number"
+                  placeholder="Masukkan Jangka Lama Kontrak"
+                  errorMessage={errors.contractDuration?.message}
+                  {...register("contractDuration", { valueAsNumber: true })}
+                />
+                <span className="pt-4 text-sm font-semibold text-[#868686]">
+                  Tahun
+                </span>
+              </div>
             </FormRow>
           </div>
 
           {/* --- Footer Buttons --- */}
-          <div className="flex w-full justify-center gap-4 pt-6">
-            {/* Figma component: Sebelumnya Button */}
+          <div className="flex w-full justify-center gap-4">
             <Button
-              variant="muatparts-primary-secondary"
               type="button"
+              variant="muatparts-primary-secondary"
               className="h-8 rounded-[20px] border-primary-700 px-6 py-2 text-sm font-semibold text-primary-700"
             >
               Sebelumnya
             </Button>
-            {/* Figma component: Selanjutnya Button */}
             <Button
-              variant="muatparts-primary"
               type="submit"
-              className="h-8 rounded-[20px] bg-primary-700 px-6 py-2 text-white"
+              variant="muatparts-primary"
+              className="h-8 rounded-[20px] bg-primary-700 px-6 py-2 text-sm font-semibold text-white"
+              disabled={isSubmitting}
             >
-              Selanjutnya
+              {isSubmitting ? "Menyimpan..." : "Simpan"}
             </Button>
           </div>
         </div>
       </form>
+
+      <ModalWarning
+        open={false}
+        description="Nama perusahaan telah terdaftar"
+      />
+      <ModalWarning open={false} description="Email  telah terdaftar" />
+      <ModalWarning
+        open={false}
+        description="Nomor whatsapp  telah terdaftar"
+      />
+      <ModalSuccess open={false} />
     </div>
   );
 };
 
-export default RegisterVendorInternationalForm;
+export default FormKontrak;

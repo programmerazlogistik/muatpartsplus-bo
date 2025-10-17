@@ -4,16 +4,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { Button } from "@muatmuat/ui/Button";
+
 import { useGetVendorLegality } from "@/services/vendorInternasional/useGetVendorLegality";
 
-import Button from "@/components/Button/Button";
-
 import AddBusinessEntityLegalityModal from "./components/AddBusinessEntityLegalityModal";
-
-// src/app/edit-vendor-international/components/EditVendorInternationalLegalityContainer.jsx
-
-// import { AddBusinessEntityLegalityModal } from "./components/AddBusinessEntityLegalityModal";
-// import AddBusinessEntityLegalityModal from "./components/AddBusinessEntityLegalityModal";
 
 // src/app/edit-vendor-international/components/EditVendorInternationalLegalityContainer.jsx
 

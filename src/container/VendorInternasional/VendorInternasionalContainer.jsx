@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { cn } from "@muatmuat/lib";
+import { cn } from "@muatmuat/lib/utils";
 import { Alert } from "@muatmuat/ui/Alert";
 import { Button } from "@muatmuat/ui/Button";
 import { LoadingStatic } from "@muatmuat/ui/Loading";

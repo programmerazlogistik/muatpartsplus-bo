@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { cn } from "@muatmuat/lib/utils";
 import {
   SimpleDropdown,
   SimpleDropdownContent,
@@ -9,10 +10,6 @@ import {
   SimpleDropdownTrigger,
 } from "@muatmuat/ui/Dropdown";
 import { ChevronDown } from "lucide-react";
-
-import { useTranslation } from "@/hooks/use-translation";
-
-import { cn } from "@/lib/utils";
 
 /**
  * BO-specific component for selecting the number of items to display per page
@@ -25,7 +22,6 @@ const SelectTotalDataBO = ({
   labelText = "Menampilkan",
   suffixText = "data",
 }) => {
-  const { t = (key, _, fallback) => fallback || key } = useTranslation() || {};
   const [open, setOpen] = useState(false);
 
   return (
@@ -35,11 +31,7 @@ const SelectTotalDataBO = ({
         <SimpleDropdownTrigger asChild>
           <button
             className="relative flex w-[53px] items-center gap-1 rounded-md border border-[#A8A8A8] bg-white p-2 text-xs font-medium text-gray-900"
-            aria-label={t(
-              "SelectTotalDataBO.itemsPerPage",
-              {},
-              "Items per page"
-            )}
+            aria-label="Items per page"
           >
             {perPage}
             <ChevronDown

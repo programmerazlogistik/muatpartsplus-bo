@@ -2,11 +2,8 @@
 
 import { Fragment } from "react";
 
+import { cn } from "@muatmuat/lib/utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-import { useTranslation } from "@/hooks/use-translation";
-
-import { cn } from "@/lib/utils";
 
 import SelectTotalDataBO from "./SelectTotalDataBO";
 
@@ -24,7 +21,6 @@ const PaginationBO = ({
   showItemsInfo = true,
 }) => {
   const perPageOptions = [10, 20, 40];
-  const { t = (key, _, fallback) => fallback || key } = useTranslation() || {};
 
   const handlePrevPage = () => {
     if (currentPage > 1) {

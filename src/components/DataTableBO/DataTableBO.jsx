@@ -2,13 +2,10 @@
 
 import { useState } from "react";
 
+import { cn } from "@muatmuat/lib/utils";
 import { Input } from "@muatmuat/ui/Form";
 import { IconComponent } from "@muatmuat/ui/IconComponent";
 import { X } from "lucide-react";
-
-import { useTranslation } from "@/hooks/use-translation";
-
-import { cn } from "@/lib/utils";
 
 import PaginationBO from "./PaginationBO";
 import TableBO from "./TableBO";
@@ -113,7 +110,6 @@ const DataTableBO = ({
   displayOptions = null,
   tableTitle = null,
 }) => {
-  const { t = (key, _, fallback) => fallback || key } = useTranslation() || {};
   const [searchValue, setSearchValue] = useState("");
   const [selectedFilters, setSelectedFilters] = useState({});
   const [sortConfig, setSortConfig] = useState({ sort: null, order: null });
@@ -213,13 +209,7 @@ const DataTableBO = ({
   };
 
   const renderEmptyState = () => {
-    return (
-      emptyState || (
-        <DataNotFound
-          title={t("DataTableBO.noDataYet", {}, "Belum Ada Data")}
-        />
-      )
-    );
+    return emptyState || <DataNotFound title="Belum Ada Data" />;
   };
 
   const activeFilters = getActiveFilters();

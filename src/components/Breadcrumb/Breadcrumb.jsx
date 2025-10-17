@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 
+import { cn } from "@muatmuat/lib/utils";
 import { IconComponent } from "@muatmuat/ui/IconComponent";
 import PropTypes from "prop-types";
-
-import { cn } from "@/lib/utils";
 
 const BreadCrumb = ({
   data = [],

@@ -1,6 +1,5 @@
+import { cn } from "@muatmuat/lib/utils";
 import { cva } from "class-variance-authority";
-
-import { cn } from "@/lib/utils";
 
 const notificationDotVariants = cva("rounded-full", {
   variants: {

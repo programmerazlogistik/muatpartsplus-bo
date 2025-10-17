@@ -2,9 +2,8 @@
 
 import { useRouter } from "next/navigation";
 
+import { Button } from "@muatmuat/ui/Button";
 import { Home, Search } from "lucide-react";
-
-import Button from "@/components/Button/Button";
 
 export default function NotFound() {
   const router = useRouter();

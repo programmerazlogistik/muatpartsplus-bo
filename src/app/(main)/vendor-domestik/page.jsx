@@ -3,28 +3,27 @@
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
+import { cn } from "@muatmuat/lib/utils";
 import { BadgeStatus } from "@muatmuat/ui/Badge";
+import { Button } from "@muatmuat/ui/Button";
+import { Input } from "@muatmuat/ui/Form";
+import { IconComponent } from "@muatmuat/ui/IconComponent";
 import {
   Popover,
   PopoverArrow,
   PopoverContent,
   PopoverTrigger,
 } from "@muatmuat/ui/Popover";
-import { Input } from "@muatmuat/ui/Form";
-import { IconComponent } from "@muatmuat/ui/IconComponent";
 
 import { useGetSellerTransactions } from "@/services/vendor-domestik/useGetSellerTransactions";
 
-import Button from "@/components/Button/Button";
 import DataTableBO from "@/components/DataTableBO";
 import NotificationDot from "@/components/NotificationDot/NotificationDot";
 
 import FilterField from "@/container/VendorSeller/components/FilterField";
 
-import { cn } from "@/lib/utils";
-
 // Disable static generation for this page
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 /**
  * Renders a single notification item within the popover.
@@ -101,7 +100,7 @@ const SellerDomestikPage = () => {
 
   const columns = useMemo(() => {
     // Ensure we don't render columns during SSR
-    if (typeof window === 'undefined') return [];
+    if (typeof window === "undefined") return [];
 
     const getStatusVariant = (status) => {
       switch (status) {
@@ -221,23 +220,24 @@ const SellerDomestikPage = () => {
 
       <div className="space-y-4">
         <div className="flex justify-center">
-          {tabs && tabs.map((tab, index) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={cn(
-                "h-[30px] basis-0 border px-8 py-2 text-center text-xs font-semibold",
-                activeTab === tab
-                  ? "z-10 border-[#176CF7] bg-[#176CF7] text-white"
-                  : "border-[#868686] bg-white text-[#868686]",
-                index === 0 ? "rounded-l-md" : "",
-                index === tabs.length - 1 ? "rounded-r-md" : "",
-                index > 0 ? "-ml-px" : ""
-              )}
-            >
-              {tab}
-            </button>
-          ))}
+          {tabs &&
+            tabs.map((tab, index) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={cn(
+                  "h-[30px] basis-0 border px-8 py-2 text-center text-xs font-semibold",
+                  activeTab === tab
+                    ? "z-10 border-[#176CF7] bg-[#176CF7] text-white"
+                    : "border-[#868686] bg-white text-[#868686]",
+                  index === 0 ? "rounded-l-md" : "",
+                  index === tabs.length - 1 ? "rounded-r-md" : "",
+                  index > 0 ? "-ml-px" : ""
+                )}
+              >
+                {tab}
+              </button>
+            ))}
         </div>
 
         <div className="flex items-center justify-between gap-4">
@@ -296,9 +296,10 @@ const SellerDomestikPage = () => {
               >
                 <PopoverArrow className="fill-neutral-900" />
                 <div className="max-h-[320px] overflow-y-auto">
-                  {mockNotifications && mockNotifications.map((item) => (
-                    <NotificationItem key={item.id} item={item} />
-                  ))}
+                  {mockNotifications &&
+                    mockNotifications.map((item) => (
+                      <NotificationItem key={item.id} item={item} />
+                    ))}
                 </div>
               </PopoverContent>
             </Popover>
@@ -335,7 +336,7 @@ const SellerDomestikPage = () => {
 
       {/* Dynamic Content: DataTable for "Transaksi" tab */}
       <div className="mt-4">
-        {activeTab === "Transaksi" && typeof window !== 'undefined' && (
+        {activeTab === "Transaksi" && typeof window !== "undefined" && (
           <DataTableBO
             columns={columns}
             data={sellerData?.transactions || []}

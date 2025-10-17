@@ -2,20 +2,17 @@
 
 import { useState } from "react";
 
+import { cn } from "@muatmuat/lib/utils";
+
 import { useGetVendorsInternasional } from "@/services/vendorInternasional/useGetVendorsInternasional";
 
 import Button from "@/components/Button/Button";
 import PageTitle from "@/components/PageTitle/PageTitle";
 
-import { useTranslation } from "@/hooks/use-translation";
-
-import { cn } from "@/lib/utils";
-
 import VendorInternationalTable from "./VendorInternationalTable";
 
 // Main page component
 const VendorInternationalContainer = () => {
-  const { t } = useTranslation();
   const { data: vendorData, isLoading, error } = useGetVendorsInternasional();
   const [activeTab, setActiveTab] = useState("transaksi");
   const [currentPage, setCurrentPage] = useState(1);
@@ -58,9 +55,7 @@ const VendorInternationalContainer = () => {
 
   return (
     <div className="space-y-[10px] bg-neutral-50 p-6">
-      <PageTitle>
-        {t("VendorInternational.title", {}, "Vendor International")}
-      </PageTitle>
+      <PageTitle>"Vendor International"</PageTitle>
 
       <div className="flex items-center justify-center pb-4">
         <Button

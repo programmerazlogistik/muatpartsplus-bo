@@ -2,20 +2,17 @@
 
 import { useState } from "react";
 
+import { cn } from "@muatmuat/lib/utils";
+
 import { useGetVendorsInternational } from "@/services/vendorInternasional/useGetVendorsInternasional";
 
 // import { useGetVendorsInternasional } from "@/services/vendorInternasional/useGetVendorsInternasional";
 import PageTitle from "@/components/PageTitle/PageTitle";
 
-import { useTranslation } from "@/hooks/use-translation";
-
-import { cn } from "@/lib/utils";
-
 import VendorInternationalTable from "./VendorInternationalTable";
 
 // Main page component
 const VendorInternationalContainer = () => {
-  const { t } = useTranslation();
   const { data: vendorData, isLoading, error } = useGetVendorsInternational();
   const [activeTab, setActiveTab] = useState("Transaksi");
   const tabs = ["Transaksi", "Pengajuan", "Riwayat"];
@@ -57,9 +54,7 @@ const VendorInternationalContainer = () => {
 
   return (
     <div className="space-y-[10px] bg-neutral-50 p-6">
-      <PageTitle>
-        {t("VendorInternational.title", {}, "Vendor International")}
-      </PageTitle>
+      <PageTitle>"Vendor International"</PageTitle>
 
       <div className="flex justify-center">
         {tabs.map((tab, index) => (

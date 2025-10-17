@@ -1,7 +1,6 @@
+import { zustandDevtools } from "@muatmuat/lib/utils";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-
-import { zustandDevtools } from "@/lib/utils";
 
 export const useUserStore = create(
   zustandDevtools(

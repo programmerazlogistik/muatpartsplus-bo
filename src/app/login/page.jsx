@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import LoadingStatic from "@/components/Loading/LoadingStatic";
+import { LoadingStatic } from "@muatmuat/ui/Loading";
 
 import LoginContainer from "@/container/LoginContainer";
 

@@ -2,9 +2,8 @@
 
 import { useCallback, useEffect, useRef } from "react";
 
+import { cn } from "@muatmuat/lib/utils";
 import { IconComponent } from "@muatmuat/ui/IconComponent";
-
-import { cn } from "@/lib/utils";
 
 /**
  * BO-specific Table component styled to match the back office design

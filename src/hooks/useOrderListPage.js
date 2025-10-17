@@ -7,7 +7,6 @@ import { useGetSettlementInfo } from "@/services/Shipper/daftarpesanan/getSettem
 
 import useDevice from "@/hooks/use-device";
 import { useShallowCompareEffect } from "@/hooks/use-shallow-effect";
-import { useTranslation } from "@/hooks/use-translation";
 
 import { useShallowMemo } from "./use-shallow-memo";
 
@@ -48,7 +47,6 @@ const useOrderListPage = (options = {}) => {
     status = null,
   } = options;
 
-  const { t } = useTranslation();
   const { isMobile, mounted } = useDevice();
   const defaultQueryParams = defaultPage
     ? {
@@ -125,33 +123,21 @@ const useOrderListPage = (options = {}) => {
 
   const statusTabOptions = useMemo(
     () => [
-      { value: "", label: t("useOrderListPage.allStatus", {}, "Semua") },
+      { value: "", label: "Semua" },
       {
         value: "WAITING_PAYMENT",
-        label: t(
-          "useOrderListPage.waitingPayment",
-          { count: countByStatus?.waitingPayment || 0 },
-          `Menunggu Pembayaran (${countByStatus?.waitingPayment || 0})`
-        ),
+        label: `Menunggu Pembayaran (${countByStatus?.waitingPayment || 0})`,
       },
       {
         value: "WAITING_REPAYMENT",
-        label: t(
-          "useOrderListPage.waitingRepayment",
-          { count: countByStatus?.awaitingSettlement || 0 },
-          `Menunggu Pelunasan (${countByStatus?.awaitingSettlement || 0})`
-        ),
+        label: `Menunggu Pelunasan (${countByStatus?.awaitingSettlement || 0})`,
       },
       {
         value: "DOCUMENT_SHIPPING",
-        label: t(
-          "useOrderListPage.documentShipping",
-          { count: countByStatus?.documentProcess || 0 },
-          `Proses Pengiriman Dokumen (${countByStatus?.documentProcess || 0})`
-        ),
+        label: `Proses Pengiriman Dokumen (${countByStatus?.documentProcess || 0})`,
       },
     ],
-    [countByStatus, t]
+    [countByStatus]
   );
 
   // Updated options with new structure
@@ -159,76 +145,56 @@ const useOrderListPage = (options = {}) => {
     ? [
         {
           key: "status",
-          label: t("labelStatus"),
+          label: "Status",
           children: [
             {
               value: "PREPARE_FLEET",
-              label: t(
-                "useOrderListPage.preparingFleet",
-                {},
-                "Mempersiapkan Armada"
-              ),
+              label: "Mempersiapkan Armada",
             },
-            { value: "CONFIRMED", label: t("labelPesananTerkonfirmasi") },
-            { value: "SCHEDULED_FLEET", label: t("labelArmadaDijadwalkan") },
+            { value: "CONFIRMED", label: "Pesanan Terkonfirmasi" },
+            { value: "SCHEDULED_FLEET", label: "Armada Dijadwalkan" },
             {
               value: "WAITING_PAYMENT",
-              label: t(
-                "useOrderListPage.waitingPaymentSimple",
-                {},
-                "Menunggu Pembayaran"
-              ),
+              label: "Menunggu Pembayaran",
             },
             {
               value: "WAITING_REPAYMENT",
-              label: t(
-                "useOrderListPage.waitingRepaymentSimple",
-                {},
-                "Menunggu Pelunasan"
-              ),
+              label: "Menunggu Pelunasan",
             },
-            { value: "LOADING", label: t("labelProsesMuat") },
-            { value: "UNLOADING", label: t("labelProsesBongkar") },
+            { value: "LOADING", label: "Proses Muat" },
+            { value: "UNLOADING", label: "Proses Bongkar" },
             {
               value: "PREPARE_DOCUMENT",
-              label: t("labelDokumenSedangDisiapkan"),
+              label: "Dokumen Sedang Disiapkan",
             },
             {
               value: "PREPARE_FLEET_CHANGES",
-              label: t(
-                "useOrderListPage.fleetChangeProcess",
-                {},
-                "Proses Pergantian Armada"
-              ),
+              label: "Proses Pergantian Armada",
             },
             {
               value: "DOCUMENT_DELIVERY",
-              label: t(
-                "useOrderListPage.documentDeliveryProcess",
-                {},
-                "Proses Pengiriman Dokumen"
-              ),
+              label: "Proses Pengiriman Dokumen",
             },
-            { value: "CANCELED", label: t("labelDibatalkan") },
-            { value: "COMPLETED", label: t("labelSelesai") },
+            { value: "CANCELED", label: "Dibatalkan" },
+            { value: "COMPLETED", label: "Selesai" },
           ],
         },
       ]
     : [
         {
           key: "status",
-          label: t("labelStatus"),
+          label: "Status",
           children: [
-            { value: "CONFIRMED", label: t("labelPesananTerkonfirmasi") },
-            { value: "SCHEDULED_FLEET", label: t("labelArmadaDijadwalkan") },
-            { value: "LOADING", label: t("labelProsesMuat") },
-            { value: "UNLOADING", label: t("labelProsesBongkar") },
+            { value: "CONFIRMED", label: "Pesanan Terkonfirmasi" },
+            { value: "SCHEDULED_FLEET", label: "Armada Dijadwalkan" },
+            { value: "LOADING", label: "Proses Muat" },
+            { value: "UNLOADING", label: "Proses Bongkar" },
             {
               value: "PREPARE_DOCUMENT",
-              label: t("labelDokumenSedangDisiapkan"),
+              label: "Dokumen Sedang Disiapkan",
             },
-            { value: "COMPLETED", label: t("labelSelesai") },
-            { value: "CANCELED", label: t("labelDibatalkan") },
+            { value: "COMPLETED", label: "Selesai" },
+            { value: "CANCELED", label: "Dibatalkan" },
           ],
         },
       ];
@@ -258,11 +224,7 @@ const useOrderListPage = (options = {}) => {
       setCurrentPeriodValue((prevState) =>
         field === "search"
           ? {
-              name: t(
-                "useOrderListPage.allPeriodsDefault",
-                {},
-                "Semua Periode (Default)"
-              ),
+              name: "Semua Periode (Default)",
               value: "",
               format: "day",
             }

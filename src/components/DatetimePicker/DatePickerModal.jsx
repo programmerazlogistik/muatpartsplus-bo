@@ -1,6 +1,7 @@
 // src/components/Modal/DatePickerModal.jsx
 import { forwardRef, useEffect, useRef, useState } from "react";
 
+import { cn } from "@muatmuat/lib/utils";
 import { Input } from "@muatmuat/ui/Form";
 import { IconComponent } from "@muatmuat/ui/IconComponent";
 import { format } from "date-fns";
@@ -9,8 +10,6 @@ import DatePicker from "react-datepicker";
 // We need to import the default styles for react-datepicker
 import "react-datepicker/dist/react-datepicker.css";
 import { createPortal } from "react-dom";
-
-import { cn } from "@/lib/utils";
 
 import "./datepicker-modal.scss";
 

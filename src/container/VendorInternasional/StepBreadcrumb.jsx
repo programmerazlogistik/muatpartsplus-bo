@@ -1,9 +1,8 @@
 "use client";
 
+import { cn } from "@muatmuat/lib/utils";
 import { IconComponent } from "@muatmuat/ui/IconComponent";
 import PropTypes from "prop-types";
-
-import { cn } from "@/lib/utils";
 
 const StepBreadcrumb = ({ data = [], className, activeStep, onStepClick }) => {
   const getItemClasses = (idx) =>
